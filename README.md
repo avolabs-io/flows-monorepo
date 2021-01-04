@@ -19,3 +19,15 @@ make start-raiden
 ```
 
 **Note**: running a raiden node uses lots of eth-node bandwidth. To be economical while testing it may be wise to run `make start-raiden2` or `make start-raiden1` to start a 2 node or 1 node raiden network respectively.
+
+To stop the local raiden network:
+
+```bash
+make stop-raiden
+```
+
+And to delete all raiden metadata (usually not needed):
+
+```bash
+make stop-raiden-hard
+```
