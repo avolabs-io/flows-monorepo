@@ -1,0 +1,46 @@
+version: "3"
+
+services:
+  raiden1:
+    image: raidennetwork/raiden:v1.2.0
+    container_name: raiden1
+    restart: unless-stopped
+    command: --address 0x351359fd8D35555b24d6C013E7060ABdcD3b43ED --keystore-path /raiden/keystore --password-file /raiden/password.txt --eth-rpc-endpoint "${ETH_RPC_ENDPIONT}" --network-id goerli --environment-type development --api-address "0.0.0.0:5001" --pathfinding-service-address "https://pfs-goerli.services-dev.raiden.network" --accept-disclaimer
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./raiden-node/:/raiden
+      - raiden1Data:/root/.raiden
+    networks:
+      - default
+
+  raiden2:
+    image: raidennetwork/raiden:v1.2.0
+    container_name: raiden2
+    restart: unless-stopped
+    command: --address 0xc788F08a2aAf539111e2a2D85BD4B324FBE37B15 --keystore-path /raiden/keystore --password-file /raiden/password.txt --eth-rpc-endpoint "${ETH_RPC_ENDPIONT}" --network-id goerli --environment-type development --api-address "0.0.0.0:5001" --pathfinding-service-address "https://pfs-goerli.services-dev.raiden.network" --accept-disclaimer
+    ports:
+      - "5002:5001"
+    volumes:
+      - ./raiden-node/:/raiden
+      - raiden2Data:/root/.raiden
+    networks:
+      - default
+
+  raiden3:
+    image: raidennetwork/raiden:v1.2.0
+    container_name: raiden3
+    restart: unless-stopped
+    command: --address 0x0519f6e82342246c01A85d8Bd5eF8c2B5E21A0De --keystore-path /raiden/keystore --password-file /raiden/password.txt --eth-rpc-endpoint "${ETH_RPC_ENDPIONT}" --network-id goerli --environment-type development --api-address "0.0.0.0:5001" --pathfinding-service-address "https://pfs-goerli.services-dev.raiden.network" --accept-disclaimer
+    ports:
+      - "5003:5001"
+    volumes:
+      - ./raiden-node/:/raiden
+      - raiden3Data:/root/.raiden
+    networks:
+      - default
+
+volumes:
+  raiden1Data:
+  raiden2Data:
+  raiden3Data:
