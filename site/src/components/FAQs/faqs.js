@@ -24,7 +24,8 @@ const data = [
 
 const Accordion = () => {
   return (
-    <div className="wrapper">
+    <div className="faqs-wrapper">
+      <h2>FAQs</h2>
       <ul className="accordion-list">
         {data.map((data, key) => {
           return (

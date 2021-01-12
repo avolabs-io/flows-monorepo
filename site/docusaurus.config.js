@@ -1,6 +1,6 @@
 module.exports = {
   title: "Flows Finance",
-  tagline: "Privacy preserving continuous payment streams",
+  tagline: "Stream money privately",
   url: "https://flows.finance",
   baseUrl: "/",
   onBrokenLinks: "throw",
@@ -13,7 +13,7 @@ module.exports = {
       title: "Flows Finance",
       logo: {
         alt: "Flows Finance logo",
-        src: "img/logo.svg",
+        src: "img/snake_temp.png",
       },
       items: [
         {

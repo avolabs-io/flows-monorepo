@@ -15,6 +15,7 @@
   --ifm-color-primary-lighter: rgb(102, 212, 189);
   --ifm-color-primary-lightest: rgb(146, 224, 208);
   --ifm-code-font-size: 95%;
+  --ifm-button-border-radius: 0;
 }
 
 .docusaurus-highlight-code-line {
@@ -25,7 +26,7 @@
 }
 
 .moving-background-gradient {
-  background: linear-gradient(48deg, #b9a1b9, #d4b2d4, #806f80);
+  background-image: linear-gradient(48deg, #e3b7e3, #d4b2d4, #806f80);
   background-size: 600% 600%;
 
   -webkit-animation: AnimationName 20s ease infinite;
@@ -33,6 +34,22 @@
   animation: AnimationName 20s ease infinite;
 }
 
+.fade-in {
+  opacity: 1;
+  animation-name: fadeInOpacity;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in;
+  animation-duration: 2s;
+}
+
+@keyframes fadeInOpacity {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
 @-webkit-keyframes AnimationName {
   0% {
     background-position: 0% 90%;
@@ -69,11 +86,14 @@
 
 .footer--dark {
   background-color: #252525 !important;
-  color: #fcdafd !important;
 }
 
 body {
   background: #25252505;
+}
+
+.faqs-wrapper {
+  margin: 4rem auto;
 }
 
 .accordion-list {
@@ -82,13 +102,14 @@ body {
   padding: 0;
   background-color: #fff;
   max-width: 100%;
-  border-radius: 0.4rem;
+  border-radius: 0;
   overflow: hidden;
-  box-shadow: 0 0 0.8rem 0.1rem rgba(15, 72, 179, 0.06),
-    0 20px 30px -10px rgba(15, 72, 179, 0.2);
+  /* box-shadow: 0 0 0.8rem 0.1rem rgba(15, 72, 179, 0.06),
+    0 20px 30px -10px rgba(15, 72, 179, 0.2); */
 }
-.accordion-list__item + .accordion-list__item {
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+.accordion-list__item {
+  border: 0.5px solid #252525;
+  margin-top: 2px;
 }
 
 .accordion-item--opened .accordion-item__icon {
@@ -119,7 +140,7 @@ body {
   position: relative;
 }
 .accordion-item__title {
-  font-size: 1.6rem;
+  font-size: 1.2rem;
   margin: 0;
   font-weight: 700;
   color: #121212;

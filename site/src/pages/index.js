@@ -10,14 +10,17 @@ import FAQs from "../components/fAQs/faqs";
 const features = [
   {
     title: "Easy to Use",
-    imageUrl: "img/undraw_docusaurus_mountain.svg",
+    imageUrl: "img/illustrations/features/square.svg",
     description: (
-      <>Periodic payments are inefficient, require trust and are random.</>
+      <>
+        Periodic payments are inefficient, require trust and are ultimately
+        random.
+      </>
     ),
   },
   {
     title: "Real time finance",
-    imageUrl: "img/undraw_docusaurus_tree.svg",
+    imageUrl: "img/illustrations/features/prism.svg",
     description: (
       <>
         Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
@@ -26,12 +29,12 @@ const features = [
     ),
   },
   {
-    title: "Powered by Raiden ⚡",
-    imageUrl: "img/illustrations/raiden-network.svg",
+    title: "Another great point",
+    imageUrl: "img/illustrations/features/rect.svg",
     description: (
       <>
-        Flows.Finance is built on the Raiden Network, allowing for lightening
-        fast affordable transactions
+        Flows.Finance is a silky smooth dApp that does great things allowing
+        users to add value to achieving transactions
       </>
     ),
   },
@@ -69,7 +72,8 @@ function Home() {
           <div className={styles.buttons}>
             <Link
               className={clsx(
-                "button button--outline button--secondary button--lg",
+                "fade-in",
+                "button button--outline  button--lg",
                 styles.getStarted
               )}
               to={useBaseUrl("docs/")}
@@ -91,10 +95,28 @@ function Home() {
             </div>
           </section>
         )}
+        <div className="container-fluid hero moving-background-gradient">
+          <div className={clsx("col col--12", styles.feature)}>
+            <div className="text--center">
+              <div className="fade-in">
+                <img
+                  className={styles.featureImage}
+                  src="img/illustrations/raiden-network.svg"
+                  alt="raiden"
+                />
+                <p className="hero__subtitle">Powered by the Raiden network</p>
+                <p className="hero__subtitle">
+                  {" "}
+                  Flows.Finance is built on the Raiden Network, allowing for
+                  lightening fast affordable transactions
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className="container">
           <div className="row">
             <div className={clsx("col col--12")}>
-              <h2>FAQs</h2>
               <FAQs />
             </div>
           </div>
