@@ -1,18 +1,6 @@
 const { ethers } = require("ethers");
 const fs = require("fs");
-
 const editDotenv = require("edit-dotenv");
-
-const envString = `VAR1=value
-VAR2=value
- 
-# Comment
-VAR3=value\\nvalue`;
-
-const changes = {
-  VAR2: "new value",
-  NEW: "value",
-};
 
 const envfilePath = "../.env";
 
