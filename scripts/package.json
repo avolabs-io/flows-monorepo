@@ -4,11 +4,13 @@
   "description": "Utility scripts for flows finance",
   "main": "index.js",
   "scripts": {
+    "setup-wallets": "node createWallet.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "edit-dotenv": "^1.0.4",
     "ethers": "^5.0.26"
   }
 }

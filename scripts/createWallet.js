@@ -1,6 +1,41 @@
 const { ethers } = require("ethers");
 const fs = require("fs");
 
+const editDotenv = require("edit-dotenv");
+
+const envString = `VAR1=value
+VAR2=value
+ 
+# Comment
+VAR3=value\\nvalue`;
+
+const changes = {
+  VAR2: "new value",
+  NEW: "value",
+};
+
+const envfilePath = "../.env";
+
+/**
+ * Function to add fields to users env file
+ * @param {String} key
+ * @param {String} value
+ */
+const updateEnvFile = (key, value) => {
+  if (!fs.existsSync(envfilePath)) {
+    // env file doesn't exist so create it.
+    fs.writeFileSync(
+      envfilePath,
+      `ETH_RPC_ENDPIONT="https://rpc.goerli.mudit.blog/"`
+    );
+  }
+
+  const envFileString = fs.readFileSync(envfilePath, "utf8");
+  const newEnvFileString = editDotenv(envFileString, { [key]: value });
+
+  fs.writeFileSync(envfilePath, newEnvFileString);
+};
+
 // 3 random new wallets to use for raiden testing
 const wallets = [
   ethers.Wallet.createRandom(),
@@ -13,10 +48,6 @@ fs.readFile(passwordFilename, "utf8", (err, keystorePasswordRaw) => {
   if (err) throw err;
 
   const keystorePassword = keystorePasswordRaw.trim(); // Remove trailing whitespace from password
-
-  console.log(
-    "Add the following 3 lines to your .env file when running (remove the old variables if you have done this before)"
-  );
 
   wallets.map((wallet, walletIndex) => {
     wallet
@@ -42,8 +73,9 @@ fs.readFile(passwordFilename, "utf8", (err, keystorePasswordRaw) => {
           }
         );
 
-        // Print text to add to `.env` file to console:
-        console.log(`NODE${walletIndex + 1}_ETH_ADDRESS="${ethAddress}"`);
+        updateEnvFile(`NODE${walletIndex + 1}_ETH_ADDRESS`, ethAddress);
       });
   });
+
+  console.log("Your .env file should have been updated!");
 });

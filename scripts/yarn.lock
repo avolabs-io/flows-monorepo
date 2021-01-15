@@ -358,6 +358,14 @@ brorand@^1.0.1:
   resolved "https://registry.yarnpkg.com/brorand/-/brorand-1.1.0.tgz#12c25efe40a45e3c323eb8675a0a0ce57b22371f"
   integrity sha1-EsJe/kCkXjwyPrhnWgoM5XsiNx8=
 
+edit-dotenv@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/edit-dotenv/-/edit-dotenv-1.0.4.tgz#d57d69a017ecb73e74346f4e13f5d828ce2f9b18"
+  integrity sha512-te7XBIm7Z22JYln02y1T6L0RA2UioDKSxBUTVHBxPGyb7G9aq2QXc2ZaO1maMUBSjLk61M+hjgoUchU6XdARTA==
+  dependencies:
+    eol "~0.9.0"
+    escape-string-regexp "^1.0.5"
+
 elliptic@6.5.3:
   version "6.5.3"
   resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.5.3.tgz#cb59eb2efdaf73a0bd78ccd7015a62ad6e0f93d6"
@@ -370,6 +378,16 @@ elliptic@6.5.3:
     inherits "^2.0.1"
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.0"
+
+eol@~0.9.0:
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/eol/-/eol-0.9.1.tgz#f701912f504074be35c6117a5c4ade49cd547acd"
+  integrity sha512-Ds/TEoZjwggRoz/Q2O7SE3i4Jm66mqTDfmdHdq/7DKVk3bro9Q8h6WdXKdPqFLMoqxrDK5SVRzHVPOS6uuGtrg==
+
+escape-string-regexp@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
+  integrity sha1-G2HAViGQqN/2rjuyzwIAyhMLhtQ=
 
 ethers@^5.0.26:
   version "5.0.26"
