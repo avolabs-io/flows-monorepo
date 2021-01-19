@@ -63,9 +63,3 @@ Config hasura to autocomplete when typing in terminal [docs](https://hasura.io/d
 ```
 hasura completion zsh --file=\$HOME/.zprezto/modules/completion/external/src/\_hasura
 ```
-
-## NOTE:
-
-This code contains 3 additional migrations for each of the deployed environments. They are all identical (since they use symlinks), besides for things that may be different between them. Currently (December 22, 2020) the only difference is in the `remote_schema` for the graph and the `metadata.yaml` files. Keep this in mind when creating and updating migrations.
-
-To add a new migration, first add it with the local dev setup (the 'normal' hasura way). When you are happy you can link it to the different environments by copying it into the respective folder.
