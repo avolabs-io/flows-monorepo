@@ -1,0 +1,54 @@
+version: 2
+tables:
+- table:
+    schema: public
+    name: paymentTokens
+- table:
+    schema: public
+    name: streams
+- table:
+    schema: public
+    name: user
+actions:
+- name: createStream
+  definition:
+    handler: http://hasura-actions:9898/create-stream
+    output_type: Output
+    arguments:
+    - name: recipient
+      type: String!
+    - name: addressTokenStream
+      type: String!
+    - name: lengthOfPayment
+      type: Int!
+    - name: interval
+      type: Int!
+    - name: rate
+      type: String!
+    - name: deposit
+      type: String!
+    type: mutation
+    kind: synchronous
+custom_types:
+  input_objects:
+  - name: Input
+    fields:
+    - name: recipient
+      type: String!
+    - name: addressTokenStream
+      type: String!
+    - name: lengthOfPayment
+      type: Int!
+    - name: interval
+      type: Int!
+    - name: rate
+      type: String!
+    - name: deposit
+      type: String!
+  objects:
+  - name: Output
+    fields:
+    - name: success
+      type: Boolean!
+    - name: error
+      type: String
