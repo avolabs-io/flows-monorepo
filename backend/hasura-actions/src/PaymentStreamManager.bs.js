@@ -102,6 +102,34 @@ function recipientData_decode(v) {
         };
 }
 
+function body_in_decode(v) {
+  var dict = Js_json.classify(v);
+  if (typeof dict === "number") {
+    return Decco.error(undefined, "Not an object", v);
+  }
+  if (dict.TAG !== /* JSONObject */2) {
+    return Decco.error(undefined, "Not an object", v);
+  }
+  var input = recipientData_decode(Belt_Option.getWithDefault(Js_dict.get(dict._0, "input"), null));
+  if (input.TAG === /* Ok */0) {
+    return {
+            TAG: /* Ok */0,
+            _0: {
+              input: input._0
+            }
+          };
+  }
+  var e = input._0;
+  return {
+          TAG: /* Error */1,
+          _0: {
+            path: ".input" + e.path,
+            message: e.message,
+            value: e.value
+          }
+        };
+}
+
 function body_out_encode(v) {
   return Js_dict.fromArray([
               [
@@ -116,12 +144,12 @@ function body_out_encode(v) {
 }
 
 var createStream = Serbet.endpoint(undefined, {
-      path: "/icap-reward-breakdown",
+      path: "/create-stream",
       verb: /* POST */1,
       handler: (function (req) {
-          var __x = Curry._1(req.requireBody, recipientData_decode);
+          var __x = Curry._1(req.requireBody, body_in_decode);
           return __x.then(function (body) {
-                      console.log("the body is:", body);
+                      console.log("The result is", body);
                       return Promise.resolve({
                                   TAG: /* OkJson */4,
                                   _0: body_out_encode({
@@ -134,6 +162,7 @@ var createStream = Serbet.endpoint(undefined, {
     });
 
 exports.recipientData_decode = recipientData_decode;
+exports.body_in_decode = body_in_decode;
 exports.body_out_encode = body_out_encode;
 exports.createStream = createStream;
 /* createStream Not a pure module */

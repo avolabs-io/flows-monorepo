@@ -8,6 +8,9 @@ type recipientData = {
   rate: string,
   deposit: string,
 }
+@decco.decode
+type body_in = {input: recipientData}
+
 @decco.encode
 type body_out = {
   success: bool,
@@ -16,12 +19,15 @@ type body_out = {
 
 let createStream = Serbet.endpoint({
   verb: POST,
-  path: "/icap-reward-breakdown",
-  handler: req => req.requireBody(recipientData_decode)->Js.Promise.then_(body => {
-      Js.log2("the body is:", body)
+  path: "/create-stream",
+  handler: req =>
+    req.requireBody(value => {
+      body_in_decode(value)
+    })->Js.Promise.then_(body => {
+      Js.log2("The result is", body)
+
       {
-        open Serbet.Endpoint
-        OkJson({success: true, error: None}->body_out_encode)
+        Serbet.Endpoint.OkJson({success: true, error: None}->body_out_encode)
       }->Js.Promise.resolve
     }, _),
 })
