@@ -3,7 +3,6 @@
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
-import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as ApolloClient__React_Hooks_UseQuery from "rescript-apollo-client/src/@apollo/client/react/hooks/ApolloClient__React_Hooks_UseQuery.bs.js";
 
 var Raw = {};
@@ -105,23 +104,6 @@ var UserQuery = {
   useLazyWithVariables: UserQuery_useLazyWithVariables
 };
 
-function wynOptionMap(optionalValue, functionThatProcessesData) {
-  if (optionalValue !== undefined) {
-    return Caml_option.some(Curry._1(functionThatProcessesData, Caml_option.valFromOption(optionalValue)));
-  }
-  
-}
-
-function multiplyBy5IfExists(optionalNumber) {
-  return wynOptionMap(optionalNumber, (function (value) {
-                return String(value) + "is the value";
-              }));
-}
-
-console.log("1", multiplyBy5IfExists(undefined));
-
-console.log("2", multiplyBy5IfExists(1));
-
 function TestQuery(Props) {
   var queryResult = Curry.app(use, [
         undefined,
@@ -168,8 +150,6 @@ var make = TestQuery;
 
 export {
   UserQuery ,
-  wynOptionMap ,
-  multiplyBy5IfExists ,
   make ,
   
 }

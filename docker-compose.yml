@@ -1,8 +1,7 @@
 version: "3"
-
 services:
   raiden1:
-    image: raidennetwork/raiden:v1.2.0
+    image: ${RAIDEN_NODE_VERSION:-raidennetwork/raiden:v1.2.0}
     container_name: raiden1
     restart: unless-stopped
     command: --address "${NODE1_ETH_ADDRESS}" --keystore-path /raiden/keystore --password-file /raiden/password.txt --eth-rpc-endpoint "${ETH_RPC_ENDPIONT}" --network-id goerli --environment-type development --api-address "0.0.0.0:5001" --pathfinding-service-address "https://pfs-goerli.services-dev.raiden.network" --accept-disclaimer
@@ -15,7 +14,7 @@ services:
       - default
 
   raiden2:
-    image: raidennetwork/raiden:v1.2.0
+    image: ${RAIDEN_NODE_VERSION:-raidennetwork/raiden:v1.2.0}
     container_name: raiden2
     restart: unless-stopped
     command: --address "${NODE2_ETH_ADDRESS}" --keystore-path /raiden/keystore --password-file /raiden/password.txt --eth-rpc-endpoint "${ETH_RPC_ENDPIONT}" --network-id goerli --environment-type development --api-address "0.0.0.0:5001" --pathfinding-service-address "https://pfs-goerli.services-dev.raiden.network" --accept-disclaimer
@@ -28,7 +27,7 @@ services:
       - default
 
   raiden3:
-    image: raidennetwork/raiden:v1.2.0
+    image: ${RAIDEN_NODE_VERSION:-raidennetwork/raiden:v1.2.0}
     container_name: raiden3
     restart: unless-stopped
     command: --address "${NODE3_ETH_ADDRESS}" --keystore-path /raiden/keystore --password-file /raiden/password.txt --eth-rpc-endpoint "${ETH_RPC_ENDPIONT}" --network-id goerli --environment-type development --api-address "0.0.0.0:5001" --pathfinding-service-address "https://pfs-goerli.services-dev.raiden.network" --accept-disclaimer
