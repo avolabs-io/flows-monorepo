@@ -31,3 +31,4 @@ And to delete all raiden metadata (usually not needed):
 ```bash
 make stop-raiden-hard
 ```
+**Note**: if you want to use a different version of raiden node set the environment variable `RAIDEN_NODE_VERSION` to the version you want.

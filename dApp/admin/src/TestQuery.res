@@ -7,20 +7,6 @@ query ($usersName: String!) {
   }
 }`)
 
-let wynOptionMap = (optionalValue, functionThatProcessesData) => {
-  switch optionalValue {
-  | Some(actualValue) => Some(actualValue->functionThatProcessesData)
-  | None => None
-  }
-}
-let multiplyBy5IfExists = optionalNumber => {
-  wynOptionMap(optionalNumber, value => value->string_of_int ++ "is the value")
-}
-
-Js.log2("1", multiplyBy5IfExists(None))
-
-Js.log2("2", multiplyBy5IfExists(Some(1)))
-
 @react.component
 let make = () => {
   let queryResult = UserQuery.use(UserQuery.makeVariables(~usersName="Jason", ()))
