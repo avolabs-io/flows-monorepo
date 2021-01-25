@@ -5,7 +5,7 @@ import Link from "@docusaurus/Link";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import styles from "./styles.module.css";
-import FAQs from "../components/fAQs/faqs";
+import FAQs from "../components/FAQs/faqs";
 
 const features = [
   {
