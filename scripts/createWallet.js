@@ -73,7 +73,7 @@ fs.readFile(passwordFilename, "utf8", async (err, keystorePasswordRaw) => {
           }
         );
 
-        updateEnvFile(`TESTING_NODE${walletIndex + 1}_ETH_ADDRESS`, ethAddress);
+        updateEnvFile(`NODE${walletIndex + 1}_ETH_ADDRESS`, ethAddress);
       });
   });
 
@@ -102,14 +102,12 @@ fs.readFile(passwordFilename, "utf8", async (err, keystorePasswordRaw) => {
     ).wait();
     console.log("sent eth to 3rd wallet");
   } catch (error) {
-    console.log("\n\n\nThis is the send eth error\n\n\n\n", error);
+    console.log("This may not have setup all your wallets correctly. Please take note of error: \n", error);
   }
 
   // You can also use an ENS name for the contract address
   const testTokenAddress = "0xC563388e2e2fdD422166eD5E76971D11eD37A466";
 
-  // The ERC-20 Contract ABI, which is a common contract interface
-  // for tokens (this is the Human-Readable ABI format)
   const testTokenAbi = [
     "function mintFor(uint numTokensToSend, address mintTarget)",
   ];
@@ -145,7 +143,7 @@ fs.readFile(passwordFilename, "utf8", async (err, keystorePasswordRaw) => {
     ).wait();
     console.log("created test token for 3rd wallet");
   } catch (error) {
-    console.log("\n\n\nThis is the create test token error\n\n\n\n", error);
+    console.log("This may not have setup all your wallets correctly. Please take note of error: \n", error);
   }
 
   console.log("Your .env file should have been updated!");
