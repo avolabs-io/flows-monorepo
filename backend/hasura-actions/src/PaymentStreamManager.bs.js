@@ -3,10 +3,12 @@
 
 var Curry = require("bs-platform/lib/js/curry.js");
 var Decco = require("decco/src/Decco.bs.js");
+var Query = require("./Query.bs.js");
 var Serbet = require("serbet/src/Serbet.bs.js");
 var Js_dict = require("bs-platform/lib/js/js_dict.js");
 var Js_json = require("bs-platform/lib/js/js_json.js");
 var Belt_Option = require("bs-platform/lib/js/belt_Option.js");
+var ClientConfig = require("./gql/ClientConfig.bs.js");
 
 function recipientData_decode(v) {
   var dict = Js_json.classify(v);
@@ -143,26 +145,61 @@ function body_out_encode(v) {
             ]);
 }
 
+var gqlClient = ClientConfig.createInstance({
+      "x-hasura-admin-secret": "testing"
+    }, "http://graphql-engine:8080/v1/graphql", undefined);
+
 var createStream = Serbet.endpoint(undefined, {
       path: "/create-stream",
       verb: /* POST */1,
       handler: (function (req) {
           var __x = Curry._1(req.requireBody, body_in_decode);
-          return __x.then(function (body) {
-                      console.log("The result is", body);
-                      return Promise.resolve({
-                                  TAG: /* OkJson */4,
-                                  _0: body_out_encode({
+          return __x.then(function (param) {
+                      var match = param.input;
+                      console.log("TODO: we must still make the deposit here " + match.deposit);
+                      var __x = Curry.app(gqlClient.reason_mutate, [
+                            {
+                              query: Query.CreatePaymentStream.query,
+                              Raw: Query.CreatePaymentStream.Raw,
+                              parse: Query.CreatePaymentStream.parse,
+                              serialize: Query.CreatePaymentStream.serialize,
+                              serializeVariables: Query.CreatePaymentStream.serializeVariables
+                            },
+                            undefined,
+                            undefined,
+                            undefined,
+                            undefined,
+                            undefined,
+                            undefined,
+                            undefined,
+                            undefined,
+                            undefined,
+                            Query.CreatePaymentStream.makeVariables(match.rate, match.interval, match.lengthOfPayment, match.recipient, 1, "TODO: Pending DepositCreation", match.addressTokenStream, undefined)
+                          ]);
+                      return __x.then(function (result) {
+                                  var tmp;
+                                  tmp = result.TAG === /* Ok */0 ? ({
                                         success: true,
                                         error: undefined
-                                      })
+                                      }) : ({
+                                        success: false,
+                                        error: result._0.message
+                                      });
+                                  return Promise.resolve({
+                                              TAG: /* OkJson */4,
+                                              _0: body_out_encode(tmp)
+                                            });
                                 });
                     });
         })
     });
 
+var ApolloQueryResult;
+
+exports.ApolloQueryResult = ApolloQueryResult;
 exports.recipientData_decode = recipientData_decode;
 exports.body_in_decode = body_in_decode;
 exports.body_out_encode = body_out_encode;
+exports.gqlClient = gqlClient;
 exports.createStream = createStream;
-/* createStream Not a pure module */
+/* gqlClient Not a pure module */

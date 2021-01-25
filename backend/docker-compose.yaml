@@ -1,11 +1,11 @@
 version: "3.6"
 services:
   hasura-actions:
-    build: ../hasura-actions
+    build: ./hasura-actions
     volumes:
       [
-        "../hasura-actions/src:/app/src",
-        "../hasura-actions/node_modules:/app/node_modules",
+        "./hasura-actions/src:/app/src",
+        "./hasura-actions/node_modules:/app/node_modules",
       ]
     ports:
       - "${ACTIONS_PORT_EXTERNAL}:${ACTIONS_PORT}"
@@ -27,14 +27,14 @@ services:
   graphql-engine:
     # name: graphql-engine
     container_name: graphql-engine
-    image: hasura/graphql-engine:v1.3.2
+    image: hasura/graphql-engine:v1.3.3
     ports:
       - "${HASURA_EXTERNAL_PORT}:8080"
     volumes:
-      - ./migrations:/hasura-migrations
+      - ./hasura/migrations:/hasura-migrations
     depends_on:
       - "postgres"
-      # - "hasura-actions"
+      - "hasura-actions"
     restart: always
     environment:
       HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres

@@ -1,7 +1,3 @@
-.PHONY: start
-start:
-	docker-compose up -d
-
 .PHONY: start-dev
 rebuild-dev:
 	docker-compose build
@@ -9,8 +5,8 @@ rebuild-dev:
 .PHONY: start-dev
 start-dev:
 	docker-compose -p hasura up -d
-	./waitForHasuraPort.sh
-	hasura migrate apply --envfile .env
+	./hasura/waitForHasuraPort.sh
+	cd hasura && hasura migrate apply --envfile ../.env
 
 .PHONY: hasura-logs
 hasura-logs:
