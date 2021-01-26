@@ -7,9 +7,17 @@
     "start": "docusaurus start",
     "build": "docusaurus build",
     "swizzle": "docusaurus swizzle",
-    "deploy": "docusaurus deploy",
+    "deploy-doc": "docusaurus deploy",
     "serve": "docusaurus serve",
-    "clear": "docusaurus clear"
+    "clear": "docusaurus clear",
+    "make-cname-staging": "echo 'staging.flows.finance' >static/CNAME",
+    "make-cname-production": "echo 'flows.finance' >static/CNAME",
+    "switch-to-staging": "git remote set-url origin https://github.com/avolabs-io/flows-monorepo-staging.git",
+    "switch-to-production": "git remote set-url origin https://github.com/avolabs-io/flows-monorepo.git",
+    "predeploy": "yarn build",
+    "deploy": "gh-pages -d build",
+    "deploy-to-staging": "yarn make-cname-staging && yarn predeploy && yarn switch-to-staging && yarn deploy && yarn switch-to-production",
+    "deploy-to-production": "yarn make-cname-production && yarn predeploy && yarn switch-to-production && yarn deploy"
   },
   "dependencies": {
     "@docusaurus/core": "2.0.0-alpha.70",
@@ -30,5 +38,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "gh-pages": "^3.1.0"
   }
 }
