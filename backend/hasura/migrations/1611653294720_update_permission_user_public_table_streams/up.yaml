@@ -1,0 +1,24 @@
+- args:
+    permission:
+      allow_aggregations: false
+      backend_only: false
+      columns:
+      - id
+      - recipient
+      - tokenAddress
+      - numberOfPayments
+      - start
+      - interval
+      - amount
+      - numberOfPaymentsMade
+      - state
+      computed_fields: []
+      filter:
+        recipient:
+          _eq: X-Hasura-User-Id
+      limit: null
+    role: user
+    table:
+      name: streams
+      schema: public
+  type: create_select_permission

@@ -1,0 +1,15 @@
+- args:
+    permission:
+      backend_only: false
+      columns:
+      - description
+      - name
+      filter:
+        ethAddress:
+          _eq: X-Hasura-User-Id
+      set: {}
+    role: user
+    table:
+      name: user
+      schema: public
+  type: create_update_permission
