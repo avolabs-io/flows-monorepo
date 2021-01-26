@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[18],{89:function(n){n.exports=JSON.parse('{"allTagsPath":"/flows-monorepo/blog/tags","slug":"funding","name":"funding","count":1,"permalink":"/flows-monorepo/blog/tags/funding"}')}}]);

@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[10],{81:function(e){e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"Flows Finance receives a grant from the Raiden Trust","permalink":"/flows-monorepo/blog/flows-finance-receives-a-raiden-grant"}]}')}}]);
