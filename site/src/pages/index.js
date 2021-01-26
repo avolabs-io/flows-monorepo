@@ -20,11 +20,11 @@ const features = [
   },
   {
     title: "Real time finance",
-    imageUrl: "img/illustrations/features/prism.svg",
+    imageUrl: "img/illustrations/features/hour-glass.svg",
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        Lorem ipsum dolor sit amet, consectetur adipiscing <code>docs</code>{" "}
+        elit, sed do eius
       </>
     ),
   },
@@ -33,8 +33,7 @@ const features = [
     imageUrl: "img/illustrations/features/rect.svg",
     description: (
       <>
-        Flows.Finance is a silky smooth dApp that does great things allowing
-        users to add value to achieving transactions
+        Flows.Finance is a silky smooth dApp that allows users to add value to
       </>
     ),
   },
@@ -43,7 +42,7 @@ const features = [
 function Feature({ imageUrl, title, description }) {
   const imgUrl = useBaseUrl(imageUrl);
   return (
-    <div className={clsx("col col--4", styles.feature)}>
+    <div className={clsx("col col--4 text--center", styles.feature)}>
       {imgUrl && (
         <div className="text--center">
           <img className={styles.featureImage} src={imgUrl} alt={title} />
@@ -96,21 +95,18 @@ function Home() {
           </section>
         )}
         <div className="container-fluid hero moving-background-gradient">
-          <div className={clsx("col col--12", styles.feature)}>
-            <div className="text--center">
-              <div className="fade-in">
-                <img
-                  className={styles.featureImage}
-                  src="img/illustrations/raiden-network.svg"
-                  alt="raiden"
-                />
-                <p className="hero__subtitle">Powered by the Raiden network</p>
-                <p className="hero__subtitle">
-                  {" "}
-                  Flows.Finance is built on the Raiden Network, allowing for
-                  lightening fast affordable transactions
-                </p>
-              </div>
+          <div className={clsx("col col--12", styles.raiden)}>
+            <div className="text--center fade-in">
+              <img
+                className={styles.featureImage}
+                src="img/illustrations/raiden-network.svg"
+                alt="raiden"
+              />
+              <h3>Powered by the Raiden network</h3>
+              <p>
+                Flows.Finance is built on the Raiden Network, allowing for
+                lightening fast affordable transactions
+              </p>
             </div>
           </div>
         </div>

@@ -33,6 +33,14 @@
   width: 100%;
 }
 
+.raiden {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  width: 100%;
+}
+
 .featureImage {
   height: 200px;
   width: 200px;
