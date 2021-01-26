@@ -1,8 +1,8 @@
 ---
-id: template
-title: Template
-sidebar_label: template
-slug: /
+id: resource-list
+title: Resource List
+sidebar_label: Resource List
+slug: /resource-list
 ---
 
 These docs are under active development
