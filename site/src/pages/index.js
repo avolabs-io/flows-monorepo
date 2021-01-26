@@ -94,7 +94,10 @@ function Home() {
             </div>
           </section>
         )}
-        <div className="container-fluid hero moving-background-gradient">
+        <div
+          className="container-fluid hero moving-background-gradient"
+          id="raiden-container"
+        >
           <div className={clsx("col col--12", styles.raiden)}>
             <div className="text--center fade-in">
               <img
@@ -104,8 +107,16 @@ function Home() {
               />
               <h3>Powered by the Raiden network</h3>
               <p>
-                Flows Finance is built on the Raiden Network, allowing for
-                lightening fast, low cost transactions
+                Flows Finance is built on the{" "}
+                <a
+                  className={styles.link}
+                  href="https://raiden.network"
+                  rel="noopenner noreferrer"
+                  target="_blank"
+                >
+                  Raiden Network
+                </a>
+                , allowing for lightening fast, low cost transactions
               </p>
             </div>
           </div>

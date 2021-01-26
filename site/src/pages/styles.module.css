@@ -46,3 +46,12 @@
   width: 200px;
   margin: auto;
 }
+
+.link {
+  color: inherit !important;
+  text-decoration: underline;
+}
+
+.link:hover {
+  opacity: 0.7;
+}
