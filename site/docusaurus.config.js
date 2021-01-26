@@ -13,7 +13,7 @@ module.exports = {
       title: "Flows Finance",
       logo: {
         alt: "Flows Finance logo",
-        src: "img/snake_temp.png",
+        src: "img/flows_finance_logo.svg",
       },
       items: [
         {
@@ -24,17 +24,17 @@ module.exports = {
         },
         { to: "blog", label: "Blog", position: "left" },
         {
-          href: "#",
+          href: "https://discord.gg/kcJ63expb8",
           label: "Discord",
           position: "right",
         },
         {
-          href: "#",
+          href: "https://twitter.com/financeflows",
           label: "Twitter",
           position: "right",
         },
         {
-          href: "#",
+          href: "https://github.com/avolabs-io/flows-monorepo",
           label: "GitHub",
           position: "right",
         },
@@ -61,11 +61,11 @@ module.exports = {
           items: [
             {
               label: "Discord",
-              href: "https://discordapp.com/invite/flows_finance",
+              href: "https://discord.gg/kcJ63expb8",
             },
             {
               label: "Twitter",
-              href: "https://twitter.com/flows_finance",
+              href: "https://twitter.com/financeflows",
             },
           ],
         },

@@ -9,7 +9,7 @@ import FAQs from "../components/fAQs/faqs";
 
 const features = [
   {
-    title: "Easy to Use",
+    title: "Continuous payments",
     imageUrl: "img/illustrations/features/square.svg",
     description: (
       <>
@@ -19,22 +19,22 @@ const features = [
     ),
   },
   {
-    title: "Real time finance",
-    imageUrl: "img/illustrations/features/prism.svg",
+    title: "Real-time finance",
+    imageUrl: "img/illustrations/features/hour-glass.svg",
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        The possibilities of value transfer in real time opens a whole new world
+        of finance.
       </>
     ),
   },
   {
-    title: "Another great point",
+    title: "Privacy preserving",
     imageUrl: "img/illustrations/features/rect.svg",
     description: (
       <>
-        Flows.Finance is a silky smooth dApp that does great things allowing
-        users to add value to achieving transactions
+        Flows Finance allows for private transfers without the need to trust
+        other parties
       </>
     ),
   },
@@ -43,7 +43,7 @@ const features = [
 function Feature({ imageUrl, title, description }) {
   const imgUrl = useBaseUrl(imageUrl);
   return (
-    <div className={clsx("col col--4", styles.feature)}>
+    <div className={clsx("col col--4 text--center", styles.feature)}>
       {imgUrl && (
         <div className="text--center">
           <img className={styles.featureImage} src={imgUrl} alt={title} />
@@ -78,7 +78,7 @@ function Home() {
               )}
               to={useBaseUrl("docs/")}
             >
-              Get Started
+              Read more
             </Link>
           </div>
         </div>
@@ -95,22 +95,30 @@ function Home() {
             </div>
           </section>
         )}
-        <div className="container-fluid hero moving-background-gradient">
-          <div className={clsx("col col--12", styles.feature)}>
-            <div className="text--center">
-              <div className="fade-in">
-                <img
-                  className={styles.featureImage}
-                  src="img/illustrations/raiden-network.svg"
-                  alt="raiden"
-                />
-                <p className="hero__subtitle">Powered by the Raiden network</p>
-                <p className="hero__subtitle">
-                  {" "}
-                  Flows.Finance is built on the Raiden Network, allowing for
-                  lightening fast affordable transactions
-                </p>
-              </div>
+        <div
+          className="container-fluid hero moving-background-gradient"
+          id="raiden-container"
+        >
+          <div className={clsx("col col--12", styles.raiden)}>
+            <div className="text--center fade-in">
+              <img
+                className={styles.featureImage}
+                src="img/illustrations/raiden-network.svg"
+                alt="raiden"
+              />
+              <h3>Powered by the Raiden network</h3>
+              <p>
+                Flows Finance is built on the{" "}
+                <a
+                  className={styles.link}
+                  href="https://raiden.network"
+                  rel="noopenner noreferrer"
+                  target="_blank"
+                >
+                  Raiden Network
+                </a>
+                , allowing for lightening fast, low cost transactions
+              </p>
             </div>
           </div>
         </div>
