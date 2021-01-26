@@ -1,7 +1,7 @@
 module.exports = {
   title: "Flows Finance",
   tagline: "Stream money privately",
-  url: "https://flows.finance",
+  url: "https://dev.flows.finance",
   baseUrl: "/",
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
@@ -47,12 +47,12 @@ module.exports = {
           title: "Docs",
           items: [
             {
-              label: "Style Guide",
+              label: "Intro",
               to: "docs/",
             },
             {
-              label: "Second Doc",
-              to: "docs/doc2/",
+              label: "Raiden Node",
+              to: "docs/raiden-node/",
             },
           ],
         },
