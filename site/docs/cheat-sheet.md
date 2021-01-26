@@ -1,8 +1,8 @@
 ---
-id: doc1
+id: cheat-sheet
 title: Documentation cheat sheet
 sidebar_label: Documentation cheat sheet
-slug: /
+slug: /cheat-sheet
 ---
 
 You can write content using [GitHub-flavored Markdown syntax](https://github.github.com/gfm/).
