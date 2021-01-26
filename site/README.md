@@ -19,5 +19,9 @@ yarn build
 ## Deployment
 
 ```console
-GIT_USER=<Your GitHub username> USE_SSH=true yarn deploy
+yarn deploy-to-staging
+```
+
+```console
+yarn deploy-to-production
 ```
