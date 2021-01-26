@@ -34,7 +34,7 @@ const features = [
     description: (
       <>
         Flows Finance allows for private transfers without the need to trust
-        other parties
+        other parties.
       </>
     ),
   },
