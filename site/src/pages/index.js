@@ -104,8 +104,8 @@ function Home() {
               />
               <h3>Powered by the Raiden network</h3>
               <p>
-                Flows.Finance is built on the Raiden Network, allowing for
-                lightening fast affordable transactions
+                Flows Finance is built on the Raiden Network, allowing for
+                lightening fast, low cost transactions
               </p>
             </div>
           </div>
