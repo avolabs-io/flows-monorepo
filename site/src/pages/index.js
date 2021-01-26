@@ -9,7 +9,7 @@ import FAQs from "../components/fAQs/faqs";
 
 const features = [
   {
-    title: "Easy to Use",
+    title: "Continuous payments",
     imageUrl: "img/illustrations/features/square.svg",
     description: (
       <>
@@ -19,21 +19,22 @@ const features = [
     ),
   },
   {
-    title: "Real time finance",
+    title: "Real-time finance",
     imageUrl: "img/illustrations/features/hour-glass.svg",
     description: (
       <>
-        Lorem ipsum dolor sit amet, consectetur adipiscing <code>docs</code>{" "}
-        elit, sed do eius
+        The possibilities of value transfer in real time opens a whole new world
+        of finance.
       </>
     ),
   },
   {
-    title: "Another great point",
+    title: "Privacy preserving",
     imageUrl: "img/illustrations/features/rect.svg",
     description: (
       <>
-        Flows.Finance is a silky smooth dApp that allows users to add value to
+        Flows Finance allows for private transfers without the need to trust
+        other parties
       </>
     ),
   },
@@ -77,7 +78,7 @@ function Home() {
               )}
               to={useBaseUrl("docs/")}
             >
-              Get Started
+              Read more
             </Link>
           </div>
         </div>
