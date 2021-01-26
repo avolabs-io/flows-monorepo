@@ -1,0 +1,6 @@
+- args:
+    cascade: false
+    read_only: false
+    sql: alter table "public"."paymentTokens" add foreign key ("name") references
+      "public"."user"("ethAddress") on update restrict on delete restrict;
+  type: run_sql

@@ -3,23 +3,6 @@ tables:
 - table:
     schema: public
     name: paymentTokens
-  insert_permissions:
-  - role: public
-    permission:
-      check: {}
-      columns:
-      - tokenAddress
-      - name
-      - description
-      backend_only: false
-  select_permissions:
-  - role: public
-    permission:
-      columns:
-      - description
-      - name
-      - tokenAddress
-      filter: {}
 - table:
     schema: public
     name: streams

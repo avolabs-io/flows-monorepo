@@ -11,9 +11,8 @@
     "start": "node ./src/index.js",
     "watch": "nodemon ./src/index.js",
     "test": "nyc mocha ./src/Test.bs.js",
-    "generate-db-schema": "get-graphql-schema http://localhost:8080/v1/graphql -j >| db_schema.json",
-    "generate-graph-schema": "get-graphql-schema http://127.0.0.1:8000/subgraphs/name/avolabs-io/icap_system -j >| graph_schema.json"
-  },
+    "updateSchema": "get-graphql-schema http://localhost:8080/v1/graphql -h 'x-hasura-admin-secret=testing' -j > graphql_schema.json"
+    },
   "devDependencies": {
     "@reasonml-community/graphql-ppx": "^1.0.2",
     "bs-let": "^0.1.16",
