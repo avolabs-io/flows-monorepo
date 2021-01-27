@@ -22,7 +22,7 @@ The _Raiden Trust_ is an independant entity to the Raiden network founded in Apr
 
 :::
 
-The team at [Avo Labs GmbH](https://avolabs.io) took part in the Gitcoin Protect Privacy hackathon where they brainstormed ouropayments a privacy preserving payment stream service. Inspired by [Sablier](https://sablier.finance) and the concept of real-time finance but detered by the high gas costs and lack of privacy the team built ouropayments a truly private payment stream built on the Raiden Network.
+The team at [Avo Labs GmbH](https://avolabs.io) took part in the Gitcoin Protect Privacy hackathon where they brainstormed ouropayments a privacy preserving payment stream service. Inspired by [Sablier](https://sablier.finance) and the concept of real-time finance, ouropayments tackled the issue of high gas costs and lack of privacy on the ethereum mainnet, through building on the Raiden Network.
 
 After winning at the hackathon with the Flows Finance proof of concept the team went through a rigorous review process with the Raiden Trustees where we received a grant to build the project further.
 
