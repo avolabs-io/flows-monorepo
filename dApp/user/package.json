@@ -4,12 +4,42 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "re:build": "bsb -make-world -clean-world",
+    "re:watch": "bsb -make-world -clean-world -w",
+    "start": "react-scripts start",
+    "updateSchema": "get-graphql-schema http://localhost:8080/v1/graphql -h 'x-hasura-admin-secret=testing' -j > graphql_schema.json"
   },
   "author": "",
   "license": "ISC",
+  "dependencies": {
+    "@apollo/client": "^3.3.7",
+    "bs-css": "^13.3.0",
+    "bs-css-emotion": "^2.3.0",
+    "bs-moment": "^0.6.0",
+    "react": "^17.0.0",
+    "react-dom": "^17.0.0",
+    "subscriptions-transport-ws": "^0.9.18"
+  },
   "devDependencies": {
+    "@reasonml-community/graphql-ppx": "^1.0.2",
     "@truffle/hdwallet-provider": "^1.2.1",
+    "bs-platform": "^8.4.2",
+    "get-graphql-schema": "^2.1.2",
+    "react-scripts": "^4.0.1",
+    "reason-react": "^0.9.1",
+    "rescript-apollo-client": "^1.0.0",
     "web3": "^1.3.3"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
