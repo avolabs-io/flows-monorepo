@@ -3,12 +3,67 @@ tables:
 - table:
     schema: public
     name: paymentTokens
+  select_permissions:
+  - role: user
+    permission:
+      columns:
+      - tokenAddress
+      - name
+      - description
+      filter: {}
 - table:
     schema: public
     name: streams
+  select_permissions:
+  - role: user
+    permission:
+      columns:
+      - id
+      - recipient
+      - tokenAddress
+      - numberOfPayments
+      - start
+      - interval
+      - amount
+      - numberOfPaymentsMade
+      - state
+      filter:
+        recipient:
+          _eq: X-Hasura-User-Id
 - table:
     schema: public
     name: user
+  insert_permissions:
+  - role: user
+    permission:
+      check:
+        ethAddress:
+          _eq: X-Hasura-User-Id
+      columns:
+      - ethAddress
+      - name
+      - description
+      backend_only: false
+  select_permissions:
+  - role: user
+    permission:
+      columns:
+      - description
+      - ethAddress
+      - name
+      filter:
+        ethAddress:
+          _eq: X-Hasura-User-Id
+  update_permissions:
+  - role: user
+    permission:
+      columns:
+      - description
+      - name
+      filter:
+        ethAddress:
+          _eq: X-Hasura-User-Id
+      check: null
 actions:
 - name: createStream
   definition:

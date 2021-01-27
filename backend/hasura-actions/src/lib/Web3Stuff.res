@@ -24,9 +24,28 @@ module PrivateKeyProvider = {
 module Web3 = {
   type t
 
+  @new @module external make: unit => t = "web3";
   @new @module external new_: provider => t = "web3"
+
   @send @scope("eth")
   external sign: (t, string, string) => Js.Promise.t<string> = "sign"
+
+  @send @scope(("eth", "accounts"))
+  external ecRecover: (t, string, string) => string = "recover";
+
+// type ethAddress = string;
+
+// type ethersBigNumber = {toString: (. unit) => string};
+// type rawProvider;
+
+// type web3Library = {
+//   getBalance: (. ethAddress) => Js.Promise.t(option(ethersBigNumber)),
+//   getSigner: (. ethAddress) => web3Library,
+//   provider: rawProvider,
+// };
+
+// [@bs.module "ethers"] [@bs.scope "providers"] [@bs.new]
+// external makeJsonRpcProvider: string => web3Library = "JsonRpcProvider";
 }
 
 module EthereumAbi = {
