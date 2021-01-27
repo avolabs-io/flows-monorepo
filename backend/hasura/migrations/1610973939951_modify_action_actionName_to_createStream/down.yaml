@@ -1,0 +1,3 @@
+- args:
+    name: createStream
+  type: drop_action

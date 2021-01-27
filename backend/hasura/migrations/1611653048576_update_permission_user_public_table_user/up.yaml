@@ -1,0 +1,17 @@
+- args:
+    permission:
+      allow_upsert: true
+      backend_only: false
+      check:
+        ethAddress:
+          _eq: X-Hasura-User-Id
+      columns:
+      - ethAddress
+      - name
+      - description
+      set: {}
+    role: user
+    table:
+      name: user
+      schema: public
+  type: create_insert_permission

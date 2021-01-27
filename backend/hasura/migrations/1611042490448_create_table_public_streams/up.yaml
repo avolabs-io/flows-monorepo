@@ -1,0 +1,15 @@
+- args:
+    cascade: false
+    read_only: false
+    sql: CREATE TABLE "public"."streams"("id" serial NOT NULL, "recipient" text NOT
+      NULL, "tokenAddress" text NOT NULL, "numberOfPayments" integer, "start" integer
+      NOT NULL, "interval" integer NOT NULL, "amount" text NOT NULL, "numberOfPaymentsMade"
+      integer NOT NULL, "state" text NOT NULL, PRIMARY KEY ("id") , FOREIGN KEY ("recipient")
+      REFERENCES "public"."user"("ethAddress") ON UPDATE restrict ON DELETE restrict,
+      FOREIGN KEY ("tokenAddress") REFERENCES "public"."paymentTokens"("tokenAddress")
+      ON UPDATE restrict ON DELETE restrict, UNIQUE ("id"));
+  type: run_sql
+- args:
+    name: streams
+    schema: public
+  type: add_existing_table_or_view

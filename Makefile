@@ -17,3 +17,8 @@ stop-raiden:
 .PHONY:stop-raiden-hard
 stop-raiden-hard:
 	docker-compose down -v
+
+.PHONY:setup-env
+setup-env:
+	cd scripts; yarn
+	cd scripts; yarn setup-wallets
