@@ -6,7 +6,6 @@ import * as Ethers from "ethers";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Core from "@web3-react/core";
 import * as Eth$FlowsUserApp from "./Eth.bs.js";
-import * as ReasonReactRouter from "reason-react/src/ReasonReactRouter.bs.js";
 import * as JsPromise$FlowsUserApp from "./Js.Promise/JsPromise.bs.js";
 import * as Web3Connectors$FlowsUserApp from "../Login/Web3Connectors.bs.js";
 
@@ -19,177 +18,22 @@ function getLibrary(provider) {
 }
 
 var initialState = {
-  nonUrlState: /* NoExtraState */2,
-  ethState: /* Disconnected */0,
-  config: {
-    stewardContractAddress: undefined,
-    stewardAbi: undefined
-  }
+  ethState: /* Disconnected */0
 };
 
-function reducer(_prevState, _action) {
-  while(true) {
-    var action = _action;
-    var prevState = _prevState;
-    if (typeof action === "number") {
-      switch (action) {
-        case /* GoToDepositUpdate */1 :
-            var match = prevState.ethState;
-            if (match) {
-              return {
-                      nonUrlState: /* UpdateDepositScreen */1,
-                      ethState: prevState.ethState,
-                      config: prevState.config
-                    };
-            } else {
-              return {
-                      nonUrlState: {
-                        TAG: /* LoginScreen */0,
-                        _0: action
-                      },
-                      ethState: prevState.ethState,
-                      config: prevState.config
-                    };
-            }
-        case /* GoToUserVerification */2 :
-            var match$1 = prevState.ethState;
-            if (match$1) {
-              return {
-                      nonUrlState: /* UserVerificationScreen */0,
-                      ethState: prevState.ethState,
-                      config: prevState.config
-                    };
-            } else {
-              return {
-                      nonUrlState: {
-                        TAG: /* LoginScreen */0,
-                        _0: action
-                      },
-                      ethState: prevState.ethState,
-                      config: prevState.config
-                    };
-            }
-        case /* NoAction */0 :
-        case /* ClearNonUrlState */3 :
-            return {
-                    nonUrlState: /* NoExtraState */2,
-                    ethState: prevState.ethState,
-                    config: prevState.config
-                  };
-        case /* Logout */4 :
-            return {
-                    nonUrlState: /* NoExtraState */2,
-                    ethState: /* Disconnected */0,
-                    config: prevState.config
-                  };
-        
-      }
-    } else {
-      switch (action.TAG | 0) {
-        case /* GoToBuy */0 :
-            var match$2 = prevState.ethState;
-            if (match$2) {
-              return {
-                      nonUrlState: {
-                        TAG: /* BuyScreen */2,
-                        _0: action._0
-                      },
-                      ethState: prevState.ethState,
-                      config: prevState.config
-                    };
-            } else {
-              return {
-                      nonUrlState: {
-                        TAG: /* LoginScreen */0,
-                        _0: action
-                      },
-                      ethState: prevState.ethState,
-                      config: prevState.config
-                    };
-            }
-        case /* GoToAuction */1 :
-            var match$3 = prevState.ethState;
-            if (match$3) {
-              return {
-                      nonUrlState: {
-                        TAG: /* AuctionScreen */3,
-                        _0: action._0
-                      },
-                      ethState: prevState.ethState,
-                      config: prevState.config
-                    };
-            } else {
-              return {
-                      nonUrlState: {
-                        TAG: /* LoginScreen */0,
-                        _0: action
-                      },
-                      ethState: prevState.ethState,
-                      config: prevState.config
-                    };
-            }
-        case /* GoToPriceUpdate */2 :
-            var match$4 = prevState.ethState;
-            if (match$4) {
-              return {
-                      nonUrlState: {
-                        TAG: /* UpdatePriceScreen */1,
-                        _0: action._0
-                      },
-                      ethState: prevState.ethState,
-                      config: prevState.config
-                    };
-            } else {
-              return {
-                      nonUrlState: {
-                        TAG: /* LoginScreen */0,
-                        _0: action
-                      },
-                      ethState: prevState.ethState,
-                      config: prevState.config
-                    };
-            }
-        case /* GoToWeb3Connect */3 :
-            var action$1 = action._0;
-            var match$5 = prevState.ethState;
-            if (!match$5) {
-              return {
-                      nonUrlState: {
-                        TAG: /* LoginScreen */0,
-                        _0: action$1
-                      },
-                      ethState: prevState.ethState,
-                      config: prevState.config
-                    };
-            }
-            _action = action$1;
-            continue ;
-        case /* LoadAddress */4 :
-            var newState_nonUrlState = prevState.nonUrlState;
-            var newState_ethState = /* Connected */{
+function reducer(_prevState, action) {
+  if (action) {
+    return {
+            ethState: /* Connected */{
               _0: action._0,
               _1: action._1
-            };
-            var newState_config = prevState.config;
-            var newState = {
-              nonUrlState: newState_nonUrlState,
-              ethState: newState_ethState,
-              config: newState_config
-            };
-            var followOnAction = prevState.nonUrlState;
-            if (typeof followOnAction === "number") {
-              return newState;
             }
-            if (followOnAction.TAG !== /* LoginScreen */0) {
-              return newState;
-            }
-            _action = followOnAction._0;
-            _prevState = newState;
-            continue ;
-        
-      }
-    }
-  };
+          };
+  } else {
+    return {
+            ethState: /* Disconnected */0
+          };
+  }
 }
 
 var context = React.createContext([
@@ -216,15 +60,9 @@ var RootContext = {
 
 function RootProvider$RootWithWeb3(Props) {
   var children = Props.children;
-  var match = React.useReducer(reducer, {
-        nonUrlState: /* NoExtraState */2,
-        ethState: /* Disconnected */0,
-        config: {
-          stewardContractAddress: undefined,
-          stewardAbi: undefined
-        }
-      });
+  var match = React.useReducer(reducer, initialState);
   var dispatch = match[1];
+  var rootState = match[0];
   var context = Core.useWeb3React();
   var match$1 = React.useState(function () {
         return false;
@@ -252,7 +90,7 @@ function RootProvider$RootWithWeb3(Props) {
           if (match !== undefined) {
             
           } else {
-            Curry._1(dispatch, /* Logout */4);
+            Curry._1(dispatch, /* Logout */0);
           }
           
         }), [
@@ -262,6 +100,14 @@ function RootProvider$RootWithWeb3(Props) {
         setTriedLoginAlready,
         triedLoginAlready
       ]);
+  React.useEffect((function () {
+          if (context.active) {
+            
+          } else {
+            Curry._1(dispatch, /* Logout */0);
+          }
+          
+        }), [rootState.ethState]);
   React.useEffect((function () {
           if (!triedLoginAlready && context.active) {
             Curry._1(setTriedLoginAlready, (function (param) {
@@ -281,8 +127,7 @@ function RootProvider$RootWithWeb3(Props) {
             JsPromise$FlowsUserApp.$$catch(match.getBalance(match$1), (function (param) {
                       
                     })).then(function (newBalance) {
-                  return Curry._1(dispatch, {
-                              TAG: /* LoadAddress */4,
+                  return Curry._1(dispatch, /* LoadAddress */{
                               _0: match$1,
                               _1: Belt_Option.flatMap(newBalance, (function (balance) {
                                       return Eth$FlowsUserApp.make(balance.toString());
@@ -299,7 +144,7 @@ function RootProvider$RootWithWeb3(Props) {
         dispatch
       ]);
   return React.createElement(make, makeProps([
-                  match[0],
+                  rootState,
                   dispatch
                 ], children, undefined));
 }
@@ -307,20 +152,6 @@ function RootProvider$RootWithWeb3(Props) {
 var RootWithWeb3 = {
   make: RootProvider$RootWithWeb3
 };
-
-function useRootContext(param) {
-  return React.useContext(context)[0];
-}
-
-function useStewardContractAddress(param) {
-  var match = React.useContext(context);
-  return match[0].config.stewardContractAddress;
-}
-
-function useStewardAbi(param) {
-  var match = React.useContext(context);
-  return match[0].config.stewardAbi;
-}
 
 function useCurrentUser(param) {
   var match = React.useContext(context);
@@ -340,16 +171,6 @@ function useIsAddressCurrentUser(address) {
   }
 }
 
-function useIsProviderSelected(param) {
-  var match = React.useContext(context);
-  var match$1 = match[0].ethState;
-  if (match$1) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
 function useEthBalance(param) {
   var match = React.useContext(context);
   var match$1 = match[0].ethState;
@@ -357,20 +178,6 @@ function useEthBalance(param) {
     return match$1._1;
   }
   
-}
-
-function useNonUrlState(param) {
-  var match = React.useContext(context);
-  return match[0].nonUrlState;
-}
-
-function useShowLogin(param) {
-  var nonUrlRouting = useNonUrlState(undefined);
-  if (typeof nonUrlRouting === "number" || nonUrlRouting.TAG !== /* LoginScreen */0) {
-    return false;
-  } else {
-    return true;
-  }
 }
 
 function useNetworkId(param) {
@@ -394,113 +201,12 @@ function useEtherscanUrl(param) {
   }
 }
 
-function useSidechainEtherscanUrl(param) {
-  var networkId = Core.useWeb3React().chainId;
-  if (networkId !== undefined) {
-    if (networkId !== 4) {
-      if (networkId !== 5) {
-        return "explorer.matic.network";
-      } else {
-        return "mumbai-explorer.matic.today";
-      }
-    } else {
-      return "goerli.etherscan.io";
-    }
-  } else {
-    return "explorer.matic.network";
-  }
-}
-
 function useDeactivateWeb3(param) {
   return Core.useWeb3React().deactivate;
 }
 
 function useWeb3(param) {
   return Core.useWeb3React().library;
-}
-
-function useGoToBuy(param) {
-  var match = React.useContext(context);
-  var dispatch = match[1];
-  return function (animal) {
-    return Curry._1(dispatch, {
-                TAG: /* GoToBuy */0,
-                _0: animal
-              });
-  };
-}
-
-function useGoToAuction(param) {
-  var match = React.useContext(context);
-  var dispatch = match[1];
-  return function (animal) {
-    return Curry._1(dispatch, {
-                TAG: /* GoToAuction */1,
-                _0: animal
-              });
-  };
-}
-
-function useGoToDepositUpdate(param) {
-  var match = React.useContext(context);
-  var dispatch = match[1];
-  return function (param) {
-    return Curry._1(dispatch, /* GoToDepositUpdate */1);
-  };
-}
-
-function useGoToPriceUpdate(param) {
-  var match = React.useContext(context);
-  var dispatch = match[1];
-  return function (animal) {
-    return Curry._1(dispatch, {
-                TAG: /* GoToPriceUpdate */2,
-                _0: animal
-              });
-  };
-}
-
-function useVerifyUser(param) {
-  var match = React.useContext(context);
-  var dispatch = match[1];
-  return function (param) {
-    return Curry._1(dispatch, /* GoToUserVerification */2);
-  };
-}
-
-function useClearNonUrlState(param) {
-  var match = React.useContext(context);
-  var dispatch = match[1];
-  return function (param) {
-    return Curry._1(dispatch, /* ClearNonUrlState */3);
-  };
-}
-
-function useConnectWeb3(param) {
-  var match = React.useContext(context);
-  var dispatch = match[1];
-  return function (action) {
-    return Curry._1(dispatch, {
-                TAG: /* GoToWeb3Connect */3,
-                _0: action
-              });
-  };
-}
-
-function useCloseWeb3Login(param) {
-  var match = React.useContext(context);
-  var dispatch = match[1];
-  return function (param) {
-    return Curry._1(dispatch, /* ClearNonUrlState */3);
-  };
-}
-
-function useClearNonUrlStateAndPushRoute(param) {
-  var clearNonUrlState = useClearNonUrlState(undefined);
-  return function (url) {
-    Curry._1(clearNonUrlState, undefined);
-    return ReasonReactRouter.push(url);
-  };
 }
 
 function useActivateConnector(param) {
@@ -551,29 +257,13 @@ export {
   reducer ,
   RootContext ,
   RootWithWeb3 ,
-  useRootContext ,
-  useStewardContractAddress ,
-  useStewardAbi ,
   useCurrentUser ,
   useIsAddressCurrentUser ,
-  useIsProviderSelected ,
   useEthBalance ,
-  useNonUrlState ,
-  useShowLogin ,
   useNetworkId ,
   useEtherscanUrl ,
-  useSidechainEtherscanUrl ,
   useDeactivateWeb3 ,
   useWeb3 ,
-  useGoToBuy ,
-  useGoToAuction ,
-  useGoToDepositUpdate ,
-  useGoToPriceUpdate ,
-  useVerifyUser ,
-  useClearNonUrlState ,
-  useConnectWeb3 ,
-  useCloseWeb3Login ,
-  useClearNonUrlStateAndPushRoute ,
   useActivateConnector ,
   make$1 as make,
   

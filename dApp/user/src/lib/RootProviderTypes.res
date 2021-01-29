@@ -1,13 +1,3 @@
-/**
-PLEASE DELETE THIS CODE
-*/
-module TokenId = {
-  type t
-}
-
-/**
-^PLEASE DELETE THIS CODE
-*/
 type injectedType = {@dead("injectedType.isAuthorized") isAuthorized: unit => JsPromise.t<bool>}
 type web3reactContext = {
   @dead("web3reactContext.active") active: bool,
@@ -19,34 +9,10 @@ type web3reactContext = {
 }
 
 type rec rootActions =
-  | NoAction
-  | GoToBuy(TokenId.t)
-  | GoToAuction(TokenId.t)
-  | GoToDepositUpdate
-  | GoToPriceUpdate(TokenId.t)
-  | GoToUserVerification
-  | ClearNonUrlState
-  | GoToWeb3Connect(rootActions)
   | Logout
   | LoadAddress(Web3.ethAddress, option<Eth.t>)
-type nonUrlState =
-  | LoginScreen(rootActions)
-  | UserVerificationScreen
-  | UpdateDepositScreen
-  | UpdatePriceScreen(TokenId.t)
-  | BuyScreen(TokenId.t)
-  | AuctionScreen(TokenId.t)
-  | NoExtraState
 type ethState =
   | Disconnected
   | Connected(Web3.ethAddress, option<Eth.t>)
 
-type config = {
-  stewardContractAddress: option<Web3.ethAddress>,
-  stewardAbi: option<Web3.abi>,
-}
-type state = {
-  nonUrlState: nonUrlState,
-  ethState: ethState,
-  config: config,
-}
+type state = {ethState: ethState}

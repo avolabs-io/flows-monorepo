@@ -10,8 +10,6 @@ type web3reactContext = {
 }
 @module("@web3-react/core")
 external useWeb3React: unit => web3reactContext = "useWeb3React"
-@dead("+useWeb3ReactId") @module("@web3-react/core")
-external useWeb3ReactId: string => web3reactContext = "useWeb3React"
 
 module Web3ReactProvider = {
   @module("@web3-react/core") @react.component
@@ -34,68 +32,15 @@ let getLibrary = provider => {
 }
 
 let initialState = {
-  nonUrlState: NoExtraState,
   ethState: Disconnected,
-  config: {
-    stewardContractAddress: None,
-    stewardAbi: None,
-  },
 }
 
-let rec reducer = (prevState, action) =>
+let reducer = (_prevState, action) =>
   switch action {
-  | ClearNonUrlState => {...prevState, nonUrlState: NoExtraState}
-  | LoadAddress(address, optBalance) =>
-    let newState = {...prevState, ethState: Connected(address, optBalance)}
-    switch prevState.nonUrlState {
-    | LoginScreen(followOnAction) => reducer(newState, followOnAction)
-    | UserVerificationScreen
-    | UpdateDepositScreen
-    | UpdatePriceScreen(_)
-    | BuyScreen(_)
-    | AuctionScreen(_)
-    | NoExtraState => newState
-    }
-  | GoToWeb3Connect(action) =>
-    switch prevState.ethState {
-    | Connected(_, _) => reducer(prevState, action)
-    | Disconnected => {...prevState, nonUrlState: LoginScreen(action)}
-    }
-  | GoToBuy(animal) =>
-    switch prevState.ethState {
-    | Connected(_, _) => {...prevState, nonUrlState: BuyScreen(animal)}
-    | Disconnected => {...prevState, nonUrlState: LoginScreen(action)}
-    }
-  | GoToAuction(animal) =>
-    switch prevState.ethState {
-    | Connected(_, _) => {...prevState, nonUrlState: AuctionScreen(animal)}
-    | Disconnected => {...prevState, nonUrlState: LoginScreen(action)}
-    }
-  | GoToDepositUpdate =>
-    switch prevState.ethState {
-    | Connected(_, _) => {...prevState, nonUrlState: UpdateDepositScreen}
-    | Disconnected => {...prevState, nonUrlState: LoginScreen(action)}
-    }
-  | GoToPriceUpdate(animal) =>
-    switch prevState.ethState {
-    | Connected(_, _) => {
-        ...prevState,
-        nonUrlState: UpdatePriceScreen(animal),
-      }
-    | Disconnected => {...prevState, nonUrlState: LoginScreen(action)}
-    }
-  | GoToUserVerification =>
-    switch prevState.ethState {
-    | Connected(_, _) => {...prevState, nonUrlState: UserVerificationScreen}
-    | Disconnected => {...prevState, nonUrlState: LoginScreen(action)}
-    }
+  | LoadAddress(address, optBalance) => {ethState: Connected(address, optBalance)}
   | Logout => {
-      ...prevState,
       ethState: Disconnected,
-      nonUrlState: NoExtraState,
     }
-  | NoAction => {...prevState, nonUrlState: NoExtraState}
-  // | _ => prevState
   }
 module RootContext = {
   let context = React.createContext((initialState, _ => ()))
@@ -113,16 +58,7 @@ module RootContext = {
 module RootWithWeb3 = {
   @react.component
   let make = (~children) => {
-    let (rootState, dispatch) = React.useReducer(
-      reducer,
-      {
-        ...initialState,
-        config: {
-          stewardContractAddress: None,
-          stewardAbi: None,
-        },
-      },
-    )
+    let (rootState, dispatch) = React.useReducer(reducer, initialState)
     let context = useWeb3React()
 
     // This prevents repeated tries at logging in (or re-login after logout)
@@ -147,45 +83,16 @@ module RootWithWeb3 = {
       None
     }, (context.activate, context.chainId, dispatch, setTriedLoginAlready, triedLoginAlready))
 
-    // React.useEffect3(
-    //   () => {
-    //     let maticChainId =
-    //       switch (context.chainId) {
-    //       | Some(4)
-    //       | Some(5) => 80001
-    //       | _ => 137
-    //       };
-    //     contextMatic.activate(
-    //       // Web3Connectors.injected,
-    //       Web3Connectors.sideChainNetwork(maticChainId),
-    //       () => (),
-    //       true,
-    //     )
-    //     ->Promise.Js.catch(e => {
-    //         Js.log("ERROR ACTIVATING MATIC CONNECTION");
-    //         Js.log(e);
-    //         Promise.resolved();
-    //       })
-    //     ->ignore;
-    //     None;
-    //   },
-    //   // intentionally only running on mount (make sure it's only mounted once :))
-    //   (contextMatic.activate, context.chainId, contextMatic.chainId),
-    // );
-
-    //// This will never fire when metamask logs out unfortunately https://stackoverflow.com/a/59215775/3103033
-    // React.useEffect1(
-    //   () => {
-    //     if (context.active) {
-    //       ();
-    //     } else {
-    //       dispatch(Logout);
-    //     };
-    //     None;
-    //   },
-    //   // run this if the status of "active" ever changes
-    //   [|rootState.ethState|],
-    // );
+    // This will never fire when metamask logs out unfortunately https://stackoverflow.com/a/59215775/3103033
+    //   This answer seems to give some ideas of how it can work though: https://stackoverflow.com/a/65443678/3103033
+    React.useEffect1(() => {
+      if context.active {
+        ()
+      } else {
+        dispatch(Logout)
+      }
+      None
+    }, [rootState.ethState])
 
     // if the connection worked, wait until we get confirmation of that to flip the flag
     React.useEffect3(() => {
@@ -217,20 +124,6 @@ module RootWithWeb3 = {
     <RootContext value=(rootState, dispatch)> children </RootContext>
   }
 }
-@dead("+useRootContext")
-let useRootContext: unit => RootProviderTypes.state = () => {
-  let (state, _) = React.useContext(RootContext.context)
-  state
-}
-let useStewardContractAddress: unit => option<Web3.ethAddress> = () => {
-  let (state, _) = React.useContext(RootContext.context)
-  state.config.stewardContractAddress
-}
-
-let useStewardAbi: unit => option<Web3.abi> = () => {
-  let (state, _) = React.useContext(RootContext.context)
-  state.config.stewardAbi
-}
 
 let useCurrentUser: unit => option<Web3.ethAddress> = () => {
   let (state, _) = React.useContext(RootContext.context)
@@ -249,35 +142,11 @@ let useIsAddressCurrentUser: Web3.ethAddress => bool = address => {
   }
 }
 
-@dead("+useIsProviderSelected")
-let useIsProviderSelected: unit => bool = () => {
-  let (state, _) = React.useContext(RootContext.context)
-  switch state.ethState {
-  | Connected(_address, _balance) => true
-  | Disconnected => false
-  }
-}
 let useEthBalance: unit => option<Eth.t> = () => {
   let (state, _) = React.useContext(RootContext.context)
   switch state.ethState {
   | Connected(_address, balance) => balance
   | Disconnected => None
-  }
-}
-let useNonUrlState: unit => nonUrlState = () => {
-  let (state, _) = React.useContext(RootContext.context)
-  state.nonUrlState
-}
-let useShowLogin: unit => bool = () => {
-  let nonUrlRouting = useNonUrlState()
-  switch nonUrlRouting {
-  | LoginScreen(_) => true
-  | UserVerificationScreen
-  | UpdateDepositScreen
-  | UpdatePriceScreen(_)
-  | BuyScreen(_)
-  | AuctionScreen(_)
-  | NoExtraState => false
   }
 }
 let useNetworkId: unit => option<int> = () => {
@@ -294,15 +163,6 @@ let useEtherscanUrl: unit => string = () => {
   | _ => "etherscan.io"
   }
 }
-let useSidechainEtherscanUrl: unit => string = () => {
-  let networkId = useNetworkId()
-
-  switch networkId {
-  | Some(5) => "mumbai-explorer.matic.today"
-  | Some(4) => "goerli.etherscan.io"
-  | _ => "explorer.matic.network"
-  }
-}
 let useDeactivateWeb3: (unit, unit) => unit = () => {
   let context = useWeb3React()
 
@@ -312,50 +172,6 @@ let useWeb3: unit => option<Web3.web3Library> = () => {
   let context = useWeb3React()
 
   context.library
-}
-
-// TODO:: refactor `useGoToBuy`, `useGoToDepositUpdate`, `useGoToDepositUpdate` to come from a single function (basically do the same thing)
-let useGoToBuy: (unit, TokenId.t) => unit = () => {
-  let (_, dispatch) = React.useContext(RootContext.context)
-  animal => dispatch(GoToBuy(animal))
-}
-@dead("+useGoToAuction")
-let useGoToAuction: (unit, TokenId.t) => unit = () => {
-  let (_, dispatch) = React.useContext(RootContext.context)
-  animal => dispatch(GoToAuction(animal))
-}
-let useGoToDepositUpdate: (unit, unit) => unit = () => {
-  let (_, dispatch) = React.useContext(RootContext.context)
-  () => dispatch(GoToDepositUpdate)
-}
-let useGoToPriceUpdate: (unit, TokenId.t) => unit = () => {
-  let (_, dispatch) = React.useContext(RootContext.context)
-  animal => dispatch(GoToPriceUpdate(animal))
-}
-let useVerifyUser: (unit, unit) => unit = () => {
-  let (_, dispatch) = React.useContext(RootContext.context)
-  () => dispatch(GoToUserVerification)
-}
-let useClearNonUrlState: (unit, unit) => unit = () => {
-  let (_, dispatch) = React.useContext(RootContext.context)
-  () => dispatch(ClearNonUrlState)
-}
-let useConnectWeb3: (unit, RootProviderTypes.rootActions) => unit = () => {
-  let (_, dispatch) = React.useContext(RootContext.context)
-  action => dispatch(GoToWeb3Connect(action))
-}
-let useCloseWeb3Login: (unit, unit) => unit = () => {
-  let (_, dispatch) = React.useContext(RootContext.context)
-
-  () => dispatch(ClearNonUrlState)
-}
-
-let useClearNonUrlStateAndPushRoute: (unit, string) => unit = () => {
-  let clearNonUrlState = useClearNonUrlState()
-  url => {
-    clearNonUrlState()
-    ReasonReactRouter.push(url)
-  }
 }
 
 type connection =
@@ -386,7 +202,3 @@ let useActivateConnector: unit => (connection, Web3Connectors.injectedType => un
 @react.component
 let make = (~children) =>
   <Web3ReactProvider getLibrary> <RootWithWeb3> children </RootWithWeb3> </Web3ReactProvider>
-
-// Used to create matic provider
-// </Web3Connectors.Custom>
-// <Web3Connectors.Custom id="matic" getLibrary>
