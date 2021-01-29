@@ -216,14 +216,12 @@ var RootContext = {
 
 function RootProvider$RootWithWeb3(Props) {
   var children = Props.children;
-  var stewardContractAddress = Props.stewardContractAddress;
-  var stewardAbi = Props.stewardAbi;
   var match = React.useReducer(reducer, {
         nonUrlState: /* NoExtraState */2,
         ethState: /* Disconnected */0,
         config: {
-          stewardContractAddress: stewardContractAddress,
-          stewardAbi: stewardAbi
+          stewardContractAddress: undefined,
+          stewardAbi: undefined
         }
       });
   var dispatch = match[1];
@@ -536,14 +534,10 @@ function useActivateConnector(param) {
 
 function RootProvider(Props) {
   var children = Props.children;
-  var stewardContractAddress = Props.stewardContractAddress;
-  var stewardAbi = Props.stewardAbi;
   return React.createElement(Core.Web3ReactProvider, {
               getLibrary: getLibrary,
               children: React.createElement(RootProvider$RootWithWeb3, {
-                    children: children,
-                    stewardContractAddress: stewardContractAddress,
-                    stewardAbi: stewardAbi
+                    children: children
                   })
             });
 }

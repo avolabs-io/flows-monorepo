@@ -10,7 +10,7 @@ type connectorObj = {
   connectionPhrase: string,
 }
 
-@module("./bindings/web3-react/connectors")
+@module("./connectors")
 external connectors: Js.Array.t<connectorObj> = "default"
 
 @react.component

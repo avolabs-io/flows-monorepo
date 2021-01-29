@@ -5,6 +5,7 @@ import * as Client from "@apollo/client";
 import * as Login$FlowsUserApp from "./Login/Login.bs.js";
 import * as Apollo$FlowsUserApp from "./Apollo.bs.js";
 import * as Router$FlowsUserApp from "./Router.bs.js";
+import * as RootProvider$FlowsUserApp from "./lib/RootProvider.bs.js";
 
 function App$Main(Props) {
   return React.createElement("h1", undefined, "Main component");
@@ -42,7 +43,9 @@ var Router = {
 function App(Props) {
   return React.createElement(Client.ApolloProvider, {
               client: Apollo$FlowsUserApp.client,
-              children: React.createElement(App$Router, {})
+              children: React.createElement(RootProvider$FlowsUserApp.make, {
+                    children: React.createElement(App$Router, {})
+                  })
             });
 }
 

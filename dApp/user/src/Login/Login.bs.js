@@ -5,8 +5,8 @@ import * as CssJs from "bs-css-emotion/src/CssJs.bs.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
+import Connectors from "./connectors";
 import * as RootProvider$FlowsUserApp from "../lib/RootProvider.bs.js";
-import Connectors from "./bindings/web3-react/connectors";
 
 var connectors = Connectors;
 

@@ -26,5 +26,5 @@ module Router = {
 @react.component
 let make = () =>
   <ApolloClient.React.ApolloProvider client=Apollo.client>
-    <Router />
+    <RootProvider> <Router /> </RootProvider>
   </ApolloClient.React.ApolloProvider>

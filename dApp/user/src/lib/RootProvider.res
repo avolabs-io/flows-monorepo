@@ -112,18 +112,14 @@ module RootContext = {
 
 module RootWithWeb3 = {
   @react.component
-  let make = (
-    ~children,
-    ~stewardContractAddress: option<Web3.ethAddress>,
-    ~stewardAbi: option<Web3.abi>,
-  ) => {
+  let make = (~children) => {
     let (rootState, dispatch) = React.useReducer(
       reducer,
       {
         ...initialState,
         config: {
-          stewardContractAddress: stewardContractAddress,
-          stewardAbi: stewardAbi,
+          stewardContractAddress: None,
+          stewardAbi: None,
         },
       },
     )
@@ -388,14 +384,8 @@ let useActivateConnector: unit => (connection, Web3Connectors.injectedType => un
 }
 
 @react.component
-let make = (
-  ~children,
-  ~stewardContractAddress: option<Web3.ethAddress>,
-  ~stewardAbi: option<Web3.abi>,
-) =>
-  <Web3ReactProvider getLibrary>
-    <RootWithWeb3 stewardContractAddress stewardAbi> children </RootWithWeb3>
-  </Web3ReactProvider>
+let make = (~children) =>
+  <Web3ReactProvider getLibrary> <RootWithWeb3> children </RootWithWeb3> </Web3ReactProvider>
 
 // Used to create matic provider
 // </Web3Connectors.Custom>
