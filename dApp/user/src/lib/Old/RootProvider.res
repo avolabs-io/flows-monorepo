@@ -2,9 +2,9 @@ open RootProviderTypes
 
 type web3reactContext = {
   active: bool,
-  activate: (Web3Connectors.injectedType, unit => unit, bool) => JsPromise.t<unit>,
-  account: option<Web3.ethAddress>,
-  library: option<Web3.web3Library>,
+  activate: (. Web3Connectors.injectedType, unit => unit, bool) => JsPromise.t<unit>,
+  account: option<Ethers.ethAddress>,
+  library: option<Ethers.Providers.t>,
   chainId: option<int>,
   deactivate: unit => unit,
 }
@@ -14,18 +14,18 @@ external useWeb3React: unit => web3reactContext = "useWeb3React"
 module Web3ReactProvider = {
   @module("@web3-react/core") @react.component
   external make: (
-    ~getLibrary: Web3.rawProvider => Web3.web3Library,
+    ~getLibrary: Ethers.Providers.t => Ethers.Providers.t,
     ~children: React.element,
   ) => React.element = "Web3ReactProvider"
 }
 
 @module("ethers") @scope("providers") @new
-external createWeb3Provider: Web3.rawProvider => Web3.web3Library = "Web3Provider"
+external createWeb3Provider: Ethers.Providers.t => Ethers.Providers.t = "Web3Provider"
 
 let getLibrary = provider => {
   let library = createWeb3Provider(provider)
 
-  let setPollingInterval: Web3.web3Library => Web3.web3Library = %raw(
+  let setPollingInterval: Ethers.Providers.t => Ethers.Providers.t = %raw(
     "lib => {lib.pollingInterval = 8000; return lib; }"
   )
   setPollingInterval(library)
@@ -67,7 +67,7 @@ module RootWithWeb3 = {
       let _ = Web3Connectors.injected.isAuthorized()->JsPromise.map(authorised =>
         if authorised && !triedLoginAlready {
           ignore(
-            context.activate(Web3Connectors.injected, () => (), true)->JsPromise.catch(_ => {
+            context.activate(. Web3Connectors.injected, () => (), true)->JsPromise.catch(_ => {
               setTriedLoginAlready(_ => true)
             }),
           )
@@ -104,17 +104,20 @@ module RootWithWeb3 = {
     React.useEffect4(() =>
       switch (context.library, context.account) {
       | (Some(library), Some(account)) =>
+        Js.log2("1", library)
+        Js.log2("2", account)
         let _ =
-          library.getBalance(. account)
-          ->JsPromise.catch(_ => None)
+          library
+          ->Ethers.Providers.getBalance(account)
           ->JsPromise.map(newBalance =>
             dispatch(
               LoadAddress(
                 account,
-                newBalance->Option.flatMap(balance => Eth.make(balance.toString(.))),
+                newBalance->Option.flatMap(balance => Eth.make(balance->Ethers.BigNumber.toString)),
               ),
             )
           )
+          ->JsPromise.catch(_ => ())
 
         None
       | _ => None
@@ -125,7 +128,7 @@ module RootWithWeb3 = {
   }
 }
 
-let useCurrentUser: unit => option<Web3.ethAddress> = () => {
+let useCurrentUser: unit => option<Ethers.ethAddress> = () => {
   let (state, _) = React.useContext(RootContext.context)
   switch state.ethState {
   | Connected(address, _balance) => Some(address)
@@ -133,11 +136,11 @@ let useCurrentUser: unit => option<Web3.ethAddress> = () => {
   }
 }
 
-let useIsAddressCurrentUser: Web3.ethAddress => bool = address => {
+let useIsAddressCurrentUser: Ethers.ethAddress => bool = address => {
   let currentUser = useCurrentUser()
   switch currentUser {
   | Some(currentUserAddress) =>
-    address->Js.String.toLowerCase == currentUserAddress->Js.String.toLowerCase
+    address->Ethers.Utils.toLowerString == currentUserAddress->Ethers.Utils.toLowerString
   | None => false
   }
 }
@@ -168,10 +171,18 @@ let useDeactivateWeb3: (unit, unit) => unit = () => {
 
   context.deactivate
 }
-let useWeb3: unit => option<Web3.web3Library> = () => {
+let useWeb3: unit => option<Ethers.Providers.t> = () => {
   let context = useWeb3React()
 
   context.library
+}
+let useSigner: unit => option<Ethers.Wallet.t> = () => {
+  let {library, account} = useWeb3React()
+
+  switch (library, account) {
+  | (Some(library), Some(account)) => library->Ethers.Providers.getSigner(account)
+  | _ => None
+  }
 }
 
 type connection =
@@ -180,6 +191,9 @@ type connection =
   | Connecting
   | ErrorConnecting
 
+@ocaml.doc("
+Note: the `connectionStatus` only shows the connection status of the current connect function (not global connection status)
+")
 let useActivateConnector: unit => (connection, Web3Connectors.injectedType => unit) = () => {
   let context = useWeb3React()
   let (connectionStatus, setConnectionStatus) = React.useState(() => Standby)
@@ -187,18 +201,19 @@ let useActivateConnector: unit => (connection, Web3Connectors.injectedType => un
     connectionStatus,
     provider => {
       let _ =
-        context.activate(provider, () => (), true)
+        context.activate(. provider, () => (), true)
+        ->JsPromise.map(() => setConnectionStatus(_ => Connected))
         ->JsPromise.catch(error => {
           Js.log("Error connecting to network:")
           Js.log(error)
           setConnectionStatus(_ => ErrorConnecting)
         })
-        ->JsPromise.map(() => setConnectionStatus(_ => Connected))
       setConnectionStatus(_ => Connecting)
     },
   )
 }
 
 @react.component
-let make = (~children) =>
+let make = (~children) => {
   <Web3ReactProvider getLibrary> <RootWithWeb3> children </RootWithWeb3> </Web3ReactProvider>
+}

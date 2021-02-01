@@ -1,7 +1,18 @@
+module OnlyLoggedIn = {
+  @react.component
+  let make = (~children) => {
+    let optUsersAccount = RootProvider.useCurrentUser()
+
+    switch optUsersAccount {
+    | None => <Login redirectOnLogin=false />
+    | Some(_account) => children
+    }
+  }
+}
 module Main = {
   @react.component
   let make = () => {
-    <h1> {"Main component"->React.string} </h1>
+    <OnlyLoggedIn> <h1> {"Main component"->React.string} </h1> <Dapp /> </OnlyLoggedIn>
   }
 }
 module NotFound = {

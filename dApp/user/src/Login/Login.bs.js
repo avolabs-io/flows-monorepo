@@ -6,13 +6,31 @@ import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as Belt_Array from "bs-platform/lib/es6/belt_Array.js";
 import Connectors from "./connectors";
-import * as RootProvider$FlowsUserApp from "../lib/RootProvider.bs.js";
+import * as ReasonReactRouter from "reason-react/src/ReasonReactRouter.bs.js";
+import * as RootProvider$FlowsUserApp from "../lib/Old/RootProvider.bs.js";
 
 var connectors = Connectors;
 
 function Login(Props) {
+  var redirectOnLoginOpt = Props.redirectOnLogin;
+  var redirectOnLogin = redirectOnLoginOpt !== undefined ? redirectOnLoginOpt : true;
   var match = RootProvider$FlowsUserApp.useActivateConnector(undefined);
   var activateConnector = match[1];
+  var nextPath = "/";
+  var optCurrentUser = RootProvider$FlowsUserApp.useCurrentUser(undefined);
+  console.log([
+        "cunnert User",
+        optCurrentUser
+      ]);
+  React.useEffect((function () {
+          if (nextPath !== undefined && optCurrentUser !== undefined && redirectOnLogin) {
+            ReasonReactRouter.push(nextPath);
+          }
+          
+        }), [
+        nextPath,
+        optCurrentUser
+      ]);
   return React.createElement("div", undefined, React.createElement("p", undefined, "Use one of the wallet providers below. ", React.createElement("small", undefined, "(Not sure where to go from here? ", React.createElement("a", {
                           href: "https://google.com",
                           rel: "noopener noreferrer",

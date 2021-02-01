@@ -1,8 +1,3 @@
-// @react.component
-// let make = () => {
-//   <<h1> {"Login"->React.string} </h1>
-// }
-
 type connectorObj = {
   name: string,
   connector: Web3Connectors.injectedType,
@@ -14,8 +9,23 @@ type connectorObj = {
 external connectors: Js.Array.t<connectorObj> = "default"
 
 @react.component
-let make = () => {
+let make = (~redirectOnLogin=true) => {
   let (_connectionStatus, activateConnector) = RootProvider.useActivateConnector()
+
+  let nextPath = Some("/") // In the future this can be a login redirect
+  let optCurrentUser = RootProvider.useCurrentUser()
+  Js.log(("cunnert User", optCurrentUser))
+
+  React.useEffect2(() => {
+    switch (nextPath, optCurrentUser) {
+    | (Some(nextPath), Some(_currentUser)) =>
+      if redirectOnLogin {
+        ReasonReactRouter.push(nextPath)
+      }
+    | _ => ()
+    }
+    None
+  }, (nextPath, optCurrentUser))
 
   <div>
     <p>

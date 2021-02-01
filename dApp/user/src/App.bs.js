@@ -2,13 +2,32 @@
 
 import * as React from "react";
 import * as Client from "@apollo/client";
+import * as Dapp$FlowsUserApp from "./Dapp.bs.js";
 import * as Login$FlowsUserApp from "./Login/Login.bs.js";
 import * as Apollo$FlowsUserApp from "./Apollo.bs.js";
 import * as Router$FlowsUserApp from "./Router.bs.js";
-import * as RootProvider$FlowsUserApp from "./lib/RootProvider.bs.js";
+import * as RootProvider$FlowsUserApp from "./lib/Old/RootProvider.bs.js";
+
+function App$OnlyLoggedIn(Props) {
+  var children = Props.children;
+  var optUsersAccount = RootProvider$FlowsUserApp.useCurrentUser(undefined);
+  if (optUsersAccount !== undefined) {
+    return children;
+  } else {
+    return React.createElement(Login$FlowsUserApp.make, {
+                redirectOnLogin: false
+              });
+  }
+}
+
+var OnlyLoggedIn = {
+  make: App$OnlyLoggedIn
+};
 
 function App$Main(Props) {
-  return React.createElement("h1", undefined, "Main component");
+  return React.createElement(App$OnlyLoggedIn, {
+              children: null
+            }, React.createElement("h1", undefined, "Main component"), React.createElement(Dapp$FlowsUserApp.make, {}));
 }
 
 var Main = {
@@ -52,6 +71,7 @@ function App(Props) {
 var make = App;
 
 export {
+  OnlyLoggedIn ,
   Main ,
   NotFound ,
   Router ,
