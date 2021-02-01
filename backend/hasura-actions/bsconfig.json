@@ -48,6 +48,7 @@
     "@reasonml-community/graphql-ppx",
     "reason-apollo-client",
     "@yawaramin/prometo",
-    "bs-mocha"
+    "bs-mocha",
+    "bs-cron"
   ]
 }
