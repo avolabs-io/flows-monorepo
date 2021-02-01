@@ -1,5 +1,5 @@
 {
-  "name": "flows-admin-app",
+  "name": "flows-user-app",
   "reason": {
     "react-jsx": 3
   },
@@ -33,6 +33,9 @@
   "bs-dependencies": [
     "reason-react",
     "@reasonml-community/graphql-ppx",
+    "bs-moment",
+    "bs-css",
+    "bs-css-emotion",
     "rescript-apollo-client"
   ],
   "ppx-flags": [
