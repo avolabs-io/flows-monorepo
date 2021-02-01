@@ -32,38 +32,35 @@ let createStream = Serbet.endpoint({
   handler: req =>
     req.requireBody(value => {
       body_in_decode(value)
-    })->Js.Promise.then_(
-      ({input: {recipient, addressTokenStream, lengthOfPayment, interval, rate, deposit}}) => {
-        Js.log(`TODO: we must still make the deposit here ${deposit}`)
+    })->JsPromise.then(({
+      input: {recipient, addressTokenStream, lengthOfPayment, interval, rate, deposit},
+    }) => {
+      Js.log(`TODO: we must still make the deposit here ${deposit}`)
 
-        gqlClient.mutate(
-          ~mutation=module(Query.CreatePaymentStream),
-          Query.CreatePaymentStream.makeVariables(
-            ~amount=rate,
-            ~interval,
-            ~numberOfPayments=lengthOfPayment,
-            ~recipient,
-            ~start=1,
-            ~state="TODO: Pending DepositCreation",
-            ~tokenAddress=addressTokenStream,
-            (),
-          ),
-        )->Js.Promise.then_(result =>
-          Js.Promise.resolve(
-            switch result {
-            | Ok(_result) => {success: true, error: None}
-            | Error(error) =>
-              let {message}: ApolloClient__ApolloClient.ApolloError.t = error
-              {
-                success: false,
-                error: Some(message),
-              }
-            }
-            ->body_out_encode
-            ->Serbet.Endpoint.OkJson,
-          )
-        , _)
-      },
-      _,
-    ),
+      gqlClient.mutate(
+        ~mutation=module(Query.CreatePaymentStream),
+        Query.CreatePaymentStream.makeVariables(
+          ~amount=rate,
+          ~interval,
+          ~numberOfPayments=lengthOfPayment,
+          ~recipient,
+          ~start=1,
+          ~state="TODO: Pending DepositCreation",
+          ~tokenAddress=addressTokenStream,
+          (),
+        ),
+      )->JsPromise.map(result =>
+        switch result {
+        | Ok(_result) => {success: true, error: None}
+        | Error(error) =>
+          let {message}: ApolloClient__ApolloClient.ApolloError.t = error
+          {
+            success: false,
+            error: Some(message),
+          }
+        }
+        ->body_out_encode
+        ->Serbet.Endpoint.OkJson
+      )
+    }),
 })

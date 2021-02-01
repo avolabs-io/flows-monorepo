@@ -153,30 +153,28 @@ var createStream = Serbet.endpoint(undefined, {
       path: "/create-stream",
       verb: /* POST */1,
       handler: (function (req) {
-          var __x = Curry._1(req.requireBody, body_in_decode);
-          return __x.then(function (param) {
+          return Curry._1(req.requireBody, body_in_decode).then(function (param) {
                       var match = param.input;
                       console.log("TODO: we must still make the deposit here " + match.deposit);
-                      var __x = Curry.app(gqlClient.reason_mutate, [
-                            {
-                              query: Query.CreatePaymentStream.query,
-                              Raw: Query.CreatePaymentStream.Raw,
-                              parse: Query.CreatePaymentStream.parse,
-                              serialize: Query.CreatePaymentStream.serialize,
-                              serializeVariables: Query.CreatePaymentStream.serializeVariables
-                            },
-                            undefined,
-                            undefined,
-                            undefined,
-                            undefined,
-                            undefined,
-                            undefined,
-                            undefined,
-                            undefined,
-                            undefined,
-                            Query.CreatePaymentStream.makeVariables(match.rate, match.interval, match.lengthOfPayment, match.recipient, 1, "TODO: Pending DepositCreation", match.addressTokenStream, undefined)
-                          ]);
-                      return __x.then(function (result) {
+                      return Curry.app(gqlClient.reason_mutate, [
+                                    {
+                                      query: Query.CreatePaymentStream.query,
+                                      Raw: Query.CreatePaymentStream.Raw,
+                                      parse: Query.CreatePaymentStream.parse,
+                                      serialize: Query.CreatePaymentStream.serialize,
+                                      serializeVariables: Query.CreatePaymentStream.serializeVariables
+                                    },
+                                    undefined,
+                                    undefined,
+                                    undefined,
+                                    undefined,
+                                    undefined,
+                                    undefined,
+                                    undefined,
+                                    undefined,
+                                    undefined,
+                                    Query.CreatePaymentStream.makeVariables(match.rate, match.interval, match.lengthOfPayment, match.recipient, 1, "TODO: Pending DepositCreation", match.addressTokenStream, undefined)
+                                  ]).then(function (result) {
                                   var tmp;
                                   tmp = result.TAG === /* Ok */0 ? ({
                                         success: true,
@@ -185,10 +183,10 @@ var createStream = Serbet.endpoint(undefined, {
                                         success: false,
                                         error: result._0.message
                                       });
-                                  return Promise.resolve({
-                                              TAG: /* OkJson */4,
-                                              _0: body_out_encode(tmp)
-                                            });
+                                  return {
+                                          TAG: /* OkJson */4,
+                                          _0: body_out_encode(tmp)
+                                        };
                                 });
                     });
         })
