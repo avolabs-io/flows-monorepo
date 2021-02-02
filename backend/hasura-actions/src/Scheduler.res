@@ -6,7 +6,6 @@ type makePaymentRequest = {
   identifier: option<string>,
 }
 
-
 // let dummyData = [
 //   {
 //     recipient: "0xc788F08a2aAf539111e2a2D85BD4B324FBE37B15",
@@ -85,7 +84,17 @@ curl 'http://localhost:5001/api/v1/payments/0xC563388e2e2fdD422166eD5E76971D11eD
 */
 
 let startProcess = () => {
-         let _ = makePayment(~recipientAddress="0x91c0c7b5D42e9B65C8071FbDeC7b1EC54D92AD92",~amount="150000000000000000")
+  PaymentStreamManager.gqlClient.query(
+            ~query=module(Query.GetStreamData), ()
+            )->JsPromise.map(result =>
+              switch result {
+                //| Ok({data: {todos}}) => Js.log2("query To-Dos: ", todos)
+                | Ok({data: {streams}}) => Js.log2("wyn success: ", streams)
+                | Error(error) => Js.log2("wyn error: ", error)
+              }
+              
+            )->ignore
+
   let job =
     CronJob.make(
       #CronString("* * * * *"), // every minute
@@ -94,10 +103,11 @@ let startProcess = () => {
           Js.log("Printing every minute");
           // TODO: grab the open streams from hasura
           // let streams = []
-          let _ = makePayment(~recipientAddress="0x91c0c7b5D42e9B65C8071FbDeC7b1EC54D92AD92",~amount="100000000000000000")
-
+          // let _ = makePayment(~recipientAddress="0x91c0c7b5D42e9B65C8071FbDeC7b1EC54D92AD92",~amount="100000000000000000")
           // let _ = Array.map(streams, item => {item->paymentHandler});
-      },
+
+          
+        },
       (),
     );
 

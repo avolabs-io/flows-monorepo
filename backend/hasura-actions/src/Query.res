@@ -9,3 +9,18 @@ module CreatePaymentStream = %graphql(`
     }
   }
 `)
+
+module GetStreamData = %graphql(`
+  query {
+  streams {
+    amount
+    interval
+    numberOfPayments
+    numberOfPaymentsMade
+    recipient
+    start
+    state
+    tokenAddress
+  }
+}
+`)
