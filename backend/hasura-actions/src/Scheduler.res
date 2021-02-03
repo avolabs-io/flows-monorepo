@@ -32,29 +32,27 @@ type makePaymentRequest = {
 // |];
 
 let makePayment = (~recipientAddress, ~amount) => {
+  Js.log("making payment")
   let requestString =
-    "http://raiden1:5001/api/v1/payments/0xC563388e2e2fdD422166eD5E76971D11eD37A466/"
-    ++ recipientAddress;
-  Js.log2(requestString, amount);
+    "http://raiden1:5001/api/v1/payments/0xC563388e2e2fdD422166eD5E76971D11eD37A466/" ++
+    recipientAddress
+  Js.log2(requestString, amount)
   Fetch.fetchWithInit(
     requestString,
     Fetch.RequestInit.make(
       ~method_=Post,
-      ~body=
-        Fetch.BodyInit.make(
-          {amount, identifier: None}
-          ->makePaymentRequest_encode
-          ->Js.Json.stringify,
-        ),
+      ~body=Fetch.BodyInit.make(
+        {amount: amount, identifier: None}->makePaymentRequest_encode->Js.Json.stringify,
+      ),
       ~headers=Fetch.HeadersInit.make({"Content-Type": "application/json"}),
       (),
     ),
   )
- ->JsPromise.then(Fetch.Response.json)
- ->JsPromise.map(json => {
-       Js.log2("THE RESULT:", json)
-     });
-};
+  ->JsPromise.then(Fetch.Response.json)
+  ->JsPromise.map(json => {
+    Js.log2("THE RESULT:", json)
+  })
+}
 
 // let paymentHandler = (item: recipientDbData) =>
 //   if (item.numerOfPaymentsMade == item.totalNumberOfPaymentsToMake) {
@@ -84,32 +82,168 @@ curl 'http://localhost:5001/api/v1/payments/0xC563388e2e2fdD422166eD5E76971D11eD
 */
 
 let startProcess = () => {
-  PaymentStreamManager.gqlClient.query(
-            ~query=module(Query.GetStreamData), ()
-            )->JsPromise.map(result =>
-              switch result {
-                //| Ok({data: {todos}}) => Js.log2("query To-Dos: ", todos)
-                | Ok({data: {streams}}) => Js.log2("wyn success: ", streams)
-                | Error(error) => Js.log2("wyn error: ", error)
+  /* let _ = makePayment(
+    ~recipientAddress="0x91c0c7b5D42e9B65C8071FbDeC7b1EC54D92AD92",
+    ~amount="100000000000000000",
+  )*/
+  let job = CronJob.make(
+    #CronString("* * * * *"), // every minute
+    _ => {
+      Js.log("Printing every minute")
+      PaymentStreamManager.gqlClient.query(~query=module(Query.GetStreamData), ())
+      ->JsPromise.map(result =>
+        switch result {
+        | Ok({data: {streams}}) =>
+          Js.log2("wyn success: ", streams)
+          let _ = Array.map(streams, stream => {
+            let userId = stream.id
+            let recipient = stream.recipient
+            let amount = stream.amount
+            let paymentTick = stream.paymentTick
+            let interval = stream.interval
+            let numberOfPayments = stream.numberOfPayments
+            let numberOfPaymentsMade = stream.numberOfPaymentsMade
+            if paymentTick == interval {
+              //let _ = makePayment(~recipientAddress=recipient, ~amount)
+              if numberOfPayments == numberOfPaymentsMade + 1 {
+                PaymentStreamManager.gqlClient.mutate(
+                  ~mutation=module(Query.CloseStreamEntry),
+                  Query.CloseStreamEntry.makeVariables(
+                    ~id=userId,
+                    ~paymentsMade=numberOfPayments,
+                    ~state="CLOSED",
+                    (),
+                  ),
+                )
+                ->JsPromise.map(result =>
+                  switch result {
+                  | Ok(_result) => Js.log("success close entry: CLOSED")
+                  | Error(error) => Js.log2("error close entry: ", error)
+                  }
+                )
+                ->ignore
+              } else {
+                let newPaymentTick = 1
+                let newPaymentsMade = numberOfPaymentsMade + 1
+                PaymentStreamManager.gqlClient.mutate(
+                  ~mutation=module(Query.UpdateStreamEntry),
+                  Query.UpdateStreamEntry.makeVariables(
+                    ~id=userId,
+                    ~paymentsMade=newPaymentsMade,
+                    ~paymentTick=newPaymentTick,
+                    (),
+                  ),
+                )
+                ->JsPromise.map(result =>
+                  switch result {
+                  | Ok(_result) => Js.log2("success payment made: ", newPaymentsMade)
+                  | Error(error) => Js.log2("error payment made: ", error)
+                  }
+                )
+                ->ignore
               }
-              
-            )->ignore
+            } else {
+              let newPaymentTick = paymentTick + 1
+              PaymentStreamManager.gqlClient.mutate(
+                ~mutation=module(Query.UpdateStreamEntry),
+                Query.UpdateStreamEntry.makeVariables(
+                  ~id=userId,
+                  ~paymentsMade=numberOfPaymentsMade,
+                  ~paymentTick=newPaymentTick,
+                  (),
+                ),
+              )
+              ->JsPromise.map(result =>
+                switch result {
+                | Ok(_result) => Js.log2("success payment tick: ", newPaymentTick)
+                | Error(error) => Js.log2("error payment tick: ", error)
+                }
+              )
+              ->ignore
+            }
+          })
+        /* let len = Belt.Array.length(streams) - 1
+          for i in 0 to len {
+            switch streams[i] {
+            | Some(stream) =>
+              let userId = stream.id
+              let recipient = stream.recipient
+              let amount = stream.amount
+              let paymentTick = stream.paymentTick
+              let interval = stream.interval
+              let numberOfPayments = stream.numberOfPayments
+              let numberOfPaymentsMade = stream.numberOfPaymentsMade
+              if paymentTick == interval {
+                //let _ = makePayment(~recipientAddress=recipient, ~amount)
+                if numberOfPayments == numberOfPaymentsMade + 1 {
+                  let _ = 0
+                  //TODO remove row from streams table
+                  PaymentStreamManager.gqlClient.mutate(
+                    ~mutation=module(Query.CloseStreamEntry),
+                    Query.CloseStreamEntry.makeVariables(
+                      ~id=userId,
+                      ~paymentsMade=numberOfPayments,
+                      ~state="CLOSED",
+                      (),
+                    ),
+                  )
+                  ->JsPromise.map(result =>
+                    switch result {
+                    | Ok(_result) => Js.log("success close entry: CLOSED")
+                    | Error(error) => Js.log2("error close entry: ", error)
+                    }
+                  )
+                  ->ignore
+                } else {
+                  let newPaymentTick = 1
+                  let newPaymentsMade = numberOfPaymentsMade + 1
+                  PaymentStreamManager.gqlClient.mutate(
+                    ~mutation=module(Query.UpdateStreamEntry),
+                    Query.UpdateStreamEntry.makeVariables(
+                      ~id=userId,
+                      ~paymentsMade=newPaymentsMade,
+                      ~paymentTick=newPaymentTick,
+                      (),
+                    ),
+                  )
+                  ->JsPromise.map(result =>
+                    switch result {
+                    | Ok(_result) => Js.log2("success payment made: ", newPaymentsMade)
+                    | Error(error) => Js.log2("error payment made: ", error)
+                    }
+                  )
+                  ->ignore
+                }
+              } else {
+                let newPaymentTick = paymentTick + 1
+                PaymentStreamManager.gqlClient.mutate(
+                  ~mutation=module(Query.UpdateStreamEntry),
+                  Query.UpdateStreamEntry.makeVariables(
+                    ~id=userId,
+                    ~paymentsMade=numberOfPaymentsMade,
+                    ~paymentTick=newPaymentTick,
+                    (),
+                  ),
+                )
+                ->JsPromise.map(result =>
+                  switch result {
+                  | Ok(_result) => Js.log2("success payment tick: ", newPaymentTick)
+                  | Error(error) => Js.log2("error payment tick: ", error)
+                  }
+                )
+                ->ignore
+              }
+            | None => Js.log2("nothing: ", streams)
+            }
+          }*/
+        | Error(error) => Js.log2("wyn error: ", error)
+        }
+      )
+      ->ignore
+      //
+    },
+    (),
+  )
 
-  let job =
-    CronJob.make(
-      #CronString("* * * * *"), // every minute
-      _ => {
-
-          Js.log("Printing every minute");
-          // TODO: grab the open streams from hasura
-          // let streams = []
-          // let _ = makePayment(~recipientAddress="0x91c0c7b5D42e9B65C8071FbDeC7b1EC54D92AD92",~amount="100000000000000000")
-          // let _ = Array.map(streams, item => {item->paymentHandler});
-
-          
-        },
-      (),
-    );
-
-  start(job);
-} /* execute micropayment amount to recipientAddress [POST request with parameters*/;
+  start(job)
+} /* execute micropayment amount to recipientAddress [POST request with parameters */
