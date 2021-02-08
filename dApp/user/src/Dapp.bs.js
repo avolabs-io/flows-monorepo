@@ -10,7 +10,7 @@ function Dapp(Props) {
   var optSigner = RootProvider$FlowsUserApp.useSigner(undefined);
   React.useEffect((function () {
           if (optWeb3Provider !== undefined && optSigner !== undefined) {
-            RaidenTs.create(Caml_option.valFromOption(optWeb3Provider), 0);
+            RaidenTs.Raiden.create(Caml_option.valFromOption(optWeb3Provider), 0);
           }
           
         }), [
