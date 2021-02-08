@@ -18,10 +18,10 @@ module GetStreamData = %graphql(`
       numberOfPayments
       numberOfPaymentsMade
       recipient
-      start
+      startPayment
       state
       tokenAddress
-      paymentTick
+      nextPayment
     }
   }
 `)
@@ -36,11 +36,11 @@ module CloseStreamEntry = %graphql(`
 `)
 
 module UpdateStreamEntry = %graphql(`
-  mutation UpdateStreamEntry ($id: Int!, $paymentsMade: Int!, $paymentTick: Int!){
-    update_streams_by_pk(pk_columns: {id: $id}, _set: {numberOfPaymentsMade: $paymentsMade, paymentTick: $paymentTick}) {
+  mutation UpdateStreamEntry ($id: Int!, $paymentsMade: Int!, $nextPayment: String!){
+    update_streams_by_pk(pk_columns: {id: $id}, _set: {numberOfPaymentsMade: $paymentsMade, nextPayment: $nextPayment}) {
       id
       numberOfPaymentsMade
-      paymentTick
+      nextPayment
     }
   }
 `)

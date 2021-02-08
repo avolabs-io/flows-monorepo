@@ -113,10 +113,10 @@ var query$1 = (require("@apollo/client").gql`
       numberOfPayments
       numberOfPaymentsMade
       recipient
-      start
+      startPayment
       state
       tokenAddress
-      paymentTick
+      nextPayment
     }
   }
 `);
@@ -133,10 +133,10 @@ function parse$1(value) {
                         numberOfPayments: value.numberOfPayments,
                         numberOfPaymentsMade: value.numberOfPaymentsMade,
                         recipient: value.recipient,
-                        start: value.start,
+                        startPayment: value.startPayment,
                         state: value.state,
                         tokenAddress: value.tokenAddress,
-                        paymentTick: value.paymentTick
+                        nextPayment: value.nextPayment
                       };
               })
         };
@@ -145,10 +145,10 @@ function parse$1(value) {
 function serialize$1(value) {
   var value$1 = value.streams;
   var streams = value$1.map(function (value) {
-        var value$1 = value.paymentTick;
+        var value$1 = value.nextPayment;
         var value$2 = value.tokenAddress;
         var value$3 = value.state;
-        var value$4 = value.start;
+        var value$4 = value.startPayment;
         var value$5 = value.recipient;
         var value$6 = value.numberOfPaymentsMade;
         var value$7 = value.numberOfPayments;
@@ -164,10 +164,10 @@ function serialize$1(value) {
                 numberOfPayments: value$7,
                 numberOfPaymentsMade: value$6,
                 recipient: value$5,
-                start: value$4,
+                startPayment: value$4,
                 state: value$3,
                 tokenAddress: value$2,
-                paymentTick: value$1
+                nextPayment: value$1
               };
       });
   return {
@@ -323,12 +323,12 @@ var CloseStreamEntry = {
 var Raw$3 = {};
 
 var query$3 = (require("@apollo/client").gql`
-  mutation UpdateStreamEntry($id: Int!, $paymentsMade: Int!, $paymentTick: Int!)  {
-    update_streams_by_pk(pk_columns: {id: $id}, _set: {numberOfPaymentsMade: $paymentsMade, paymentTick: $paymentTick})  {
+  mutation UpdateStreamEntry($id: Int!, $paymentsMade: Int!, $nextPayment: String!)  {
+    update_streams_by_pk(pk_columns: {id: $id}, _set: {numberOfPaymentsMade: $paymentsMade, nextPayment: $nextPayment})  {
       __typename
       id
       numberOfPaymentsMade
-      paymentTick
+      nextPayment
     }
   }
 `);
@@ -340,7 +340,7 @@ function parse$3(value) {
                 __typename: value$1.__typename,
                 id: value$1.id,
                 numberOfPaymentsMade: value$1.numberOfPaymentsMade,
-                paymentTick: value$1.paymentTick
+                nextPayment: value$1.nextPayment
               }) : undefined
         };
 }
@@ -349,7 +349,7 @@ function serialize$3(value) {
   var value$1 = value.update_streams_by_pk;
   var update_streams_by_pk;
   if (value$1 !== undefined) {
-    var value$2 = value$1.paymentTick;
+    var value$2 = value$1.nextPayment;
     var value$3 = value$1.numberOfPaymentsMade;
     var value$4 = value$1.id;
     var value$5 = value$1.__typename;
@@ -357,7 +357,7 @@ function serialize$3(value) {
       __typename: value$5,
       id: value$4,
       numberOfPaymentsMade: value$3,
-      paymentTick: value$2
+      nextPayment: value$2
     };
   } else {
     update_streams_by_pk = null;
@@ -371,15 +371,15 @@ function serializeVariables$3(inp) {
   return {
           id: inp.id,
           paymentsMade: inp.paymentsMade,
-          paymentTick: inp.paymentTick
+          nextPayment: inp.nextPayment
         };
 }
 
-function makeVariables$3(id, paymentsMade, paymentTick, param) {
+function makeVariables$3(id, paymentsMade, nextPayment, param) {
   return {
           id: id,
           paymentsMade: paymentsMade,
-          paymentTick: paymentTick
+          nextPayment: nextPayment
         };
 }
 
