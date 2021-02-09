@@ -1,0 +1,10 @@
+- args:
+    cascade: false
+    read_only: false
+    sql: ALTER TABLE "public"."streams" ADD COLUMN "nextPayment" text;
+  type: run_sql
+- args:
+    cascade: false
+    read_only: false
+    sql: ALTER TABLE "public"."streams" ALTER COLUMN "nextPayment" DROP NOT NULL;
+  type: run_sql

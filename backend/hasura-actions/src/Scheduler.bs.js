@@ -7,7 +7,6 @@ var Fetch = require("bs-fetch/src/Fetch.bs.js");
 var Query = require("./Query.bs.js");
 var BsCron = require("bs-cron/src/BsCron.bs.js");
 var Js_dict = require("bs-platform/lib/js/js_dict.js");
-var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
 var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
 var Belt_Float = require("bs-platform/lib/js/belt_Float.js");
 var Caml_option = require("bs-platform/lib/js/caml_option.js");
@@ -55,9 +54,15 @@ function getCurrentTimestamp(param) {
   return getTimestamp(new Date());
 }
 
+function getFinalPayment(extraPayments, maxPayments) {
+  if (extraPayments >= maxPayments) {
+    return maxPayments;
+  } else {
+    return extraPayments;
+  }
+}
+
 function startProcess(param) {
-  var date = new Date();
-  console.log("start date:", date);
   var now = getTimestamp(new Date());
   console.log("start timestamp:", now);
   var job = BsCron.CronJob.make({
@@ -65,33 +70,38 @@ function startProcess(param) {
         VAL: "* * * * *"
       }, (function (param) {
           console.log("printing every minute");
-          var now = getTimestamp(new Date());
-          console.log("timestamp:", now);
+          var currentTimestamp = getTimestamp(new Date());
+          console.log("current timestamp:", currentTimestamp);
           Curry._6(PaymentStreamManager.gqlClient.reason_query, {
                   query: Query.GetStreamData.query,
                   Raw: Query.GetStreamData.Raw,
                   parse: Query.GetStreamData.parse,
                   serialize: Query.GetStreamData.serialize,
                   serializeVariables: Query.GetStreamData.serializeVariables
-                }, undefined, undefined, undefined, undefined, undefined).then(function (result) {
+                }, undefined, undefined, undefined, undefined, Query.GetStreamData.makeVariables(currentTimestamp, undefined)).then(function (result) {
                 if (result.TAG === /* Ok */0) {
                   var streams = result._0.data.streams;
-                  console.log("wyn success: ", streams);
+                  console.log("payment streams in focus:", streams);
                   Belt_Array.map(streams, (function (stream) {
                           var userId = stream.id;
-                          var startPayment = Belt_Float.fromString(stream.startPayment);
-                          var nextPayment = Belt_Float.fromString(stream.nextPayment);
+                          var amount = stream.amount;
+                          var nextPayment = stream.nextPayment;
                           var interval = stream.interval;
                           var numberOfPayments = stream.numberOfPayments;
                           var numberOfPaymentsMade = stream.numberOfPaymentsMade;
-                          if (startPayment === undefined) {
+                          var currentPayment = getTimestamp(new Date());
+                          if (currentPayment < nextPayment) {
                             return ;
                           }
-                          var currentPayment = startPayment + 60.0 * numberOfPaymentsMade + 60.0;
-                          if (!Caml_obj.caml_greaterequal(currentPayment, nextPayment)) {
-                            return ;
+                          var maxPayments = numberOfPayments - numberOfPaymentsMade | 0;
+                          var amountFloat = Belt_Float.fromString(amount);
+                          var extraPayments = (currentPayment - nextPayment) / interval / 60.0;
+                          var extraPaymentsMade = 1 + (extraPayments | 0) | 0;
+                          var finalPayment = getFinalPayment(extraPaymentsMade, maxPayments);
+                          if (finalPayment >= 1 && amountFloat !== undefined) {
+                            String(amountFloat * finalPayment);
                           }
-                          if (numberOfPayments === (numberOfPaymentsMade + 1 | 0)) {
+                          if (numberOfPayments === (numberOfPaymentsMade + finalPayment | 0)) {
                             Curry.app(PaymentStreamManager.gqlClient.reason_mutate, [
                                     {
                                       query: Query.CloseStreamEntry.query,
@@ -120,8 +130,8 @@ function startProcess(param) {
                                 });
                             return ;
                           }
-                          var newPaymentsMade = numberOfPaymentsMade + 1 | 0;
-                          var newNextPayment = currentPayment + 60.0 * interval;
+                          var newPaymentsMade = numberOfPaymentsMade + finalPayment | 0;
+                          var newNextPayment = nextPayment + 60.0 * finalPayment * interval;
                           Curry.app(PaymentStreamManager.gqlClient.reason_mutate, [
                                   {
                                     query: Query.UpdateStreamEntry.query,
@@ -139,7 +149,7 @@ function startProcess(param) {
                                   undefined,
                                   undefined,
                                   undefined,
-                                  Query.UpdateStreamEntry.makeVariables(userId, newPaymentsMade, String(newNextPayment), undefined)
+                                  Query.UpdateStreamEntry.makeVariables(userId, newPaymentsMade, newNextPayment | 0, undefined)
                                 ]).then(function (result) {
                                 if (result.TAG === /* Ok */0) {
                                   console.log("success payment made: ", newPaymentsMade, newNextPayment);
@@ -152,7 +162,7 @@ function startProcess(param) {
                         }));
                   return ;
                 }
-                console.log("wyn error: ", result._0);
+                console.log("error retrieving stream data", result._0);
                 
               });
           
@@ -166,5 +176,6 @@ exports.makePayment = makePayment;
 exports.getTimestamp = getTimestamp;
 exports.fromTimeStampToDate = fromTimeStampToDate;
 exports.getCurrentTimestamp = getCurrentTimestamp;
+exports.getFinalPayment = getFinalPayment;
 exports.startProcess = startProcess;
 /* Query Not a pure module */
