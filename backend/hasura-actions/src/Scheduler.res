@@ -5,31 +5,33 @@ type makePaymentRequest = {
   amount: string,
   identifier: option<string>,
 }
-
-// let dummyData = [
-//   {
-//     recipient: "0xc788F08a2aAf539111e2a2D85BD4B324FBE37B15",
-//     addressTokenStream: "0xb38981469B7235c42DDa836295bE8825Eb4A6389",
-//     lengthOfPayment: 86400, // seconds [86400 equals one day.] Must be a multiple of 60
-//     interval: 60, // this will always be 60 for our demo
-//     // TODO: these values should be BigInt and use `@decco.codec` as the conversion function
-//     rate: "1",
-//     deposit: "7200",
-//     numerOfPaymentsMade: 0,
-//     totalNumberOfPaymentsToMake: 1440,
-//   },
-//   // {
-//   //   recipient: "0xc788F08a2aAf539111e2a2D85BD4B324FBE37B15",
-//   //   addressTokenStream: "0xb38981469B7235c42DDa836295bE8825Eb4A6389",
-//   //   lengthOfPayment: 86400, // seconds [86400 equals one day.] Must be a multiple of 60
-//   //   interval: 60, // this will always be 60 for our demo
-//   //   // TODO: these values should be BigInt and use `@decco.codec` as the conversion function
-//   //   rate: "1",
-//   //   deposit: "14400",
-//   //   numerOfPaymentsMade: 0,
-//   //   totalNumberOfPaymentsToMake: 1440,
-//   // },
-// |];
+/*
+KEPT THIS AS A REMINDER FOR THE DEPOSIT
+let dummyData = [
+  {
+    recipient: "0xc788F08a2aAf539111e2a2D85BD4B324FBE37B15",
+    addressTokenStream: "0xb38981469B7235c42DDa836295bE8825Eb4A6389",
+    lengthOfPayment: 86400, // seconds [86400 equals one day.] Must be a multiple of 60
+    interval: 60, // this will always be 60 for our demo
+    // TODO: these values should be BigInt and use `@decco.codec` as the conversion function
+    rate: "1",
+    deposit: "7200",
+    numerOfPaymentsMade: 0,
+    totalNumberOfPaymentsToMake: 1440,
+  },
+  {
+    recipient: "0xc788F08a2aAf539111e2a2D85BD4B324FBE37B15",
+    addressTokenStream: "0xb38981469B7235c42DDa836295bE8825Eb4A6389",
+    lengthOfPayment: 86400, // seconds [86400 equals one day.] Must be a multiple of 60
+    interval: 60, // this will always be 60 for our demo
+    // TODO: these values should be BigInt and use `@decco.codec` as the conversion function
+    rate: "1",
+    deposit: "14400",
+    numerOfPaymentsMade: 0,
+    totalNumberOfPaymentsToMake: 1440,
+  },
+|];
+*/
 
 let makePayment = (~recipientAddress, ~amount) => {
   Js.log("making payment")
@@ -54,22 +56,7 @@ let makePayment = (~recipientAddress, ~amount) => {
   })
 }
 
-// let paymentHandler = (item: recipientDbData) =>
-//   if (item.numerOfPaymentsMade == item.totalNumberOfPaymentsToMake) {
-//     ();
-//   } else {
-//     let _ = makePayment(item.recipient, item.rate);
-//     // If it was a success, item.numerOfPaymentsMade ++;
-//     // Otherwise print out little shit error
-//     ();
-//   };
-
 /*
-
-0xC563388e2e2fdD422166eD5E76971D11eD37A466
-
-0x91c0c7b5D42e9B65C8071FbDeC7b1EC54D92AD92
-
 curl -X POST --data-raw '{"amount": "100000000000000000"}' http://localhost:5001/api/v1/payments/0xC563388e2e2fdD422166eD5E76971D11eD37A466/0x91c0c7b5D42e9B65C8071FbDeC7b1EC54D92AD92
 
 --data-raw '{"amount":"10000000000000000000","identifier":"1612189154951"}'
@@ -81,31 +68,74 @@ curl 'http://localhost:5001/api/v1/payments/0xC563388e2e2fdD422166eD5E76971D11eD
 curl 'http://localhost:5001/api/v1/payments/0xC563388e2e2fdD422166eD5E76971D11eD37A466/0x91c0c7b5D42e9B65C8071FbDeC7b1EC54D92AD92' -H 'Content-Type: application/json' --data '{"amount":"100000000000000000","identifier":"86"}'
 */
 
+let getTimestamp = date => {
+  (date->Js.Date.getTime /. 1000.0)->Int.fromFloat
+}
+
+let fromTimeStampToDate = timestamp => {
+  (timestamp->Float.fromInt *. 1000.0)->Js.Date.fromFloat
+}
+
+let getCurrentTimestamp = () => {
+  Js.Date.make()->getTimestamp
+}
+
+let getFinalPayment = (extraPayments: int, maxPayments: int) => {
+  if extraPayments >= maxPayments {
+    maxPayments
+  } else {
+    extraPayments
+  }
+}
+
+/*
+USEFUL INFO
+TokenAddress: 0xC563388e2e2fdD422166eD5E76971D11eD37A466
+RecipientAddress: 0x91c0c7b5D42e9B65C8071FbDeC7b1EC54D92AD92
+Amount = 100000000000000000
+*/
+
 let startProcess = () => {
-  /* let _ = makePayment(
-    ~recipientAddress="0x91c0c7b5D42e9B65C8071FbDeC7b1EC54D92AD92",
-    ~amount="100000000000000000",
-  )*/
+  let now = getCurrentTimestamp()
+  Js.log2("start timestamp:", now)
   let job = CronJob.make(
     #CronString("* * * * *"), // every minute
     _ => {
-      Js.log("Printing every minute")
-      PaymentStreamManager.gqlClient.query(~query=module(Query.GetStreamData), ())
+      Js.log("printing every minute")
+      let currentTimestamp = getCurrentTimestamp()
+      Js.log2("current timestamp:", currentTimestamp)
+      PaymentStreamManager.gqlClient.query(
+        ~query=module(Query.GetStreamData),
+        Query.GetStreamData.makeVariables(~currentTimestamp, ()),
+      )
       ->JsPromise.map(result =>
         switch result {
         | Ok({data: {streams}}) =>
-          Js.log2("wyn success: ", streams)
+          Js.log2("payment streams in focus:", streams)
           let _ = Array.map(streams, stream => {
             let userId = stream.id
             let recipient = stream.recipient
             let amount = stream.amount
-            let paymentTick = stream.paymentTick
+            let nextPayment = stream.nextPayment->Int.toFloat
             let interval = stream.interval
             let numberOfPayments = stream.numberOfPayments
             let numberOfPaymentsMade = stream.numberOfPaymentsMade
-            if paymentTick == interval {
-              //let _ = makePayment(~recipientAddress=recipient, ~amount)
-              if numberOfPayments == numberOfPaymentsMade + 1 {
+            let currentPayment = getCurrentTimestamp()->Int.toFloat
+            if currentPayment >= nextPayment {
+              let maxPayments = numberOfPayments - numberOfPaymentsMade
+              let amountFloat = amount->Float.fromString
+              let extraPayments = (currentPayment -. nextPayment) /. interval->Int.toFloat /. 60.0
+              let extraPaymentsMade = 1 + extraPayments->Float.toInt
+              let finalPayment = getFinalPayment(extraPaymentsMade, maxPayments)
+              if finalPayment >= 1 {
+                switch amountFloat {
+                | Some(someAmountFloat) =>
+                  let finalAmount = (someAmountFloat *. finalPayment->Int.toFloat)->Float.toString
+                //let _ = makePayment(~recipientAddress=recipient, ~amount=finalAmount)
+                | None => ()
+                }
+              }
+              if numberOfPayments == numberOfPaymentsMade + finalPayment {
                 PaymentStreamManager.gqlClient.mutate(
                   ~mutation=module(Query.CloseStreamEntry),
                   Query.CloseStreamEntry.makeVariables(
@@ -123,124 +153,33 @@ let startProcess = () => {
                 )
                 ->ignore
               } else {
-                let newPaymentTick = 1
-                let newPaymentsMade = numberOfPaymentsMade + 1
+                let newPaymentsMade = numberOfPaymentsMade + finalPayment
+                let newNextPayment =
+                  nextPayment +. 60.0 *. finalPayment->Int.toFloat *. interval->Int.toFloat
                 PaymentStreamManager.gqlClient.mutate(
                   ~mutation=module(Query.UpdateStreamEntry),
                   Query.UpdateStreamEntry.makeVariables(
                     ~id=userId,
                     ~paymentsMade=newPaymentsMade,
-                    ~paymentTick=newPaymentTick,
+                    ~nextPayment=newNextPayment->Float.toInt,
                     (),
                   ),
                 )
                 ->JsPromise.map(result =>
                   switch result {
-                  | Ok(_result) => Js.log2("success payment made: ", newPaymentsMade)
+                  | Ok(_result) =>
+                    Js.log3("success payment made: ", newPaymentsMade, newNextPayment)
                   | Error(error) => Js.log2("error payment made: ", error)
                   }
                 )
                 ->ignore
               }
-            } else {
-              let newPaymentTick = paymentTick + 1
-              PaymentStreamManager.gqlClient.mutate(
-                ~mutation=module(Query.UpdateStreamEntry),
-                Query.UpdateStreamEntry.makeVariables(
-                  ~id=userId,
-                  ~paymentsMade=numberOfPaymentsMade,
-                  ~paymentTick=newPaymentTick,
-                  (),
-                ),
-              )
-              ->JsPromise.map(result =>
-                switch result {
-                | Ok(_result) => Js.log2("success payment tick: ", newPaymentTick)
-                | Error(error) => Js.log2("error payment tick: ", error)
-                }
-              )
-              ->ignore
             }
           })
-        /* let len = Belt.Array.length(streams) - 1
-          for i in 0 to len {
-            switch streams[i] {
-            | Some(stream) =>
-              let userId = stream.id
-              let recipient = stream.recipient
-              let amount = stream.amount
-              let paymentTick = stream.paymentTick
-              let interval = stream.interval
-              let numberOfPayments = stream.numberOfPayments
-              let numberOfPaymentsMade = stream.numberOfPaymentsMade
-              if paymentTick == interval {
-                //let _ = makePayment(~recipientAddress=recipient, ~amount)
-                if numberOfPayments == numberOfPaymentsMade + 1 {
-                  let _ = 0
-                  //TODO remove row from streams table
-                  PaymentStreamManager.gqlClient.mutate(
-                    ~mutation=module(Query.CloseStreamEntry),
-                    Query.CloseStreamEntry.makeVariables(
-                      ~id=userId,
-                      ~paymentsMade=numberOfPayments,
-                      ~state="CLOSED",
-                      (),
-                    ),
-                  )
-                  ->JsPromise.map(result =>
-                    switch result {
-                    | Ok(_result) => Js.log("success close entry: CLOSED")
-                    | Error(error) => Js.log2("error close entry: ", error)
-                    }
-                  )
-                  ->ignore
-                } else {
-                  let newPaymentTick = 1
-                  let newPaymentsMade = numberOfPaymentsMade + 1
-                  PaymentStreamManager.gqlClient.mutate(
-                    ~mutation=module(Query.UpdateStreamEntry),
-                    Query.UpdateStreamEntry.makeVariables(
-                      ~id=userId,
-                      ~paymentsMade=newPaymentsMade,
-                      ~paymentTick=newPaymentTick,
-                      (),
-                    ),
-                  )
-                  ->JsPromise.map(result =>
-                    switch result {
-                    | Ok(_result) => Js.log2("success payment made: ", newPaymentsMade)
-                    | Error(error) => Js.log2("error payment made: ", error)
-                    }
-                  )
-                  ->ignore
-                }
-              } else {
-                let newPaymentTick = paymentTick + 1
-                PaymentStreamManager.gqlClient.mutate(
-                  ~mutation=module(Query.UpdateStreamEntry),
-                  Query.UpdateStreamEntry.makeVariables(
-                    ~id=userId,
-                    ~paymentsMade=numberOfPaymentsMade,
-                    ~paymentTick=newPaymentTick,
-                    (),
-                  ),
-                )
-                ->JsPromise.map(result =>
-                  switch result {
-                  | Ok(_result) => Js.log2("success payment tick: ", newPaymentTick)
-                  | Error(error) => Js.log2("error payment tick: ", error)
-                  }
-                )
-                ->ignore
-              }
-            | None => Js.log2("nothing: ", streams)
-            }
-          }*/
-        | Error(error) => Js.log2("wyn error: ", error)
+        | Error(error) => Js.log2("error retrieving stream data", error)
         }
       )
       ->ignore
-      //
     },
     (),
   )

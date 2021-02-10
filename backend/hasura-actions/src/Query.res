@@ -10,18 +10,18 @@ module CreatePaymentStream = %graphql(`
 `)
 
 module GetStreamData = %graphql(`
-  query {
-    streams(where: {state: {_eq: "OPEN"}}) {
+  query GetStreamData ($currentTimestamp: Int!){
+    streams(where: {state: {_eq: "OPEN"}, nextPayment: {_lte: $currentTimestamp}}){
       id
       amount
       interval
       numberOfPayments
       numberOfPaymentsMade
       recipient
-      start
       state
       tokenAddress
-      paymentTick
+      startPayment
+      nextPayment
     }
   }
 `)
@@ -36,19 +36,11 @@ module CloseStreamEntry = %graphql(`
 `)
 
 module UpdateStreamEntry = %graphql(`
-  mutation UpdateStreamEntry ($id: Int!, $paymentsMade: Int!, $paymentTick: Int!){
-    update_streams_by_pk(pk_columns: {id: $id}, _set: {numberOfPaymentsMade: $paymentsMade, paymentTick: $paymentTick}) {
+  mutation UpdateStreamEntry ($id: Int!, $paymentsMade: Int!, $nextPayment: Int!){
+    update_streams_by_pk(pk_columns: {id: $id}, _set: {numberOfPaymentsMade: $paymentsMade, nextPayment: $nextPayment}) {
       id
       numberOfPaymentsMade
-      paymentTick
-    }
-  }
-`)
-
-module DeleteStreamEntry = %graphql(`
-  mutation DeleteStreamEntry ($id: Int!){
-    delete_streams_by_pk(id: $id) {
-      id
+      nextPayment
     }
   }
 `)

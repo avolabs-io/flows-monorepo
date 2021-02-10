@@ -14,22 +14,6 @@ tables:
 - table:
     schema: public
     name: streams
-  select_permissions:
-  - role: user
-    permission:
-      columns:
-      - id
-      - recipient
-      - tokenAddress
-      - numberOfPayments
-      - start
-      - interval
-      - amount
-      - numberOfPaymentsMade
-      - state
-      filter:
-        recipient:
-          _eq: X-Hasura-User-Id
 - table:
     schema: public
     name: user
