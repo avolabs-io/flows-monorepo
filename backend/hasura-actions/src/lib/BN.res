@@ -3,6 +3,7 @@ type t
 @module("bn.js") external add: (t, t) => t = "add"
 @module("bn.js") external sub: (t, t) => t = "sub"
 @module("bn.js") external mul: (t, t) => t = "mul"
+@module("bn.js") external div: (t, t) => t = "div"
 @module("bn.js") external max: (t, t) => t = "max"
 @module("bn.js") external min: (t, t) => t = "min"
 @module("bn.js") external cmp: (t, t) => t = "cmp"

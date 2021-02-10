@@ -13,15 +13,15 @@ module GetStreamData = %graphql(`
   query GetStreamData ($currentTimestamp: Int!){
     streams(where: {state: {_eq: "OPEN"}, nextPayment: {_lte: $currentTimestamp}}){
       id
-      amount
-      interval
-      numberOfPayments
-      numberOfPaymentsMade
+      amount @ppxCustom(module: "GqlConverters.BigInt")
+      interval @ppxCustom(module: "GqlConverters.IntToBigInt")
+      numberOfPayments @ppxCustom(module: "GqlConverters.IntToBigInt")
+      numberOfPaymentsMade @ppxCustom(module: "GqlConverters.IntToBigInt")
       recipient
       state
       tokenAddress
-      startPayment
-      nextPayment
+      startPayment @ppxCustom(module: "GqlConverters.IntToBigInt")
+      nextPayment @ppxCustom(module: "GqlConverters.IntToBigInt")
     }
   }
 `)

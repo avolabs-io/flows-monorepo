@@ -5,10 +5,12 @@ var Curry = require("bs-platform/lib/js/curry.js");
 var Decco = require("decco/src/Decco.bs.js");
 var Fetch = require("bs-fetch/src/Fetch.bs.js");
 var Query = require("./Query.bs.js");
+var BnJs = require("bn.js");
 var BsCron = require("bs-cron/src/BsCron.bs.js");
 var Js_dict = require("bs-platform/lib/js/js_dict.js");
+var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
+var CONSTANTS = require("./CONSTANTS.bs.js");
 var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
-var Belt_Float = require("bs-platform/lib/js/belt_Float.js");
 var Caml_option = require("bs-platform/lib/js/caml_option.js");
 var PaymentStreamManager = require("./PaymentStreamManager.bs.js");
 
@@ -54,14 +56,6 @@ function getCurrentTimestamp(param) {
   return getTimestamp(new Date());
 }
 
-function getFinalPayment(extraPayments, maxPayments) {
-  if (extraPayments >= maxPayments) {
-    return maxPayments;
-  } else {
-    return extraPayments;
-  }
-}
-
 function startProcess(param) {
   var now = getTimestamp(new Date());
   console.log("start timestamp:", now);
@@ -89,19 +83,17 @@ function startProcess(param) {
                           var interval = stream.interval;
                           var numberOfPayments = stream.numberOfPayments;
                           var numberOfPaymentsMade = stream.numberOfPaymentsMade;
-                          var currentPayment = getTimestamp(new Date());
-                          if (currentPayment < nextPayment) {
+                          var currentPayment = new BnJs(getTimestamp(new Date()));
+                          if (!Caml_obj.caml_greaterequal(currentPayment, nextPayment)) {
                             return ;
                           }
-                          var maxPayments = numberOfPayments - numberOfPaymentsMade | 0;
-                          var amountFloat = Belt_Float.fromString(amount);
-                          var extraPayments = (currentPayment - nextPayment) / interval / 60.0;
-                          var extraPaymentsMade = 1 + (extraPayments | 0) | 0;
-                          var finalPayment = getFinalPayment(extraPaymentsMade, maxPayments);
-                          if (finalPayment >= 1 && amountFloat !== undefined) {
-                            String(amountFloat * finalPayment);
-                          }
-                          if (numberOfPayments === (numberOfPaymentsMade + finalPayment | 0)) {
+                          var remainingPayments = BnJs.sub(numberOfPayments, numberOfPaymentsMade);
+                          var intervalInSeconds = BnJs.mul(interval, CONSTANTS.big60);
+                          var extraPayments = BnJs.div(BnJs.sub(currentPayment, nextPayment), intervalInSeconds);
+                          var extraPaymentsMade = BnJs.add(extraPayments, CONSTANTS.big1);
+                          var finalPayment = BnJs.min(extraPaymentsMade, remainingPayments);
+                          BnJs.mul(amount, finalPayment).toString();
+                          if (Caml_obj.caml_equal(numberOfPayments, BnJs.add(numberOfPaymentsMade, finalPayment))) {
                             Curry.app(PaymentStreamManager.gqlClient.reason_mutate, [
                                     {
                                       query: Query.CloseStreamEntry.query,
@@ -119,7 +111,7 @@ function startProcess(param) {
                                     undefined,
                                     undefined,
                                     undefined,
-                                    Query.CloseStreamEntry.makeVariables(userId, numberOfPayments, "CLOSED", undefined)
+                                    Query.CloseStreamEntry.makeVariables(userId, numberOfPayments.toNumber(), "CLOSED", undefined)
                                   ]).then(function (result) {
                                   if (result.TAG === /* Ok */0) {
                                     console.log("success close entry: CLOSED");
@@ -130,8 +122,9 @@ function startProcess(param) {
                                 });
                             return ;
                           }
-                          var newPaymentsMade = numberOfPaymentsMade + finalPayment | 0;
-                          var newNextPayment = nextPayment + 60.0 * finalPayment * interval;
+                          var newPaymentsMade = BnJs.add(numberOfPaymentsMade, finalPayment);
+                          var intervalInSeconds$1 = BnJs.mul(interval, CONSTANTS.big60);
+                          var newNextPayment = BnJs.add(nextPayment, BnJs.mul(finalPayment, intervalInSeconds$1));
                           Curry.app(PaymentStreamManager.gqlClient.reason_mutate, [
                                   {
                                     query: Query.UpdateStreamEntry.query,
@@ -149,7 +142,7 @@ function startProcess(param) {
                                   undefined,
                                   undefined,
                                   undefined,
-                                  Query.UpdateStreamEntry.makeVariables(userId, newPaymentsMade, newNextPayment | 0, undefined)
+                                  Query.UpdateStreamEntry.makeVariables(userId, newPaymentsMade.toNumber(), newNextPayment.toNumber(), undefined)
                                 ]).then(function (result) {
                                 if (result.TAG === /* Ok */0) {
                                   console.log("success payment made: ", newPaymentsMade, newNextPayment);
@@ -176,6 +169,5 @@ exports.makePayment = makePayment;
 exports.getTimestamp = getTimestamp;
 exports.fromTimeStampToDate = fromTimeStampToDate;
 exports.getCurrentTimestamp = getCurrentTimestamp;
-exports.getFinalPayment = getFinalPayment;
 exports.startProcess = startProcess;
 /* Query Not a pure module */

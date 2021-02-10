@@ -80,19 +80,16 @@ let getCurrentTimestamp = () => {
   Js.Date.make()->getTimestamp
 }
 
-let getFinalPayment = (extraPayments: int, maxPayments: int) => {
-  if extraPayments >= maxPayments {
-    maxPayments
-  } else {
-    extraPayments
-  }
-}
-
 /*
 USEFUL INFO
 TokenAddress: 0xC563388e2e2fdD422166eD5E76971D11eD37A466
 RecipientAddress: 0x91c0c7b5D42e9B65C8071FbDeC7b1EC54D92AD92
 Amount = 100000000000000000
+*/
+
+/*
+nextPaymentTimestamp = 120, currentPaymentTimestamp = 600, interval = 2
+600 - 120 = 480 / 2 = 240 / 60 = 4
 */
 
 let startProcess = () => {
@@ -116,31 +113,26 @@ let startProcess = () => {
             let userId = stream.id
             let recipient = stream.recipient
             let amount = stream.amount
-            let nextPayment = stream.nextPayment->Int.toFloat
+            let nextPayment = stream.nextPayment
             let interval = stream.interval
             let numberOfPayments = stream.numberOfPayments
             let numberOfPaymentsMade = stream.numberOfPaymentsMade
-            let currentPayment = getCurrentTimestamp()->Int.toFloat
+            let currentPayment = BN.newInt_(getCurrentTimestamp())
+            //check not needed as query filters out values where this is not true
             if currentPayment >= nextPayment {
-              let maxPayments = numberOfPayments - numberOfPaymentsMade
-              let amountFloat = amount->Float.fromString
-              let extraPayments = (currentPayment -. nextPayment) /. interval->Int.toFloat /. 60.0
-              let extraPaymentsMade = 1 + extraPayments->Float.toInt
-              let finalPayment = getFinalPayment(extraPaymentsMade, maxPayments)
-              if finalPayment >= 1 {
-                switch amountFloat {
-                | Some(someAmountFloat) =>
-                  let finalAmount = (someAmountFloat *. finalPayment->Int.toFloat)->Float.toString
-                //let _ = makePayment(~recipientAddress=recipient, ~amount=finalAmount)
-                | None => ()
-                }
-              }
-              if numberOfPayments == numberOfPaymentsMade + finalPayment {
+              let remainingPayments = BN.sub(numberOfPayments, numberOfPaymentsMade)
+              let intervalInSeconds = BN.mul(interval, CONSTANTS.big60)
+              let extraPayments = BN.div(BN.sub(currentPayment, nextPayment), intervalInSeconds)
+              let extraPaymentsMade = BN.add(extraPayments, CONSTANTS.big1)
+              let finalPayment = BN.min(extraPaymentsMade, remainingPayments)
+              let finalAmount = BN.mul(amount, finalPayment)->BN.toString
+              //let _ = makePayment(~recipientAddress=recipient, ~amount=finalAmount)
+              if numberOfPayments == BN.add(numberOfPaymentsMade, finalPayment) {
                 PaymentStreamManager.gqlClient.mutate(
                   ~mutation=module(Query.CloseStreamEntry),
                   Query.CloseStreamEntry.makeVariables(
                     ~id=userId,
-                    ~paymentsMade=numberOfPayments,
+                    ~paymentsMade=numberOfPayments->BN.toNumber,
                     ~state="CLOSED",
                     (),
                   ),
@@ -153,15 +145,16 @@ let startProcess = () => {
                 )
                 ->ignore
               } else {
-                let newPaymentsMade = numberOfPaymentsMade + finalPayment
-                let newNextPayment =
-                  nextPayment +. 60.0 *. finalPayment->Int.toFloat *. interval->Int.toFloat
+                ()
+                let newPaymentsMade = BN.add(numberOfPaymentsMade, finalPayment)
+                let intervalInSeconds = BN.mul(interval, CONSTANTS.big60)
+                let newNextPayment = BN.add(nextPayment, BN.mul(finalPayment, intervalInSeconds))
                 PaymentStreamManager.gqlClient.mutate(
                   ~mutation=module(Query.UpdateStreamEntry),
                   Query.UpdateStreamEntry.makeVariables(
                     ~id=userId,
-                    ~paymentsMade=newPaymentsMade,
-                    ~nextPayment=newNextPayment->Float.toInt,
+                    ~paymentsMade=newPaymentsMade->BN.toNumber,
+                    ~nextPayment=newNextPayment->BN.toNumber,
                     (),
                   ),
                 )
