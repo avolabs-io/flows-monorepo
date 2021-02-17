@@ -33,9 +33,26 @@ let dummyData = [
 |];
 */
 
-let makePayment = (~recipientAddress, ~amount) => {
+let makePayment = (~recipientAddress, ~amount, ~streamID, ~currentPayment) => {
   Js.log("making payment")
-  let requestString =
+  PaymentStreamManager.gqlClient.mutate(
+    ~mutation=module(Query.AddNewPayment),
+    Query.AddNewPayment.makeVariables(
+      ~streamID,
+      ~paymentTimestamp=currentPayment->BN.toNumber,
+      ~paymentState="PENDING",
+      ~paymentAmount=amount,
+      (),
+    ),
+  )
+  ->JsPromise.map(result =>
+    switch result {
+    | Ok(_result) => Js.log("success payment added")
+    | Error(error) => Js.log2("error payment added: ", error)
+    }
+  )
+  ->ignore
+  /* let requestString =
     "http://raiden1:5001/api/v1/payments/0xC563388e2e2fdD422166eD5E76971D11eD37A466/" ++
     recipientAddress
   Js.log2(requestString, amount)
@@ -44,7 +61,9 @@ let makePayment = (~recipientAddress, ~amount) => {
     Fetch.RequestInit.make(
       ~method_=Post,
       ~body=Fetch.BodyInit.make(
-        {amount: amount, identifier: None}->makePaymentRequest_encode->Js.Json.stringify,
+        {amount: amount->BN.toString, identifier: None}
+        ->makePaymentRequest_encode
+        ->Js.Json.stringify,
       ),
       ~headers=Fetch.HeadersInit.make({"Content-Type": "application/json"}),
       (),
@@ -53,7 +72,7 @@ let makePayment = (~recipientAddress, ~amount) => {
   ->JsPromise.then(Fetch.Response.json)
   ->JsPromise.map(json => {
     Js.log2("THE RESULT:", json)
-  })
+  })*/
 }
 
 /*
@@ -68,18 +87,6 @@ curl 'http://localhost:5001/api/v1/payments/0xC563388e2e2fdD422166eD5E76971D11eD
 curl 'http://localhost:5001/api/v1/payments/0xC563388e2e2fdD422166eD5E76971D11eD37A466/0x91c0c7b5D42e9B65C8071FbDeC7b1EC54D92AD92' -H 'Content-Type: application/json' --data '{"amount":"100000000000000000","identifier":"86"}'
 */
 
-let getTimestamp = date => {
-  (date->Js.Date.getTime /. 1000.0)->Int.fromFloat
-}
-
-let fromTimeStampToDate = timestamp => {
-  (timestamp->Float.fromInt *. 1000.0)->Js.Date.fromFloat
-}
-
-let getCurrentTimestamp = () => {
-  Js.Date.make()->getTimestamp
-}
-
 /*
 USEFUL INFO
 TokenAddress: 0xC563388e2e2fdD422166eD5E76971D11eD37A466
@@ -92,13 +99,24 @@ nextPaymentTimestamp = 120, currentPaymentTimestamp = 600, interval = 2
 600 - 120 = 480 / 2 = 240 / 60 = 4
 */
 
+let getTimestamp = date => {
+  (date->Js.Date.getTime /. 1000.0)->Int.fromFloat
+}
+
+let fromTimeStampToDate = timestamp => {
+  (timestamp->Float.fromInt *. 1000.0)->Js.Date.fromFloat
+}
+
+let getCurrentTimestamp = () => {
+  Js.Date.make()->getTimestamp
+}
+
 let startProcess = () => {
   let now = getCurrentTimestamp()
   Js.log2("start timestamp:", now)
   let job = CronJob.make(
     #CronString("* * * * *"), // every minute
     _ => {
-      Js.log("printing every minute")
       let currentTimestamp = getCurrentTimestamp()
       Js.log2("current timestamp:", currentTimestamp)
       PaymentStreamManager.gqlClient.query(
@@ -114,59 +132,95 @@ let startProcess = () => {
             let recipient = stream.recipient
             let amount = stream.amount
             let nextPayment = stream.nextPayment
+            let lastPayment = stream.lastPayment
             let interval = stream.interval
             let numberOfPayments = stream.numberOfPayments
             let numberOfPaymentsMade = stream.numberOfPaymentsMade
-            let currentPayment = BN.newInt_(getCurrentTimestamp())
-            //check not needed as query filters out values where this is not true
-            if currentPayment >= nextPayment {
-              let remainingPayments = BN.sub(numberOfPayments, numberOfPaymentsMade)
-              let intervalInSeconds = BN.mul(interval, CONSTANTS.big60)
-              let extraPayments = BN.div(BN.sub(currentPayment, nextPayment), intervalInSeconds)
-              let extraPaymentsMade = BN.add(extraPayments, CONSTANTS.big1)
-              let finalPayment = BN.min(extraPaymentsMade, remainingPayments)
-              let finalAmount = BN.mul(amount, finalPayment)->BN.toString
-              //let _ = makePayment(~recipientAddress=recipient, ~amount=finalAmount)
-              if numberOfPayments == BN.add(numberOfPaymentsMade, finalPayment) {
-                PaymentStreamManager.gqlClient.mutate(
-                  ~mutation=module(Query.CloseStreamEntry),
-                  Query.CloseStreamEntry.makeVariables(
-                    ~id=userId,
-                    ~paymentsMade=numberOfPayments->BN.toNumber,
-                    ~state="CLOSED",
-                    (),
-                  ),
-                )
-                ->JsPromise.map(result =>
-                  switch result {
-                  | Ok(_result) => Js.log("success close entry: CLOSED")
-                  | Error(error) => Js.log2("error close entry: ", error)
-                  }
-                )
-                ->ignore
-              } else {
-                ()
-                let newPaymentsMade = BN.add(numberOfPaymentsMade, finalPayment)
-                let intervalInSeconds = BN.mul(interval, CONSTANTS.big60)
-                let newNextPayment = BN.add(nextPayment, BN.mul(finalPayment, intervalInSeconds))
-                PaymentStreamManager.gqlClient.mutate(
-                  ~mutation=module(Query.UpdateStreamEntry),
-                  Query.UpdateStreamEntry.makeVariables(
-                    ~id=userId,
-                    ~paymentsMade=newPaymentsMade->BN.toNumber,
-                    ~nextPayment=newNextPayment->BN.toNumber,
-                    (),
-                  ),
-                )
-                ->JsPromise.map(result =>
-                  switch result {
-                  | Ok(_result) =>
-                    Js.log3("success payment made: ", newPaymentsMade, newNextPayment)
-                  | Error(error) => Js.log2("error payment made: ", error)
-                  }
-                )
-                ->ignore
-              }
+            let currentPayment = BN.newInt_(currentTimestamp)
+            if lastPayment != 0 {
+              PaymentStreamManager.gqlClient.query(
+                ~query=module(Query.GetLatestPayment),
+                Query.GetLatestPayment.makeVariables(~streamID=userId, ~lastPayment, ()),
+              )
+              ->JsPromise.map(result =>
+                switch result {
+                | Ok({data: {payments}}) =>
+                  let _ = Array.map(payments, payment => {
+                    let paymentAmount = payment.paymentAmount
+                    let paymentState = payment.paymentState
+                    let paymentTimestamp = payment.paymentTimestamp
+                    if paymentState == "COMPLETE" {
+                      Js.log("last payment is COMPLETE")
+                      let remainingPayments = BN.sub(numberOfPayments, numberOfPaymentsMade)
+                      let intervalInSeconds = BN.mul(interval, CONSTANTS.big60)
+                      let extraPayments = BN.div(
+                        BN.sub(currentPayment, nextPayment),
+                        intervalInSeconds,
+                      )
+                      let extraPaymentsMade = BN.add(extraPayments, CONSTANTS.big1)
+                      let finalPayment = BN.min(extraPaymentsMade, remainingPayments)
+                      let finalAmount = BN.mul(amount, finalPayment)
+                      let _ = makePayment(
+                        ~recipientAddress=recipient,
+                        ~amount=finalAmount->BN.toString,
+                        ~streamID=userId,
+                        ~currentPayment=nextPayment,
+                      )
+                      if numberOfPayments == BN.add(numberOfPaymentsMade, finalPayment) {
+                        PaymentStreamManager.gqlClient.mutate(
+                          ~mutation=module(Query.CloseStreamEntry),
+                          Query.CloseStreamEntry.makeVariables(
+                            ~id=userId,
+                            ~paymentsMade=numberOfPayments->BN.toNumber,
+                            ~state="CLOSED",
+                            (),
+                          ),
+                        )
+                        ->JsPromise.map(result =>
+                          switch result {
+                          | Ok(_result) => Js.log("success close entry: CLOSED")
+                          | Error(error) => Js.log2("error close entry: ", error)
+                          }
+                        )
+                        ->ignore
+                      } else {
+                        let newPaymentsMade = BN.add(numberOfPaymentsMade, finalPayment)
+                        let intervalInSeconds = BN.mul(interval, CONSTANTS.big60)
+                        let newNextPayment = BN.add(
+                          nextPayment,
+                          BN.mul(finalPayment, intervalInSeconds),
+                        )
+                        PaymentStreamManager.gqlClient.mutate(
+                          ~mutation=module(Query.UpdateStreamEntry),
+                          Query.UpdateStreamEntry.makeVariables(
+                            ~id=userId,
+                            ~paymentsMade=newPaymentsMade->BN.toNumber,
+                            ~nextPayment=newNextPayment->BN.toNumber,
+                            ~lastPayment=nextPayment->BN.toNumber,
+                            (),
+                          ),
+                        )
+                        ->JsPromise.map(result =>
+                          switch result {
+                          | Ok(_result) =>
+                            Js.log3("success payment made: ", newPaymentsMade, newNextPayment)
+                          | Error(error) => Js.log2("error payment made: ", error)
+                          }
+                        )
+                        ->ignore
+                      }
+                    }
+                    if paymentState == "PENDING" {
+                      Js.log("last payment is PENDING")
+                    }
+                    if paymentState == "ERROR" {
+                      Js.log("last payment is ERROR")
+                    }
+                  })
+                | Error(error) => Js.log2("error last payment: ", error)
+                }
+              )
+              ->ignore
             }
           })
         | Error(error) => Js.log2("error retrieving stream data", error)

@@ -118,6 +118,7 @@ var query$1 = (require("@apollo/client").gql`
       tokenAddress
       startPayment
       nextPayment
+      lastPayment
     }
   }
 `);
@@ -137,7 +138,8 @@ function parse$1(value) {
                         state: value.state,
                         tokenAddress: value.tokenAddress,
                         startPayment: GqlConverters.IntToBigInt.parse(value.startPayment),
-                        nextPayment: GqlConverters.IntToBigInt.parse(value.nextPayment)
+                        nextPayment: GqlConverters.IntToBigInt.parse(value.nextPayment),
+                        lastPayment: value.lastPayment
                       };
               })
         };
@@ -146,35 +148,37 @@ function parse$1(value) {
 function serialize$1(value) {
   var value$1 = value.streams;
   var streams = value$1.map(function (value) {
-        var value$1 = value.nextPayment;
-        var value$2 = GqlConverters.IntToBigInt.serialize(value$1);
-        var value$3 = value.startPayment;
-        var value$4 = GqlConverters.IntToBigInt.serialize(value$3);
-        var value$5 = value.tokenAddress;
-        var value$6 = value.state;
-        var value$7 = value.recipient;
-        var value$8 = value.numberOfPaymentsMade;
-        var value$9 = GqlConverters.IntToBigInt.serialize(value$8);
-        var value$10 = value.numberOfPayments;
-        var value$11 = GqlConverters.IntToBigInt.serialize(value$10);
-        var value$12 = value.interval;
-        var value$13 = GqlConverters.IntToBigInt.serialize(value$12);
-        var value$14 = value.amount;
-        var value$15 = GqlConverters.$$BigInt.serialize(value$14);
-        var value$16 = value.id;
-        var value$17 = value.__typename;
+        var value$1 = value.lastPayment;
+        var value$2 = value.nextPayment;
+        var value$3 = GqlConverters.IntToBigInt.serialize(value$2);
+        var value$4 = value.startPayment;
+        var value$5 = GqlConverters.IntToBigInt.serialize(value$4);
+        var value$6 = value.tokenAddress;
+        var value$7 = value.state;
+        var value$8 = value.recipient;
+        var value$9 = value.numberOfPaymentsMade;
+        var value$10 = GqlConverters.IntToBigInt.serialize(value$9);
+        var value$11 = value.numberOfPayments;
+        var value$12 = GqlConverters.IntToBigInt.serialize(value$11);
+        var value$13 = value.interval;
+        var value$14 = GqlConverters.IntToBigInt.serialize(value$13);
+        var value$15 = value.amount;
+        var value$16 = GqlConverters.$$BigInt.serialize(value$15);
+        var value$17 = value.id;
+        var value$18 = value.__typename;
         return {
-                __typename: value$17,
-                id: value$16,
-                amount: value$15,
-                interval: value$13,
-                numberOfPayments: value$11,
-                numberOfPaymentsMade: value$9,
-                recipient: value$7,
-                state: value$6,
-                tokenAddress: value$5,
-                startPayment: value$4,
-                nextPayment: value$2
+                __typename: value$18,
+                id: value$17,
+                amount: value$16,
+                interval: value$14,
+                numberOfPayments: value$12,
+                numberOfPaymentsMade: value$10,
+                recipient: value$8,
+                state: value$7,
+                tokenAddress: value$6,
+                startPayment: value$5,
+                nextPayment: value$3,
+                lastPayment: value$1
               };
       });
   return {
@@ -328,12 +332,13 @@ var CloseStreamEntry = {
 var Raw$3 = {};
 
 var query$3 = (require("@apollo/client").gql`
-  mutation UpdateStreamEntry($id: Int!, $paymentsMade: Int!, $nextPayment: Int!)  {
-    update_streams_by_pk(pk_columns: {id: $id}, _set: {numberOfPaymentsMade: $paymentsMade, nextPayment: $nextPayment})  {
+  mutation UpdateStreamEntry($id: Int!, $paymentsMade: Int!, $nextPayment: Int!, $lastPayment: Int!)  {
+    update_streams_by_pk(pk_columns: {id: $id}, _set: {numberOfPaymentsMade: $paymentsMade, nextPayment: $nextPayment, lastPayment: $lastPayment})  {
       __typename
       id
       numberOfPaymentsMade
       nextPayment
+      lastPayment
     }
   }
 `);
@@ -345,7 +350,8 @@ function parse$3(value) {
                 __typename: value$1.__typename,
                 id: value$1.id,
                 numberOfPaymentsMade: value$1.numberOfPaymentsMade,
-                nextPayment: value$1.nextPayment
+                nextPayment: value$1.nextPayment,
+                lastPayment: value$1.lastPayment
               }) : undefined
         };
 }
@@ -354,15 +360,17 @@ function serialize$3(value) {
   var value$1 = value.update_streams_by_pk;
   var update_streams_by_pk;
   if (value$1 !== undefined) {
-    var value$2 = value$1.nextPayment;
-    var value$3 = value$1.numberOfPaymentsMade;
-    var value$4 = value$1.id;
-    var value$5 = value$1.__typename;
+    var value$2 = value$1.lastPayment;
+    var value$3 = value$1.nextPayment;
+    var value$4 = value$1.numberOfPaymentsMade;
+    var value$5 = value$1.id;
+    var value$6 = value$1.__typename;
     update_streams_by_pk = {
-      __typename: value$5,
-      id: value$4,
-      numberOfPaymentsMade: value$3,
-      nextPayment: value$2
+      __typename: value$6,
+      id: value$5,
+      numberOfPaymentsMade: value$4,
+      nextPayment: value$3,
+      lastPayment: value$2
     };
   } else {
     update_streams_by_pk = null;
@@ -376,15 +384,17 @@ function serializeVariables$3(inp) {
   return {
           id: inp.id,
           paymentsMade: inp.paymentsMade,
-          nextPayment: inp.nextPayment
+          nextPayment: inp.nextPayment,
+          lastPayment: inp.lastPayment
         };
 }
 
-function makeVariables$3(id, paymentsMade, nextPayment, param) {
+function makeVariables$3(id, paymentsMade, nextPayment, lastPayment, param) {
   return {
           id: id,
           paymentsMade: paymentsMade,
-          nextPayment: nextPayment
+          nextPayment: nextPayment,
+          lastPayment: lastPayment
         };
 }
 
@@ -421,8 +431,208 @@ var UpdateStreamEntry = {
   useWithVariables: UpdateStreamEntry_useWithVariables
 };
 
+var Raw$4 = {};
+
+var query$4 = (require("@apollo/client").gql`
+  mutation AddNewPayment($streamID: Int!, $paymentTimestamp: Int!, $paymentState: String!, $paymentAmount: String!)  {
+    insert_payments_one(object: {streamID: $streamID, paymentTimestamp: $paymentTimestamp, paymentState: $paymentState, paymentAmount: $paymentAmount})  {
+      __typename
+      streamID
+    }
+  }
+`);
+
+function parse$4(value) {
+  var value$1 = value.insert_payments_one;
+  return {
+          insert_payments_one: !(value$1 == null) ? ({
+                __typename: value$1.__typename,
+                streamID: value$1.streamID
+              }) : undefined
+        };
+}
+
+function serialize$4(value) {
+  var value$1 = value.insert_payments_one;
+  var insert_payments_one;
+  if (value$1 !== undefined) {
+    var value$2 = value$1.streamID;
+    var value$3 = value$1.__typename;
+    insert_payments_one = {
+      __typename: value$3,
+      streamID: value$2
+    };
+  } else {
+    insert_payments_one = null;
+  }
+  return {
+          insert_payments_one: insert_payments_one
+        };
+}
+
+function serializeVariables$4(inp) {
+  return {
+          streamID: inp.streamID,
+          paymentTimestamp: inp.paymentTimestamp,
+          paymentState: inp.paymentState,
+          paymentAmount: inp.paymentAmount
+        };
+}
+
+function makeVariables$4(streamID, paymentTimestamp, paymentState, paymentAmount, param) {
+  return {
+          streamID: streamID,
+          paymentTimestamp: paymentTimestamp,
+          paymentState: paymentState,
+          paymentAmount: paymentAmount
+        };
+}
+
+var AddNewPayment_inner = {
+  Raw: Raw$4,
+  query: query$4,
+  parse: parse$4,
+  serialize: serialize$4,
+  serializeVariables: serializeVariables$4,
+  makeVariables: makeVariables$4
+};
+
+var include$4 = ApolloClient__React_Hooks_UseMutation.Extend({
+      query: query$4,
+      Raw: Raw$4,
+      parse: parse$4,
+      serialize: serialize$4,
+      serializeVariables: serializeVariables$4
+    });
+
+var AddNewPayment_use = include$4.use;
+
+var AddNewPayment_useWithVariables = include$4.useWithVariables;
+
+var AddNewPayment = {
+  AddNewPayment_inner: AddNewPayment_inner,
+  Raw: Raw$4,
+  query: query$4,
+  parse: parse$4,
+  serialize: serialize$4,
+  serializeVariables: serializeVariables$4,
+  makeVariables: makeVariables$4,
+  use: AddNewPayment_use,
+  useWithVariables: AddNewPayment_useWithVariables
+};
+
+var Raw$5 = {};
+
+var query$5 = (require("@apollo/client").gql`
+  query GetLatestPayment($streamID: Int!, $lastPayment: Int!)  {
+    payments(where: {streamID: {_eq: $streamID}, paymentTimestamp: {_eq: $lastPayment}})  {
+      __typename
+      id
+      paymentAmount
+      paymentState
+      paymentTimestamp
+      streamID
+    }
+  }
+`);
+
+function parse$5(value) {
+  var value$1 = value.payments;
+  return {
+          payments: value$1.map(function (value) {
+                return {
+                        __typename: value.__typename,
+                        id: value.id,
+                        paymentAmount: value.paymentAmount,
+                        paymentState: value.paymentState,
+                        paymentTimestamp: GqlConverters.IntToBigInt.parse(value.paymentTimestamp),
+                        streamID: value.streamID
+                      };
+              })
+        };
+}
+
+function serialize$5(value) {
+  var value$1 = value.payments;
+  var payments = value$1.map(function (value) {
+        var value$1 = value.streamID;
+        var value$2 = value.paymentTimestamp;
+        var value$3 = GqlConverters.IntToBigInt.serialize(value$2);
+        var value$4 = value.paymentState;
+        var value$5 = value.paymentAmount;
+        var value$6 = value.id;
+        var value$7 = value.__typename;
+        return {
+                __typename: value$7,
+                id: value$6,
+                paymentAmount: value$5,
+                paymentState: value$4,
+                paymentTimestamp: value$3,
+                streamID: value$1
+              };
+      });
+  return {
+          payments: payments
+        };
+}
+
+function serializeVariables$5(inp) {
+  return {
+          streamID: inp.streamID,
+          lastPayment: inp.lastPayment
+        };
+}
+
+function makeVariables$5(streamID, lastPayment, param) {
+  return {
+          streamID: streamID,
+          lastPayment: lastPayment
+        };
+}
+
+var GetLatestPayment_inner = {
+  Raw: Raw$5,
+  query: query$5,
+  parse: parse$5,
+  serialize: serialize$5,
+  serializeVariables: serializeVariables$5,
+  makeVariables: makeVariables$5
+};
+
+var include$5 = ApolloClient__React_Hooks_UseQuery.Extend({
+      query: query$5,
+      Raw: Raw$5,
+      parse: parse$5,
+      serialize: serialize$5,
+      serializeVariables: serializeVariables$5
+    });
+
+var GetLatestPayment_refetchQueryDescription = include$5.refetchQueryDescription;
+
+var GetLatestPayment_use = include$5.use;
+
+var GetLatestPayment_useLazy = include$5.useLazy;
+
+var GetLatestPayment_useLazyWithVariables = include$5.useLazyWithVariables;
+
+var GetLatestPayment = {
+  GetLatestPayment_inner: GetLatestPayment_inner,
+  Raw: Raw$5,
+  query: query$5,
+  parse: parse$5,
+  serialize: serialize$5,
+  serializeVariables: serializeVariables$5,
+  makeVariables: makeVariables$5,
+  refetchQueryDescription: GetLatestPayment_refetchQueryDescription,
+  use: GetLatestPayment_use,
+  useLazy: GetLatestPayment_useLazy,
+  useLazyWithVariables: GetLatestPayment_useLazyWithVariables
+};
+
 exports.CreatePaymentStream = CreatePaymentStream;
 exports.GetStreamData = GetStreamData;
 exports.CloseStreamEntry = CloseStreamEntry;
 exports.UpdateStreamEntry = UpdateStreamEntry;
+exports.AddNewPayment = AddNewPayment;
+exports.GetLatestPayment = GetLatestPayment;
 /* query Not a pure module */

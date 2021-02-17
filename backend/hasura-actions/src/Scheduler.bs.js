@@ -3,7 +3,6 @@
 
 var Curry = require("bs-platform/lib/js/curry.js");
 var Decco = require("decco/src/Decco.bs.js");
-var Fetch = require("bs-fetch/src/Fetch.bs.js");
 var Query = require("./Query.bs.js");
 var BnJs = require("bn.js");
 var BsCron = require("bs-cron/src/BsCron.bs.js");
@@ -11,7 +10,6 @@ var Js_dict = require("bs-platform/lib/js/js_dict.js");
 var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
 var CONSTANTS = require("./CONSTANTS.bs.js");
 var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
-var Caml_option = require("bs-platform/lib/js/caml_option.js");
 var PaymentStreamManager = require("./PaymentStreamManager.bs.js");
 
 function makePaymentRequest_encode(v) {
@@ -27,21 +25,35 @@ function makePaymentRequest_encode(v) {
             ]);
 }
 
-function makePayment(recipientAddress, amount) {
+function makePayment(recipientAddress, amount, streamID, currentPayment) {
   console.log("making payment");
-  var requestString = "http://raiden1:5001/api/v1/payments/0xC563388e2e2fdD422166eD5E76971D11eD37A466/" + recipientAddress;
-  console.log(requestString, amount);
-  return fetch(requestString, Fetch.RequestInit.make(/* Post */2, {
-                        "Content-Type": "application/json"
-                      }, Caml_option.some(JSON.stringify(makePaymentRequest_encode({
-                                    amount: amount,
-                                    identifier: undefined
-                                  }))), undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined)(undefined)).then(function (prim) {
-                return prim.json();
-              }).then(function (json) {
-              console.log("THE RESULT:", json);
-              
-            });
+  Curry.app(PaymentStreamManager.gqlClient.reason_mutate, [
+          {
+            query: Query.AddNewPayment.query,
+            Raw: Query.AddNewPayment.Raw,
+            parse: Query.AddNewPayment.parse,
+            serialize: Query.AddNewPayment.serialize,
+            serializeVariables: Query.AddNewPayment.serializeVariables
+          },
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          Query.AddNewPayment.makeVariables(streamID, currentPayment.toNumber(), "PENDING", amount, undefined)
+        ]).then(function (result) {
+        if (result.TAG === /* Ok */0) {
+          console.log("success payment added");
+          return ;
+        }
+        console.log("error payment added: ", result._0);
+        
+      });
+  
 }
 
 function getTimestamp(date) {
@@ -63,7 +75,6 @@ function startProcess(param) {
         NAME: "CronString",
         VAL: "* * * * *"
       }, (function (param) {
-          console.log("printing every minute");
           var currentTimestamp = getTimestamp(new Date());
           console.log("current timestamp:", currentTimestamp);
           Curry._6(PaymentStreamManager.gqlClient.reason_query, {
@@ -78,79 +89,109 @@ function startProcess(param) {
                   console.log("payment streams in focus:", streams);
                   Belt_Array.map(streams, (function (stream) {
                           var userId = stream.id;
+                          var recipient = stream.recipient;
                           var amount = stream.amount;
                           var nextPayment = stream.nextPayment;
+                          var lastPayment = stream.lastPayment;
                           var interval = stream.interval;
                           var numberOfPayments = stream.numberOfPayments;
                           var numberOfPaymentsMade = stream.numberOfPaymentsMade;
-                          var currentPayment = new BnJs(getTimestamp(new Date()));
-                          if (!Caml_obj.caml_greaterequal(currentPayment, nextPayment)) {
-                            return ;
-                          }
-                          var remainingPayments = BnJs.sub(numberOfPayments, numberOfPaymentsMade);
-                          var intervalInSeconds = BnJs.mul(interval, CONSTANTS.big60);
-                          var extraPayments = BnJs.div(BnJs.sub(currentPayment, nextPayment), intervalInSeconds);
-                          var extraPaymentsMade = BnJs.add(extraPayments, CONSTANTS.big1);
-                          var finalPayment = BnJs.min(extraPaymentsMade, remainingPayments);
-                          BnJs.mul(amount, finalPayment).toString();
-                          if (Caml_obj.caml_equal(numberOfPayments, BnJs.add(numberOfPaymentsMade, finalPayment))) {
-                            Curry.app(PaymentStreamManager.gqlClient.reason_mutate, [
-                                    {
-                                      query: Query.CloseStreamEntry.query,
-                                      Raw: Query.CloseStreamEntry.Raw,
-                                      parse: Query.CloseStreamEntry.parse,
-                                      serialize: Query.CloseStreamEntry.serialize,
-                                      serializeVariables: Query.CloseStreamEntry.serializeVariables
-                                    },
-                                    undefined,
-                                    undefined,
-                                    undefined,
-                                    undefined,
-                                    undefined,
-                                    undefined,
-                                    undefined,
-                                    undefined,
-                                    undefined,
-                                    Query.CloseStreamEntry.makeVariables(userId, numberOfPayments.toNumber(), "CLOSED", undefined)
-                                  ]).then(function (result) {
+                          var currentPayment = new BnJs(currentTimestamp);
+                          if (lastPayment !== 0) {
+                            Curry._6(PaymentStreamManager.gqlClient.reason_query, {
+                                    query: Query.GetLatestPayment.query,
+                                    Raw: Query.GetLatestPayment.Raw,
+                                    parse: Query.GetLatestPayment.parse,
+                                    serialize: Query.GetLatestPayment.serialize,
+                                    serializeVariables: Query.GetLatestPayment.serializeVariables
+                                  }, undefined, undefined, undefined, undefined, Query.GetLatestPayment.makeVariables(userId, lastPayment, undefined)).then(function (result) {
                                   if (result.TAG === /* Ok */0) {
-                                    console.log("success close entry: CLOSED");
+                                    Belt_Array.map(result._0.data.payments, (function (payment) {
+                                            var paymentState = payment.paymentState;
+                                            if (paymentState === "COMPLETE") {
+                                              console.log("last payment is COMPLETE");
+                                              var remainingPayments = numberOfPayments.sub(numberOfPaymentsMade);
+                                              var intervalInSeconds = interval.mul(CONSTANTS.big60);
+                                              var extraPayments = currentPayment.sub(nextPayment).div(intervalInSeconds);
+                                              var extraPaymentsMade = extraPayments.add(CONSTANTS.big1);
+                                              var finalPayment = BnJs.min(extraPaymentsMade, remainingPayments);
+                                              var finalAmount = amount.mul(finalPayment);
+                                              makePayment(recipient, finalAmount.toString(), userId, nextPayment);
+                                              if (Caml_obj.caml_equal(numberOfPayments, numberOfPaymentsMade.add(finalPayment))) {
+                                                Curry.app(PaymentStreamManager.gqlClient.reason_mutate, [
+                                                        {
+                                                          query: Query.CloseStreamEntry.query,
+                                                          Raw: Query.CloseStreamEntry.Raw,
+                                                          parse: Query.CloseStreamEntry.parse,
+                                                          serialize: Query.CloseStreamEntry.serialize,
+                                                          serializeVariables: Query.CloseStreamEntry.serializeVariables
+                                                        },
+                                                        undefined,
+                                                        undefined,
+                                                        undefined,
+                                                        undefined,
+                                                        undefined,
+                                                        undefined,
+                                                        undefined,
+                                                        undefined,
+                                                        undefined,
+                                                        Query.CloseStreamEntry.makeVariables(userId, numberOfPayments.toNumber(), "CLOSED", undefined)
+                                                      ]).then(function (result) {
+                                                      if (result.TAG === /* Ok */0) {
+                                                        console.log("success close entry: CLOSED");
+                                                        return ;
+                                                      }
+                                                      console.log("error close entry: ", result._0);
+                                                      
+                                                    });
+                                              } else {
+                                                var newPaymentsMade = numberOfPaymentsMade.add(finalPayment);
+                                                var intervalInSeconds$1 = interval.mul(CONSTANTS.big60);
+                                                var newNextPayment = nextPayment.add(finalPayment.mul(intervalInSeconds$1));
+                                                Curry.app(PaymentStreamManager.gqlClient.reason_mutate, [
+                                                        {
+                                                          query: Query.UpdateStreamEntry.query,
+                                                          Raw: Query.UpdateStreamEntry.Raw,
+                                                          parse: Query.UpdateStreamEntry.parse,
+                                                          serialize: Query.UpdateStreamEntry.serialize,
+                                                          serializeVariables: Query.UpdateStreamEntry.serializeVariables
+                                                        },
+                                                        undefined,
+                                                        undefined,
+                                                        undefined,
+                                                        undefined,
+                                                        undefined,
+                                                        undefined,
+                                                        undefined,
+                                                        undefined,
+                                                        undefined,
+                                                        Query.UpdateStreamEntry.makeVariables(userId, newPaymentsMade.toNumber(), newNextPayment.toNumber(), nextPayment.toNumber(), undefined)
+                                                      ]).then(function (result) {
+                                                      if (result.TAG === /* Ok */0) {
+                                                        console.log("success payment made: ", newPaymentsMade, newNextPayment);
+                                                        return ;
+                                                      }
+                                                      console.log("error payment made: ", result._0);
+                                                      
+                                                    });
+                                              }
+                                            }
+                                            if (paymentState === "PENDING") {
+                                              console.log("last payment is PENDING");
+                                            }
+                                            if (paymentState === "ERROR") {
+                                              console.log("last payment is ERROR");
+                                              return ;
+                                            }
+                                            
+                                          }));
                                     return ;
                                   }
-                                  console.log("error close entry: ", result._0);
+                                  console.log("error last payment: ", result._0);
                                   
                                 });
                             return ;
                           }
-                          var newPaymentsMade = BnJs.add(numberOfPaymentsMade, finalPayment);
-                          var intervalInSeconds$1 = BnJs.mul(interval, CONSTANTS.big60);
-                          var newNextPayment = BnJs.add(nextPayment, BnJs.mul(finalPayment, intervalInSeconds$1));
-                          Curry.app(PaymentStreamManager.gqlClient.reason_mutate, [
-                                  {
-                                    query: Query.UpdateStreamEntry.query,
-                                    Raw: Query.UpdateStreamEntry.Raw,
-                                    parse: Query.UpdateStreamEntry.parse,
-                                    serialize: Query.UpdateStreamEntry.serialize,
-                                    serializeVariables: Query.UpdateStreamEntry.serializeVariables
-                                  },
-                                  undefined,
-                                  undefined,
-                                  undefined,
-                                  undefined,
-                                  undefined,
-                                  undefined,
-                                  undefined,
-                                  undefined,
-                                  undefined,
-                                  Query.UpdateStreamEntry.makeVariables(userId, newPaymentsMade.toNumber(), newNextPayment.toNumber(), undefined)
-                                ]).then(function (result) {
-                                if (result.TAG === /* Ok */0) {
-                                  console.log("success payment made: ", newPaymentsMade, newNextPayment);
-                                  return ;
-                                }
-                                console.log("error payment made: ", result._0);
-                                
-                              });
                           
                         }));
                   return ;
