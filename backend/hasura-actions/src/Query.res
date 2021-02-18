@@ -50,6 +50,7 @@ module UpdateStreamEntry = %graphql(`
 module AddNewPayment = %graphql(`
   mutation AddNewPayment ($streamID: Int!, $paymentTimestamp: Int!, $paymentState: String!, $paymentAmount: String!){
     insert_payments_one(object: {streamID: $streamID, paymentTimestamp: $paymentTimestamp, paymentState: $paymentState, paymentAmount: $paymentAmount}) {
+      id
       streamID
     }
   }

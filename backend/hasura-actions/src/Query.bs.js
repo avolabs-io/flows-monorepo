@@ -437,6 +437,7 @@ var query$4 = (require("@apollo/client").gql`
   mutation AddNewPayment($streamID: Int!, $paymentTimestamp: Int!, $paymentState: String!, $paymentAmount: String!)  {
     insert_payments_one(object: {streamID: $streamID, paymentTimestamp: $paymentTimestamp, paymentState: $paymentState, paymentAmount: $paymentAmount})  {
       __typename
+      id
       streamID
     }
   }
@@ -447,6 +448,7 @@ function parse$4(value) {
   return {
           insert_payments_one: !(value$1 == null) ? ({
                 __typename: value$1.__typename,
+                id: value$1.id,
                 streamID: value$1.streamID
               }) : undefined
         };
@@ -457,9 +459,11 @@ function serialize$4(value) {
   var insert_payments_one;
   if (value$1 !== undefined) {
     var value$2 = value$1.streamID;
-    var value$3 = value$1.__typename;
+    var value$3 = value$1.id;
+    var value$4 = value$1.__typename;
     insert_payments_one = {
-      __typename: value$3,
+      __typename: value$4,
+      id: value$3,
       streamID: value$2
     };
   } else {
