@@ -3,12 +3,14 @@
 
 var Curry = require("bs-platform/lib/js/curry.js");
 var Decco = require("decco/src/Decco.bs.js");
+var Fetch = require("bs-fetch/src/Fetch.bs.js");
 var Query = require("./Query.bs.js");
 var BnJs = require("bn.js");
 var BsCron = require("bs-cron/src/BsCron.bs.js");
 var Js_dict = require("bs-platform/lib/js/js_dict.js");
 var CONSTANTS = require("./CONSTANTS.bs.js");
 var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
+var Caml_option = require("bs-platform/lib/js/caml_option.js");
 var PaymentStreamManager = require("./PaymentStreamManager.bs.js");
 
 function makePaymentRequest_encode(v) {
@@ -85,38 +87,50 @@ function makePayment(recipientAddress, paymentData) {
           console.log("error close entry: ", result._0);
           
         });
-    return ;
+  } else {
+    var newPaymentsMade = paymentData.numberOfPaymentsMade.add(finalPayment);
+    var intervalInSeconds$1 = paymentData.interval.mul(CONSTANTS.big60);
+    var newNextPayment = paymentData.nextPayment.add(finalPayment.mul(intervalInSeconds$1));
+    Curry.app(PaymentStreamManager.gqlClient.reason_mutate, [
+            {
+              query: Query.UpdateStreamEntry.query,
+              Raw: Query.UpdateStreamEntry.Raw,
+              parse: Query.UpdateStreamEntry.parse,
+              serialize: Query.UpdateStreamEntry.serialize,
+              serializeVariables: Query.UpdateStreamEntry.serializeVariables
+            },
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            Query.UpdateStreamEntry.makeVariables(paymentData.streamID, newPaymentsMade.toNumber(), newNextPayment.toNumber(), paymentData.nextPayment.toNumber(), undefined)
+          ]).then(function (result) {
+          if (result.TAG === /* Ok */0) {
+            console.log("success payment made: ", newPaymentsMade, newNextPayment);
+            return ;
+          }
+          console.log("error payment made: ", result._0);
+          
+        });
   }
-  var newPaymentsMade = paymentData.numberOfPaymentsMade.add(finalPayment);
-  var intervalInSeconds$1 = paymentData.interval.mul(CONSTANTS.big60);
-  var newNextPayment = paymentData.nextPayment.add(finalPayment.mul(intervalInSeconds$1));
-  Curry.app(PaymentStreamManager.gqlClient.reason_mutate, [
-          {
-            query: Query.UpdateStreamEntry.query,
-            Raw: Query.UpdateStreamEntry.Raw,
-            parse: Query.UpdateStreamEntry.parse,
-            serialize: Query.UpdateStreamEntry.serialize,
-            serializeVariables: Query.UpdateStreamEntry.serializeVariables
-          },
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          Query.UpdateStreamEntry.makeVariables(paymentData.streamID, newPaymentsMade.toNumber(), newNextPayment.toNumber(), paymentData.nextPayment.toNumber(), undefined)
-        ]).then(function (result) {
-        if (result.TAG === /* Ok */0) {
-          console.log("success payment made: ", newPaymentsMade, newNextPayment);
-          return ;
-        }
-        console.log("error payment made: ", result._0);
-        
-      });
-  
+  var requestString = "http://localhost:5001/api/v1/payments/0xC563388e2e2fdD422166eD5E76971D11eD37A466/" + recipientAddress;
+  console.log(requestString, finalAmount.toString());
+  return fetch(requestString, Fetch.RequestInit.make(/* Post */2, {
+                        "Content-Type": "application/json"
+                      }, Caml_option.some(JSON.stringify(makePaymentRequest_encode({
+                                    amount: finalAmount.toString(),
+                                    identifier: undefined
+                                  }))), undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined)(undefined)).then(function (prim) {
+                return prim.json();
+              }).then(function (json) {
+              console.log("THE RESULT:", json);
+              
+            });
 }
 
 function getTimestamp(date) {

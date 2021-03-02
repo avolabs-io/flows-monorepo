@@ -87,7 +87,7 @@ let makePayment = (~recipientAddress, ~paymentData: streamData) => {
     ->ignore
   }
   /* let requestString =
-    "http://raiden1:5001/api/v1/payments/0xC563388e2e2fdD422166eD5E76971D11eD37A466/" ++
+    "http://localhost:5001/api/v1/payments/0xC563388e2e2fdD422166eD5E76971D11eD37A466/" ++
     recipientAddress
   Js.log2(requestString, finalAmount->BN.toString)
   Fetch.fetchWithInit(
@@ -234,7 +234,7 @@ curl 'http://localhost:5001/api/v1/payments/0xC563388e2e2fdD422166eD5E76971D11eD
 
 curl 'http://localhost:5001/api/v1/payments/0xC563388e2e2fdD422166eD5E76971D11eD37A466/0x91c0c7b5D42e9B65C8071FbDeC7b1EC54D92AD92' -H 'Content-Type: application/json' --data-raw '{"amount":"100000000000000000","identifier":"86"}'
 
-curl 'http://localhost:5001/api/v1/payments/0xC563388e2e2fdD422166eD5E76971D11eD37A466/0x91c0c7b5D42e9B65C8071FbDeC7b1EC54D92AD92' -H 'Content-Type: application/json' --data '{"amount":"100000000000000000","identifier":"86"}'
+curl 'http://localhost:5001/api/v1/payments/0xC563388e2e2fdD422166eD5E76971D11eD37A466/0x6533180A035401d917535d889EfB8CE47Cf3bb22' -H 'Content-Type: application/json' --data '{"amount":"100000000000000000","identifier":"86"}'
 */
 
 /*
