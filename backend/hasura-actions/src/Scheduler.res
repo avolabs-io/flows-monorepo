@@ -31,7 +31,7 @@ let makePayment = (~recipientAddress, ~paymentData: streamData) => {
     ~mutation=module(Query.AddNewPayment),
     Query.AddNewPayment.makeVariables(
       ~streamID=paymentData.streamID,
-      ~paymentTimestamp=paymentData.currentPayment->BN.toNumber,
+      ~paymentTimestamp=paymentData.nextPayment->BN.toNumber,
       ~paymentState="PENDING",
       ~paymentAmount=finalAmount->BN.toString,
       (),
@@ -39,15 +39,13 @@ let makePayment = (~recipientAddress, ~paymentData: streamData) => {
   )
   ->JsPromise.map(result =>
     switch result {
-    | Ok({data: insert_payments_one}) =>
-      ()
-
-      Js.log("success payment added")
+    | Ok({data}) => Js.log2("success payment added", data.insert_payments_one)
     | Error(error) => Js.log2("error payment added: ", error)
     }
   )
   ->ignore
-  if BN.eq(paymentData.numberOfPayments, BN.add(paymentData.numberOfPaymentsMade, finalPayment)) {
+  let totalPayments = BN.add(paymentData.numberOfPaymentsMade, finalPayment)
+  if BN.eq(paymentData.numberOfPayments, totalPayments) {
     PaymentStreamManager.gqlClient.mutate(
       ~mutation=module(Query.CloseStreamEntry),
       Query.CloseStreamEntry.makeVariables(
@@ -86,8 +84,8 @@ let makePayment = (~recipientAddress, ~paymentData: streamData) => {
     )
     ->ignore
   }
-  /* let requestString =
-    "http://localhost:5001/api/v1/payments/0xC563388e2e2fdD422166eD5E76971D11eD37A466/" ++
+  let requestString =
+    "http://raiden1:5001/api/v1/payments/0xC563388e2e2fdD422166eD5E76971D11eD37A466/" ++
     recipientAddress
   Js.log2(requestString, finalAmount->BN.toString)
   Fetch.fetchWithInit(
@@ -106,7 +104,38 @@ let makePayment = (~recipientAddress, ~paymentData: streamData) => {
   ->JsPromise.then(Fetch.Response.json)
   ->JsPromise.map(json => {
     Js.log2("THE RESULT:", json)
-  })*/
+    if Js.String.includes("errors", Js.Json.stringify(json)) == false {
+      Js.log("SUCCESS")
+      //TODO not sure how to get the payment ID back from the AddNewPayment mutation
+      /* let paymentID = 1
+      PaymentStreamManager.gqlClient.mutate(
+        ~mutation=module(Query.UpdatePaymentEntry),
+        Query.UpdatePaymentEntry.makeVariables(~paymentID, ~paymentState="COMPLETE", ()),
+      )
+      ->JsPromise.map(result =>
+        switch result {
+        | Ok(_result) => Js.log("success payment COMPLETE")
+        | Error(error) => Js.log2("error payment COMPLETE: ", error)
+        }
+      )
+      ->ignore*/
+    } else {
+      Js.log("ERROR")
+      //TODO not sure how to get the payment ID back from the AddNewPayment mutation
+      /* let paymentID = 1
+      PaymentStreamManager.gqlClient.mutate(
+        ~mutation=module(Query.UpdatePaymentEntry),
+        Query.UpdatePaymentEntry.makeVariables(~paymentID, ~paymentState="ERROR", ()),
+      )
+      ->JsPromise.map(result =>
+        switch result {
+        | Ok(_result) => Js.log("success payment ERROR")
+        | Error(error) => Js.log2("error payment ERROR: ", error)
+        }
+      )
+      ->ignore*/
+    }
+  })
 }
 
 let getTimestamp = date => {

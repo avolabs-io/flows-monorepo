@@ -8,6 +8,110 @@ var ApolloClient__React_Hooks_UseMutation = require("reason-apollo-client/src/@a
 var Raw = {};
 
 var query = (require("@apollo/client").gql`
+  mutation AddNewUser($name: String!, $address: String!, $description: String!)  {
+    insert_user_one(object: {name: $name, ethAddress: $address, description: $description})  {
+      __typename
+      name
+      ethAddress
+      description
+    }
+  }
+`);
+
+function parse(value) {
+  var value$1 = value.insert_user_one;
+  var tmp;
+  if (value$1 == null) {
+    tmp = undefined;
+  } else {
+    var value$2 = value$1.description;
+    tmp = {
+      __typename: value$1.__typename,
+      name: value$1.name,
+      ethAddress: value$1.ethAddress,
+      description: !(value$2 == null) ? value$2 : undefined
+    };
+  }
+  return {
+          insert_user_one: tmp
+        };
+}
+
+function serialize(value) {
+  var value$1 = value.insert_user_one;
+  var insert_user_one;
+  if (value$1 !== undefined) {
+    var value$2 = value$1.description;
+    var description = value$2 !== undefined ? value$2 : null;
+    var value$3 = value$1.ethAddress;
+    var value$4 = value$1.name;
+    var value$5 = value$1.__typename;
+    insert_user_one = {
+      __typename: value$5,
+      name: value$4,
+      ethAddress: value$3,
+      description: description
+    };
+  } else {
+    insert_user_one = null;
+  }
+  return {
+          insert_user_one: insert_user_one
+        };
+}
+
+function serializeVariables(inp) {
+  return {
+          name: inp.name,
+          address: inp.address,
+          description: inp.description
+        };
+}
+
+function makeVariables(name, address, description, param) {
+  return {
+          name: name,
+          address: address,
+          description: description
+        };
+}
+
+var AddNewUser_inner = {
+  Raw: Raw,
+  query: query,
+  parse: parse,
+  serialize: serialize,
+  serializeVariables: serializeVariables,
+  makeVariables: makeVariables
+};
+
+var include = ApolloClient__React_Hooks_UseMutation.Extend({
+      query: query,
+      Raw: Raw,
+      parse: parse,
+      serialize: serialize,
+      serializeVariables: serializeVariables
+    });
+
+var AddNewUser_use = include.use;
+
+var AddNewUser_useWithVariables = include.useWithVariables;
+
+var AddNewUser = {
+  AddNewUser_inner: AddNewUser_inner,
+  Raw: Raw,
+  query: query,
+  parse: parse,
+  serialize: serialize,
+  serializeVariables: serializeVariables,
+  makeVariables: makeVariables,
+  use: AddNewUser_use,
+  useWithVariables: AddNewUser_useWithVariables
+};
+
+var Raw$1 = {};
+
+var query$1 = (require("@apollo/client").gql`
   mutation CreatePayment($amount: String!, $interval: Int!, $numberOfPayments: Int!, $recipient: String!, $start: Int!, $state: String, $tokenAddress: String!)  {
     insert_streams_one(object: {amount: $amount, interval: $interval, numberOfPayments: $numberOfPayments, numberOfPaymentsMade: 0, recipient: $recipient, start: $start, state: $state, tokenAddress: $tokenAddress})  {
       __typename
@@ -16,7 +120,7 @@ var query = (require("@apollo/client").gql`
   }
 `);
 
-function parse(value) {
+function parse$1(value) {
   var value$1 = value.insert_streams_one;
   return {
           insert_streams_one: !(value$1 == null) ? ({
@@ -26,7 +130,7 @@ function parse(value) {
         };
 }
 
-function serialize(value) {
+function serialize$1(value) {
   var value$1 = value.insert_streams_one;
   var insert_streams_one;
   if (value$1 !== undefined) {
@@ -44,7 +148,7 @@ function serialize(value) {
         };
 }
 
-function serializeVariables(inp) {
+function serializeVariables$1(inp) {
   var a = inp.state;
   return {
           amount: inp.amount,
@@ -57,7 +161,7 @@ function serializeVariables(inp) {
         };
 }
 
-function makeVariables(amount, interval, numberOfPayments, recipient, start, state, tokenAddress, param) {
+function makeVariables$1(amount, interval, numberOfPayments, recipient, start, state, tokenAddress, param) {
   return {
           amount: amount,
           interval: interval,
@@ -70,41 +174,41 @@ function makeVariables(amount, interval, numberOfPayments, recipient, start, sta
 }
 
 var CreatePaymentStream_inner = {
-  Raw: Raw,
-  query: query,
-  parse: parse,
-  serialize: serialize,
-  serializeVariables: serializeVariables,
-  makeVariables: makeVariables
+  Raw: Raw$1,
+  query: query$1,
+  parse: parse$1,
+  serialize: serialize$1,
+  serializeVariables: serializeVariables$1,
+  makeVariables: makeVariables$1
 };
 
-var include = ApolloClient__React_Hooks_UseMutation.Extend({
-      query: query,
-      Raw: Raw,
-      parse: parse,
-      serialize: serialize,
-      serializeVariables: serializeVariables
+var include$1 = ApolloClient__React_Hooks_UseMutation.Extend({
+      query: query$1,
+      Raw: Raw$1,
+      parse: parse$1,
+      serialize: serialize$1,
+      serializeVariables: serializeVariables$1
     });
 
-var CreatePaymentStream_use = include.use;
+var CreatePaymentStream_use = include$1.use;
 
-var CreatePaymentStream_useWithVariables = include.useWithVariables;
+var CreatePaymentStream_useWithVariables = include$1.useWithVariables;
 
 var CreatePaymentStream = {
   CreatePaymentStream_inner: CreatePaymentStream_inner,
-  Raw: Raw,
-  query: query,
-  parse: parse,
-  serialize: serialize,
-  serializeVariables: serializeVariables,
-  makeVariables: makeVariables,
+  Raw: Raw$1,
+  query: query$1,
+  parse: parse$1,
+  serialize: serialize$1,
+  serializeVariables: serializeVariables$1,
+  makeVariables: makeVariables$1,
   use: CreatePaymentStream_use,
   useWithVariables: CreatePaymentStream_useWithVariables
 };
 
-var Raw$1 = {};
+var Raw$2 = {};
 
-var query$1 = (require("@apollo/client").gql`
+var query$2 = (require("@apollo/client").gql`
   query GetStreamData($currentTimestamp: Int!)  {
     streams(where: {state: {_eq: "OPEN"}, nextPayment: {_lte: $currentTimestamp}})  {
       __typename
@@ -123,7 +227,7 @@ var query$1 = (require("@apollo/client").gql`
   }
 `);
 
-function parse$1(value) {
+function parse$2(value) {
   var value$1 = value.streams;
   return {
           streams: value$1.map(function (value) {
@@ -145,7 +249,7 @@ function parse$1(value) {
         };
 }
 
-function serialize$1(value) {
+function serialize$2(value) {
   var value$1 = value.streams;
   var streams = value$1.map(function (value) {
         var value$1 = value.lastPayment;
@@ -186,60 +290,60 @@ function serialize$1(value) {
         };
 }
 
-function serializeVariables$1(inp) {
+function serializeVariables$2(inp) {
   return {
           currentTimestamp: inp.currentTimestamp
         };
 }
 
-function makeVariables$1(currentTimestamp, param) {
+function makeVariables$2(currentTimestamp, param) {
   return {
           currentTimestamp: currentTimestamp
         };
 }
 
 var GetStreamData_inner = {
-  Raw: Raw$1,
-  query: query$1,
-  parse: parse$1,
-  serialize: serialize$1,
-  serializeVariables: serializeVariables$1,
-  makeVariables: makeVariables$1
+  Raw: Raw$2,
+  query: query$2,
+  parse: parse$2,
+  serialize: serialize$2,
+  serializeVariables: serializeVariables$2,
+  makeVariables: makeVariables$2
 };
 
-var include$1 = ApolloClient__React_Hooks_UseQuery.Extend({
-      query: query$1,
-      Raw: Raw$1,
-      parse: parse$1,
-      serialize: serialize$1,
-      serializeVariables: serializeVariables$1
+var include$2 = ApolloClient__React_Hooks_UseQuery.Extend({
+      query: query$2,
+      Raw: Raw$2,
+      parse: parse$2,
+      serialize: serialize$2,
+      serializeVariables: serializeVariables$2
     });
 
-var GetStreamData_refetchQueryDescription = include$1.refetchQueryDescription;
+var GetStreamData_refetchQueryDescription = include$2.refetchQueryDescription;
 
-var GetStreamData_use = include$1.use;
+var GetStreamData_use = include$2.use;
 
-var GetStreamData_useLazy = include$1.useLazy;
+var GetStreamData_useLazy = include$2.useLazy;
 
-var GetStreamData_useLazyWithVariables = include$1.useLazyWithVariables;
+var GetStreamData_useLazyWithVariables = include$2.useLazyWithVariables;
 
 var GetStreamData = {
   GetStreamData_inner: GetStreamData_inner,
-  Raw: Raw$1,
-  query: query$1,
-  parse: parse$1,
-  serialize: serialize$1,
-  serializeVariables: serializeVariables$1,
-  makeVariables: makeVariables$1,
+  Raw: Raw$2,
+  query: query$2,
+  parse: parse$2,
+  serialize: serialize$2,
+  serializeVariables: serializeVariables$2,
+  makeVariables: makeVariables$2,
   refetchQueryDescription: GetStreamData_refetchQueryDescription,
   use: GetStreamData_use,
   useLazy: GetStreamData_useLazy,
   useLazyWithVariables: GetStreamData_useLazyWithVariables
 };
 
-var Raw$2 = {};
+var Raw$3 = {};
 
-var query$2 = (require("@apollo/client").gql`
+var query$3 = (require("@apollo/client").gql`
   mutation CloseStreamEntry($id: Int!, $paymentsMade: Int!, $state: String!)  {
     update_streams_by_pk(pk_columns: {id: $id}, _set: {numberOfPaymentsMade: $paymentsMade, state: $state})  {
       __typename
@@ -249,7 +353,7 @@ var query$2 = (require("@apollo/client").gql`
   }
 `);
 
-function parse$2(value) {
+function parse$3(value) {
   var value$1 = value.update_streams_by_pk;
   return {
           update_streams_by_pk: !(value$1 == null) ? ({
@@ -260,7 +364,7 @@ function parse$2(value) {
         };
 }
 
-function serialize$2(value) {
+function serialize$3(value) {
   var value$1 = value.update_streams_by_pk;
   var update_streams_by_pk;
   if (value$1 !== undefined) {
@@ -280,7 +384,7 @@ function serialize$2(value) {
         };
 }
 
-function serializeVariables$2(inp) {
+function serializeVariables$3(inp) {
   return {
           id: inp.id,
           paymentsMade: inp.paymentsMade,
@@ -288,7 +392,7 @@ function serializeVariables$2(inp) {
         };
 }
 
-function makeVariables$2(id, paymentsMade, state, param) {
+function makeVariables$3(id, paymentsMade, state, param) {
   return {
           id: id,
           paymentsMade: paymentsMade,
@@ -297,41 +401,41 @@ function makeVariables$2(id, paymentsMade, state, param) {
 }
 
 var CloseStreamEntry_inner = {
-  Raw: Raw$2,
-  query: query$2,
-  parse: parse$2,
-  serialize: serialize$2,
-  serializeVariables: serializeVariables$2,
-  makeVariables: makeVariables$2
+  Raw: Raw$3,
+  query: query$3,
+  parse: parse$3,
+  serialize: serialize$3,
+  serializeVariables: serializeVariables$3,
+  makeVariables: makeVariables$3
 };
 
-var include$2 = ApolloClient__React_Hooks_UseMutation.Extend({
-      query: query$2,
-      Raw: Raw$2,
-      parse: parse$2,
-      serialize: serialize$2,
-      serializeVariables: serializeVariables$2
+var include$3 = ApolloClient__React_Hooks_UseMutation.Extend({
+      query: query$3,
+      Raw: Raw$3,
+      parse: parse$3,
+      serialize: serialize$3,
+      serializeVariables: serializeVariables$3
     });
 
-var CloseStreamEntry_use = include$2.use;
+var CloseStreamEntry_use = include$3.use;
 
-var CloseStreamEntry_useWithVariables = include$2.useWithVariables;
+var CloseStreamEntry_useWithVariables = include$3.useWithVariables;
 
 var CloseStreamEntry = {
   CloseStreamEntry_inner: CloseStreamEntry_inner,
-  Raw: Raw$2,
-  query: query$2,
-  parse: parse$2,
-  serialize: serialize$2,
-  serializeVariables: serializeVariables$2,
-  makeVariables: makeVariables$2,
+  Raw: Raw$3,
+  query: query$3,
+  parse: parse$3,
+  serialize: serialize$3,
+  serializeVariables: serializeVariables$3,
+  makeVariables: makeVariables$3,
   use: CloseStreamEntry_use,
   useWithVariables: CloseStreamEntry_useWithVariables
 };
 
-var Raw$3 = {};
+var Raw$4 = {};
 
-var query$3 = (require("@apollo/client").gql`
+var query$4 = (require("@apollo/client").gql`
   mutation UpdateStreamEntry($id: Int!, $paymentsMade: Int!, $nextPayment: Int!, $lastPayment: Int!)  {
     update_streams_by_pk(pk_columns: {id: $id}, _set: {numberOfPaymentsMade: $paymentsMade, nextPayment: $nextPayment, lastPayment: $lastPayment})  {
       __typename
@@ -343,7 +447,7 @@ var query$3 = (require("@apollo/client").gql`
   }
 `);
 
-function parse$3(value) {
+function parse$4(value) {
   var value$1 = value.update_streams_by_pk;
   return {
           update_streams_by_pk: !(value$1 == null) ? ({
@@ -356,7 +460,7 @@ function parse$3(value) {
         };
 }
 
-function serialize$3(value) {
+function serialize$4(value) {
   var value$1 = value.update_streams_by_pk;
   var update_streams_by_pk;
   if (value$1 !== undefined) {
@@ -380,7 +484,7 @@ function serialize$3(value) {
         };
 }
 
-function serializeVariables$3(inp) {
+function serializeVariables$4(inp) {
   return {
           id: inp.id,
           paymentsMade: inp.paymentsMade,
@@ -389,7 +493,7 @@ function serializeVariables$3(inp) {
         };
 }
 
-function makeVariables$3(id, paymentsMade, nextPayment, lastPayment, param) {
+function makeVariables$4(id, paymentsMade, nextPayment, lastPayment, param) {
   return {
           id: id,
           paymentsMade: paymentsMade,
@@ -399,100 +503,6 @@ function makeVariables$3(id, paymentsMade, nextPayment, lastPayment, param) {
 }
 
 var UpdateStreamEntry_inner = {
-  Raw: Raw$3,
-  query: query$3,
-  parse: parse$3,
-  serialize: serialize$3,
-  serializeVariables: serializeVariables$3,
-  makeVariables: makeVariables$3
-};
-
-var include$3 = ApolloClient__React_Hooks_UseMutation.Extend({
-      query: query$3,
-      Raw: Raw$3,
-      parse: parse$3,
-      serialize: serialize$3,
-      serializeVariables: serializeVariables$3
-    });
-
-var UpdateStreamEntry_use = include$3.use;
-
-var UpdateStreamEntry_useWithVariables = include$3.useWithVariables;
-
-var UpdateStreamEntry = {
-  UpdateStreamEntry_inner: UpdateStreamEntry_inner,
-  Raw: Raw$3,
-  query: query$3,
-  parse: parse$3,
-  serialize: serialize$3,
-  serializeVariables: serializeVariables$3,
-  makeVariables: makeVariables$3,
-  use: UpdateStreamEntry_use,
-  useWithVariables: UpdateStreamEntry_useWithVariables
-};
-
-var Raw$4 = {};
-
-var query$4 = (require("@apollo/client").gql`
-  mutation AddNewPayment($streamID: Int!, $paymentTimestamp: Int!, $paymentState: String!, $paymentAmount: String!)  {
-    insert_payments_one(object: {streamID: $streamID, paymentTimestamp: $paymentTimestamp, paymentState: $paymentState, paymentAmount: $paymentAmount})  {
-      __typename
-      id
-      streamID
-    }
-  }
-`);
-
-function parse$4(value) {
-  var value$1 = value.insert_payments_one;
-  return {
-          insert_payments_one: !(value$1 == null) ? ({
-                __typename: value$1.__typename,
-                id: value$1.id,
-                streamID: value$1.streamID
-              }) : undefined
-        };
-}
-
-function serialize$4(value) {
-  var value$1 = value.insert_payments_one;
-  var insert_payments_one;
-  if (value$1 !== undefined) {
-    var value$2 = value$1.streamID;
-    var value$3 = value$1.id;
-    var value$4 = value$1.__typename;
-    insert_payments_one = {
-      __typename: value$4,
-      id: value$3,
-      streamID: value$2
-    };
-  } else {
-    insert_payments_one = null;
-  }
-  return {
-          insert_payments_one: insert_payments_one
-        };
-}
-
-function serializeVariables$4(inp) {
-  return {
-          streamID: inp.streamID,
-          paymentTimestamp: inp.paymentTimestamp,
-          paymentState: inp.paymentState,
-          paymentAmount: inp.paymentAmount
-        };
-}
-
-function makeVariables$4(streamID, paymentTimestamp, paymentState, paymentAmount, param) {
-  return {
-          streamID: streamID,
-          paymentTimestamp: paymentTimestamp,
-          paymentState: paymentState,
-          paymentAmount: paymentAmount
-        };
-}
-
-var AddNewPayment_inner = {
   Raw: Raw$4,
   query: query$4,
   parse: parse$4,
@@ -509,25 +519,205 @@ var include$4 = ApolloClient__React_Hooks_UseMutation.Extend({
       serializeVariables: serializeVariables$4
     });
 
-var AddNewPayment_use = include$4.use;
+var UpdateStreamEntry_use = include$4.use;
 
-var AddNewPayment_useWithVariables = include$4.useWithVariables;
+var UpdateStreamEntry_useWithVariables = include$4.useWithVariables;
 
-var AddNewPayment = {
-  AddNewPayment_inner: AddNewPayment_inner,
+var UpdateStreamEntry = {
+  UpdateStreamEntry_inner: UpdateStreamEntry_inner,
   Raw: Raw$4,
   query: query$4,
   parse: parse$4,
   serialize: serialize$4,
   serializeVariables: serializeVariables$4,
   makeVariables: makeVariables$4,
-  use: AddNewPayment_use,
-  useWithVariables: AddNewPayment_useWithVariables
+  use: UpdateStreamEntry_use,
+  useWithVariables: UpdateStreamEntry_useWithVariables
 };
 
 var Raw$5 = {};
 
 var query$5 = (require("@apollo/client").gql`
+  mutation AddNewPayment($streamID: Int!, $paymentTimestamp: Int!, $paymentState: String!, $paymentAmount: String!)  {
+    insert_payments_one(object: {streamID: $streamID, paymentTimestamp: $paymentTimestamp, paymentState: $paymentState, paymentAmount: $paymentAmount})  {
+      __typename
+      id
+    }
+  }
+`);
+
+function parse$5(value) {
+  var value$1 = value.insert_payments_one;
+  return {
+          insert_payments_one: !(value$1 == null) ? ({
+                __typename: value$1.__typename,
+                id: value$1.id
+              }) : undefined
+        };
+}
+
+function serialize$5(value) {
+  var value$1 = value.insert_payments_one;
+  var insert_payments_one;
+  if (value$1 !== undefined) {
+    var value$2 = value$1.id;
+    var value$3 = value$1.__typename;
+    insert_payments_one = {
+      __typename: value$3,
+      id: value$2
+    };
+  } else {
+    insert_payments_one = null;
+  }
+  return {
+          insert_payments_one: insert_payments_one
+        };
+}
+
+function serializeVariables$5(inp) {
+  return {
+          streamID: inp.streamID,
+          paymentTimestamp: inp.paymentTimestamp,
+          paymentState: inp.paymentState,
+          paymentAmount: inp.paymentAmount
+        };
+}
+
+function makeVariables$5(streamID, paymentTimestamp, paymentState, paymentAmount, param) {
+  return {
+          streamID: streamID,
+          paymentTimestamp: paymentTimestamp,
+          paymentState: paymentState,
+          paymentAmount: paymentAmount
+        };
+}
+
+var AddNewPayment_inner = {
+  Raw: Raw$5,
+  query: query$5,
+  parse: parse$5,
+  serialize: serialize$5,
+  serializeVariables: serializeVariables$5,
+  makeVariables: makeVariables$5
+};
+
+var include$5 = ApolloClient__React_Hooks_UseMutation.Extend({
+      query: query$5,
+      Raw: Raw$5,
+      parse: parse$5,
+      serialize: serialize$5,
+      serializeVariables: serializeVariables$5
+    });
+
+var AddNewPayment_use = include$5.use;
+
+var AddNewPayment_useWithVariables = include$5.useWithVariables;
+
+var AddNewPayment = {
+  AddNewPayment_inner: AddNewPayment_inner,
+  Raw: Raw$5,
+  query: query$5,
+  parse: parse$5,
+  serialize: serialize$5,
+  serializeVariables: serializeVariables$5,
+  makeVariables: makeVariables$5,
+  use: AddNewPayment_use,
+  useWithVariables: AddNewPayment_useWithVariables
+};
+
+var Raw$6 = {};
+
+var query$6 = (require("@apollo/client").gql`
+  mutation UpdatePaymentEntry($paymentID: Int!, $paymentState: String!)  {
+    update_payments_by_pk(pk_columns: {id: $paymentID}, _set: {paymentState: $paymentState})  {
+      __typename
+      id
+      paymentState
+    }
+  }
+`);
+
+function parse$6(value) {
+  var value$1 = value.update_payments_by_pk;
+  return {
+          update_payments_by_pk: !(value$1 == null) ? ({
+                __typename: value$1.__typename,
+                id: value$1.id,
+                paymentState: value$1.paymentState
+              }) : undefined
+        };
+}
+
+function serialize$6(value) {
+  var value$1 = value.update_payments_by_pk;
+  var update_payments_by_pk;
+  if (value$1 !== undefined) {
+    var value$2 = value$1.paymentState;
+    var value$3 = value$1.id;
+    var value$4 = value$1.__typename;
+    update_payments_by_pk = {
+      __typename: value$4,
+      id: value$3,
+      paymentState: value$2
+    };
+  } else {
+    update_payments_by_pk = null;
+  }
+  return {
+          update_payments_by_pk: update_payments_by_pk
+        };
+}
+
+function serializeVariables$6(inp) {
+  return {
+          paymentID: inp.paymentID,
+          paymentState: inp.paymentState
+        };
+}
+
+function makeVariables$6(paymentID, paymentState, param) {
+  return {
+          paymentID: paymentID,
+          paymentState: paymentState
+        };
+}
+
+var UpdatePaymentEntry_inner = {
+  Raw: Raw$6,
+  query: query$6,
+  parse: parse$6,
+  serialize: serialize$6,
+  serializeVariables: serializeVariables$6,
+  makeVariables: makeVariables$6
+};
+
+var include$6 = ApolloClient__React_Hooks_UseMutation.Extend({
+      query: query$6,
+      Raw: Raw$6,
+      parse: parse$6,
+      serialize: serialize$6,
+      serializeVariables: serializeVariables$6
+    });
+
+var UpdatePaymentEntry_use = include$6.use;
+
+var UpdatePaymentEntry_useWithVariables = include$6.useWithVariables;
+
+var UpdatePaymentEntry = {
+  UpdatePaymentEntry_inner: UpdatePaymentEntry_inner,
+  Raw: Raw$6,
+  query: query$6,
+  parse: parse$6,
+  serialize: serialize$6,
+  serializeVariables: serializeVariables$6,
+  makeVariables: makeVariables$6,
+  use: UpdatePaymentEntry_use,
+  useWithVariables: UpdatePaymentEntry_useWithVariables
+};
+
+var Raw$7 = {};
+
+var query$7 = (require("@apollo/client").gql`
   query GetLatestPayment($streamID: Int!, $lastPayment: Int!)  {
     payments(where: {streamID: {_eq: $streamID}, paymentTimestamp: {_eq: $lastPayment}})  {
       __typename
@@ -540,7 +730,7 @@ var query$5 = (require("@apollo/client").gql`
   }
 `);
 
-function parse$5(value) {
+function parse$7(value) {
   var value$1 = value.payments;
   return {
           payments: value$1.map(function (value) {
@@ -556,7 +746,7 @@ function parse$5(value) {
         };
 }
 
-function serialize$5(value) {
+function serialize$7(value) {
   var value$1 = value.payments;
   var payments = value$1.map(function (value) {
         var value$1 = value.streamID;
@@ -580,14 +770,14 @@ function serialize$5(value) {
         };
 }
 
-function serializeVariables$5(inp) {
+function serializeVariables$7(inp) {
   return {
           streamID: inp.streamID,
           lastPayment: inp.lastPayment
         };
 }
 
-function makeVariables$5(streamID, lastPayment, param) {
+function makeVariables$7(streamID, lastPayment, param) {
   return {
           streamID: streamID,
           lastPayment: lastPayment
@@ -595,48 +785,50 @@ function makeVariables$5(streamID, lastPayment, param) {
 }
 
 var GetLatestPayment_inner = {
-  Raw: Raw$5,
-  query: query$5,
-  parse: parse$5,
-  serialize: serialize$5,
-  serializeVariables: serializeVariables$5,
-  makeVariables: makeVariables$5
+  Raw: Raw$7,
+  query: query$7,
+  parse: parse$7,
+  serialize: serialize$7,
+  serializeVariables: serializeVariables$7,
+  makeVariables: makeVariables$7
 };
 
-var include$5 = ApolloClient__React_Hooks_UseQuery.Extend({
-      query: query$5,
-      Raw: Raw$5,
-      parse: parse$5,
-      serialize: serialize$5,
-      serializeVariables: serializeVariables$5
+var include$7 = ApolloClient__React_Hooks_UseQuery.Extend({
+      query: query$7,
+      Raw: Raw$7,
+      parse: parse$7,
+      serialize: serialize$7,
+      serializeVariables: serializeVariables$7
     });
 
-var GetLatestPayment_refetchQueryDescription = include$5.refetchQueryDescription;
+var GetLatestPayment_refetchQueryDescription = include$7.refetchQueryDescription;
 
-var GetLatestPayment_use = include$5.use;
+var GetLatestPayment_use = include$7.use;
 
-var GetLatestPayment_useLazy = include$5.useLazy;
+var GetLatestPayment_useLazy = include$7.useLazy;
 
-var GetLatestPayment_useLazyWithVariables = include$5.useLazyWithVariables;
+var GetLatestPayment_useLazyWithVariables = include$7.useLazyWithVariables;
 
 var GetLatestPayment = {
   GetLatestPayment_inner: GetLatestPayment_inner,
-  Raw: Raw$5,
-  query: query$5,
-  parse: parse$5,
-  serialize: serialize$5,
-  serializeVariables: serializeVariables$5,
-  makeVariables: makeVariables$5,
+  Raw: Raw$7,
+  query: query$7,
+  parse: parse$7,
+  serialize: serialize$7,
+  serializeVariables: serializeVariables$7,
+  makeVariables: makeVariables$7,
   refetchQueryDescription: GetLatestPayment_refetchQueryDescription,
   use: GetLatestPayment_use,
   useLazy: GetLatestPayment_useLazy,
   useLazyWithVariables: GetLatestPayment_useLazyWithVariables
 };
 
+exports.AddNewUser = AddNewUser;
 exports.CreatePaymentStream = CreatePaymentStream;
 exports.GetStreamData = GetStreamData;
 exports.CloseStreamEntry = CloseStreamEntry;
 exports.UpdateStreamEntry = UpdateStreamEntry;
 exports.AddNewPayment = AddNewPayment;
+exports.UpdatePaymentEntry = UpdatePaymentEntry;
 exports.GetLatestPayment = GetLatestPayment;
 /* query Not a pure module */

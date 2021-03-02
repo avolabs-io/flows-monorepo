@@ -51,16 +51,17 @@ function makePayment(recipientAddress, paymentData) {
           undefined,
           undefined,
           undefined,
-          Query.AddNewPayment.makeVariables(paymentData.streamID, paymentData.currentPayment.toNumber(), "PENDING", finalAmount.toString(), undefined)
+          Query.AddNewPayment.makeVariables(paymentData.streamID, paymentData.nextPayment.toNumber(), "PENDING", finalAmount.toString(), undefined)
         ]).then(function (result) {
         if (result.TAG === /* Ok */0) {
-          console.log("success payment added");
+          console.log("success payment added", result._0.data.insert_payments_one);
           return ;
         }
         console.log("error payment added: ", result._0);
         
       });
-  if (paymentData.numberOfPayments.eq(paymentData.numberOfPaymentsMade.add(finalPayment))) {
+  var totalPayments = paymentData.numberOfPaymentsMade.add(finalPayment);
+  if (paymentData.numberOfPayments.eq(totalPayments)) {
     Curry.app(PaymentStreamManager.gqlClient.reason_mutate, [
             {
               query: Query.CloseStreamEntry.query,
@@ -118,7 +119,7 @@ function makePayment(recipientAddress, paymentData) {
           
         });
   }
-  var requestString = "http://localhost:5001/api/v1/payments/0xC563388e2e2fdD422166eD5E76971D11eD37A466/" + recipientAddress;
+  var requestString = "http://raiden1:5001/api/v1/payments/0xC563388e2e2fdD422166eD5E76971D11eD37A466/" + recipientAddress;
   console.log(requestString, finalAmount.toString());
   return fetch(requestString, Fetch.RequestInit.make(/* Post */2, {
                         "Content-Type": "application/json"
@@ -129,6 +130,11 @@ function makePayment(recipientAddress, paymentData) {
                 return prim.json();
               }).then(function (json) {
               console.log("THE RESULT:", json);
+              if (JSON.stringify(json).includes("errors") === false) {
+                console.log("SUCCESS");
+              } else {
+                console.log("ERROR");
+              }
               
             });
 }

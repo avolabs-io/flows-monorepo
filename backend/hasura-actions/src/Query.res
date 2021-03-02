@@ -1,6 +1,16 @@
 // File to put all GQL Queries.
 // open GqlConverters;
 
+module AddNewUser = %graphql(`
+  mutation AddNewUser ($name: String!, $address: String!, $description: String!){
+    insert_user_one(object: {name: $name, ethAddress: $address, description: $description}) {
+      name
+      ethAddress
+      description
+    }
+  }
+`)
+
 module CreatePaymentStream = %graphql(`
   mutation CreatePayment ($amount: String!, $interval: Int!, $numberOfPayments: Int!, $recipient: String!, $start: Int!, $state: String, $tokenAddress: String!) {
     insert_streams_one(object: {amount: $amount, interval: $interval, numberOfPayments: $numberOfPayments, numberOfPaymentsMade: 0, recipient: $recipient, start: $start, state: $state, tokenAddress: $tokenAddress}) {
@@ -51,7 +61,15 @@ module AddNewPayment = %graphql(`
   mutation AddNewPayment ($streamID: Int!, $paymentTimestamp: Int!, $paymentState: String!, $paymentAmount: String!){
     insert_payments_one(object: {streamID: $streamID, paymentTimestamp: $paymentTimestamp, paymentState: $paymentState, paymentAmount: $paymentAmount}) {
       id
-      streamID
+    }
+  }
+`)
+
+module UpdatePaymentEntry = %graphql(`
+  mutation UpdatePaymentEntry ($paymentID: Int!, $paymentState: String!){
+    update_payments_by_pk(pk_columns: {id: $paymentID}, _set: {paymentState: $paymentState}) {
+      id
+      paymentState
     }
   }
 `)
