@@ -27,62 +27,27 @@ let makePayment = (~recipientAddress, ~paymentData: streamData) => {
   let extraPaymentsMade = BN.add(extraPayments, CONSTANTS.big1)
   let finalPayment = BN.min(extraPaymentsMade, remainingPayments)
   let finalAmount = BN.mul(paymentData.amount, finalPayment)
-  PaymentStreamManager.gqlClient.mutate(
-    ~mutation=module(Query.AddNewPayment),
-    Query.AddNewPayment.makeVariables(
-      ~streamID=paymentData.streamID,
-      ~paymentTimestamp=paymentData.nextPayment->BN.toNumber,
-      ~paymentState="PENDING",
-      ~paymentAmount=finalAmount->BN.toString,
-      (),
-    ),
+  PaymentStreamManager.addPaymentEntry(
+    ~streamID=paymentData.streamID,
+    ~timestamp=paymentData.nextPayment->BN.toNumber,
+    ~amount=finalAmount->BN.toString,
   )
-  ->JsPromise.map(result =>
-    switch result {
-    | Ok({data}) => Js.log2("success payment added", data.insert_payments_one)
-    | Error(error) => Js.log2("error payment added: ", error)
-    }
-  )
-  ->ignore
   let totalPayments = BN.add(paymentData.numberOfPaymentsMade, finalPayment)
   if BN.eq(paymentData.numberOfPayments, totalPayments) {
-    PaymentStreamManager.gqlClient.mutate(
-      ~mutation=module(Query.CloseStreamEntry),
-      Query.CloseStreamEntry.makeVariables(
-        ~id=paymentData.streamID,
-        ~paymentsMade=paymentData.numberOfPayments->BN.toNumber,
-        ~state="CLOSED",
-        (),
-      ),
+    PaymentStreamManager.closeStreamEntry(
+      ~streamID=paymentData.streamID,
+      ~totalPaymentsMade=paymentData.numberOfPayments->BN.toNumber,
     )
-    ->JsPromise.map(result =>
-      switch result {
-      | Ok(_result) => Js.log("success close entry: CLOSED")
-      | Error(error) => Js.log2("error close entry: ", error)
-      }
-    )
-    ->ignore
   } else {
     let newPaymentsMade = BN.add(paymentData.numberOfPaymentsMade, finalPayment)
     let intervalInSeconds = BN.mul(paymentData.interval, CONSTANTS.big60)
     let newNextPayment = BN.add(paymentData.nextPayment, BN.mul(finalPayment, intervalInSeconds))
-    PaymentStreamManager.gqlClient.mutate(
-      ~mutation=module(Query.UpdateStreamEntry),
-      Query.UpdateStreamEntry.makeVariables(
-        ~id=paymentData.streamID,
-        ~paymentsMade=newPaymentsMade->BN.toNumber,
-        ~nextPayment=newNextPayment->BN.toNumber,
-        ~lastPayment=paymentData.nextPayment->BN.toNumber,
-        (),
-      ),
+    PaymentStreamManager.updateStreamEntry(
+      ~streamID=paymentData.streamID,
+      ~totalPaymentsMade=newPaymentsMade->BN.toNumber,
+      ~nextPayment=newNextPayment->BN.toNumber,
+      ~lastPayment=paymentData.nextPayment->BN.toNumber,
     )
-    ->JsPromise.map(result =>
-      switch result {
-      | Ok(_result) => Js.log3("success payment made: ", newPaymentsMade, newNextPayment)
-      | Error(error) => Js.log2("error payment made: ", error)
-      }
-    )
-    ->ignore
   }
   let requestString =
     "http://raiden1:5001/api/v1/payments/0xC563388e2e2fdD422166eD5E76971D11eD37A466/" ++
@@ -108,32 +73,12 @@ let makePayment = (~recipientAddress, ~paymentData: streamData) => {
       Js.log("SUCCESS")
       //TODO not sure how to get the payment ID back from the AddNewPayment mutation
       /* let paymentID = 1
-      PaymentStreamManager.gqlClient.mutate(
-        ~mutation=module(Query.UpdatePaymentEntry),
-        Query.UpdatePaymentEntry.makeVariables(~paymentID, ~paymentState="COMPLETE", ()),
-      )
-      ->JsPromise.map(result =>
-        switch result {
-        | Ok(_result) => Js.log("success payment COMPLETE")
-        | Error(error) => Js.log2("error payment COMPLETE: ", error)
-        }
-      )
-      ->ignore*/
+       PaymentStreamManager.updatePaymentEntry(~paymentID, ~state="COMPLETE") */
     } else {
       Js.log("ERROR")
       //TODO not sure how to get the payment ID back from the AddNewPayment mutation
       /* let paymentID = 1
-      PaymentStreamManager.gqlClient.mutate(
-        ~mutation=module(Query.UpdatePaymentEntry),
-        Query.UpdatePaymentEntry.makeVariables(~paymentID, ~paymentState="ERROR", ()),
-      )
-      ->JsPromise.map(result =>
-        switch result {
-        | Ok(_result) => Js.log("success payment ERROR")
-        | Error(error) => Js.log2("error payment ERROR: ", error)
-        }
-      )
-      ->ignore*/
+       PaymentStreamManager.updatePaymentEntry(~paymentID, ~state="ERROR") */
     }
   })
 }

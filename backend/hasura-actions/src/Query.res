@@ -1,12 +1,48 @@
 // File to put all GQL Queries.
 // open GqlConverters;
 
-module AddNewUser = %graphql(`
-  mutation AddNewUser ($name: String!, $address: String!, $description: String!){
+module AddUser = %graphql(`
+  mutation AddUser ($name: String!, $address: String!, $description: String!){
     insert_user_one(object: {name: $name, ethAddress: $address, description: $description}) {
       name
       ethAddress
       description
+    }
+  }
+`)
+
+module ViewPaymentStreams = %graphql(`
+  query ViewPaymentStreams ($state: String!){
+    streams(where: {state: {_eq: $state}}){
+      id
+      amount @ppxCustom(module: "GqlConverters.BigInt")
+      interval @ppxCustom(module: "GqlConverters.IntToBigInt")
+      numberOfPayments @ppxCustom(module: "GqlConverters.IntToBigInt")
+      numberOfPaymentsMade @ppxCustom(module: "GqlConverters.IntToBigInt")
+      recipient
+      state
+      tokenAddress
+      startPayment @ppxCustom(module: "GqlConverters.IntToBigInt")
+      nextPayment @ppxCustom(module: "GqlConverters.IntToBigInt")
+      lastPayment
+    }
+  }
+`)
+
+module ViewPaymentsStreamsWithAddress = %graphql(`
+  query ViewPaymentsStreamsWithAddress ($address: String!){
+    streams(where: {recipient: {_eq: $address}}){
+      id
+      amount @ppxCustom(module: "GqlConverters.BigInt")
+      interval @ppxCustom(module: "GqlConverters.IntToBigInt")
+      numberOfPayments @ppxCustom(module: "GqlConverters.IntToBigInt")
+      numberOfPaymentsMade @ppxCustom(module: "GqlConverters.IntToBigInt")
+      recipient
+      state
+      tokenAddress
+      startPayment @ppxCustom(module: "GqlConverters.IntToBigInt")
+      nextPayment @ppxCustom(module: "GqlConverters.IntToBigInt")
+      lastPayment
     }
   }
 `)
@@ -57,8 +93,8 @@ module UpdateStreamEntry = %graphql(`
   }
 `)
 
-module AddNewPayment = %graphql(`
-  mutation AddNewPayment ($streamID: Int!, $paymentTimestamp: Int!, $paymentState: String!, $paymentAmount: String!){
+module AddPaymentEntry = %graphql(`
+  mutation AddPaymentEntry ($streamID: Int!, $paymentTimestamp: Int!, $paymentState: String!, $paymentAmount: String!){
     insert_payments_one(object: {streamID: $streamID, paymentTimestamp: $paymentTimestamp, paymentState: $paymentState, paymentAmount: $paymentAmount}) {
       id
     }
