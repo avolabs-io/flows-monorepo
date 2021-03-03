@@ -13,7 +13,22 @@ tables:
       filter: {}
 - table:
     schema: public
+    name: payments
+  object_relationships:
+  - name: stream
+    using:
+      foreign_key_constraint_on: streamID
+- table:
+    schema: public
     name: streams
+  array_relationships:
+  - name: payments
+    using:
+      foreign_key_constraint_on:
+        column: streamID
+        table:
+          schema: public
+          name: payments
 - table:
     schema: public
     name: user

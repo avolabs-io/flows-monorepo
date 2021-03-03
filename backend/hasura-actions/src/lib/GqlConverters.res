@@ -1,14 +1,13 @@
 module BigInt = {
   type t = BN.t
-  let parse = json =>
-    switch json->Js.Json.decodeString {
-    | Some(str) => BN.new_(str)
-    | None =>
-      // In theory graphql should never allow this to not be a correct string
-      Js.log("CRITICAL - should never happen!")
-      BN.newInt_(0)
-    }
-  let serialize = bn => bn->BN.toString->Js.Json.string
+  let parse = BN.new_
+  let serialize = BN.toString
+}
+
+module IntToBigInt = {
+  type t = BN.t
+  let parse = BN.newInt_
+  let serialize = BN.toNumber
 }
 
 module Bytes = {

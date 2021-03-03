@@ -4,18 +4,12 @@
 var BnJs = require("bn.js");
 var Js_json = require("bs-platform/lib/js/js_json.js");
 
-function parse(json) {
-  var str = Js_json.decodeString(json);
-  if (str !== undefined) {
-    return new BnJs(str);
-  } else {
-    console.log("CRITICAL - should never happen!");
-    return new BnJs(0);
-  }
+function parse(prim) {
+  return new BnJs(prim);
 }
 
-function serialize(bn) {
-  return bn.toString();
+function serialize(prim) {
+  return prim.toString();
 }
 
 var $$BigInt = {
@@ -23,7 +17,20 @@ var $$BigInt = {
   serialize: serialize
 };
 
-function parse$1(json) {
+function parse$1(prim) {
+  return new BnJs(prim);
+}
+
+function serialize$1(prim) {
+  return prim.toNumber();
+}
+
+var IntToBigInt = {
+  parse: parse$1,
+  serialize: serialize$1
+};
+
+function parse$2(json) {
   var str = Js_json.decodeString(json);
   if (str !== undefined) {
     return str;
@@ -33,15 +40,16 @@ function parse$1(json) {
   }
 }
 
-function serialize$1(bytesString) {
+function serialize$2(bytesString) {
   return bytesString;
 }
 
 var Bytes = {
-  parse: parse$1,
-  serialize: serialize$1
+  parse: parse$2,
+  serialize: serialize$2
 };
 
 exports.$$BigInt = $$BigInt;
+exports.IntToBigInt = IntToBigInt;
 exports.Bytes = Bytes;
 /* bn.js Not a pure module */

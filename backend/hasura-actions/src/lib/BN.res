@@ -1,12 +1,13 @@
 type t
 
-@module("bn.js") external add: (t, t) => t = "add"
-@module("bn.js") external sub: (t, t) => t = "sub"
-@module("bn.js") external mul: (t, t) => t = "mul"
+@send external add: (t, t) => t = "add"
+@send external sub: (t, t) => t = "sub"
+@send external mul: (t, t) => t = "mul"
+@send external div: (t, t) => t = "div"
 @module("bn.js") external max: (t, t) => t = "max"
 @module("bn.js") external min: (t, t) => t = "min"
-@module("bn.js") external cmp: (t, t) => t = "cmp"
-@module("bn.js") external sqr: t => t = "sqr"
+@send external cmp: (t, t) => t = "cmp"
+@send external sqr: t => t = "sqr"
 
 @send external gt: (t, t) => bool = "gt"
 @send external gte: (t, t) => bool = "gte"

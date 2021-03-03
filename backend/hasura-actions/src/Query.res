@@ -13,15 +13,16 @@ module GetStreamData = %graphql(`
   query GetStreamData ($currentTimestamp: Int!){
     streams(where: {state: {_eq: "OPEN"}, nextPayment: {_lte: $currentTimestamp}}){
       id
-      amount
-      interval
-      numberOfPayments
-      numberOfPaymentsMade
+      amount @ppxCustom(module: "GqlConverters.BigInt")
+      interval @ppxCustom(module: "GqlConverters.IntToBigInt")
+      numberOfPayments @ppxCustom(module: "GqlConverters.IntToBigInt")
+      numberOfPaymentsMade @ppxCustom(module: "GqlConverters.IntToBigInt")
       recipient
       state
       tokenAddress
-      startPayment
-      nextPayment
+      startPayment @ppxCustom(module: "GqlConverters.IntToBigInt")
+      nextPayment @ppxCustom(module: "GqlConverters.IntToBigInt")
+      lastPayment
     }
   }
 `)
@@ -36,11 +37,33 @@ module CloseStreamEntry = %graphql(`
 `)
 
 module UpdateStreamEntry = %graphql(`
-  mutation UpdateStreamEntry ($id: Int!, $paymentsMade: Int!, $nextPayment: Int!){
-    update_streams_by_pk(pk_columns: {id: $id}, _set: {numberOfPaymentsMade: $paymentsMade, nextPayment: $nextPayment}) {
+  mutation UpdateStreamEntry ($id: Int!, $paymentsMade: Int!, $nextPayment: Int!, $lastPayment: Int!){
+    update_streams_by_pk(pk_columns: {id: $id}, _set: {numberOfPaymentsMade: $paymentsMade, nextPayment: $nextPayment, lastPayment: $lastPayment}) {
       id
       numberOfPaymentsMade
       nextPayment
+      lastPayment
+    }
+  }
+`)
+
+module AddNewPayment = %graphql(`
+  mutation AddNewPayment ($streamID: Int!, $paymentTimestamp: Int!, $paymentState: String!, $paymentAmount: String!){
+    insert_payments_one(object: {streamID: $streamID, paymentTimestamp: $paymentTimestamp, paymentState: $paymentState, paymentAmount: $paymentAmount}) {
+      id
+      streamID
+    }
+  }
+`)
+
+module GetLatestPayment = %graphql(`
+  query GetLatestPayment ($streamID: Int!, $lastPayment: Int!){
+    payments(where: {streamID: {_eq: $streamID}, paymentTimestamp: {_eq: $lastPayment}}){
+      id
+      paymentAmount
+      paymentState
+      paymentTimestamp @ppxCustom(module: "GqlConverters.IntToBigInt")
+      streamID
     }
   }
 `)
