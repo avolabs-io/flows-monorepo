@@ -34,8 +34,26 @@ module Router = {
     }
   }
 }
+
+module GraphQl = {
+  @react.component
+  let make = (~children) => {
+    let user = RootProvider.useCurrentUser()
+    let client = React.useMemo1(() =>
+      Apollo.makeClient(
+        ~user
+      )
+    , [user])
+
+    <ApolloClient.React.ApolloProvider client> children </ApolloClient.React.ApolloProvider>
+  }
+}
 @react.component
 let make = () =>
-  <ApolloClient.React.ApolloProvider client=Apollo.client>
-    <RootProvider> <Router /> </RootProvider>
-  </ApolloClient.React.ApolloProvider>
+  <RootProvider>
+    <GraphQl>
+    <AuthProvider>
+      <Router /> 
+    </AuthProvider>
+    </GraphQl>
+  </RootProvider>

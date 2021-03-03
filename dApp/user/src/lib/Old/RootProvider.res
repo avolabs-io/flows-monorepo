@@ -136,11 +136,13 @@ let useCurrentUser: unit => option<Ethers.ethAddress> = () => {
   }
 }
 
+let useCurrentUserExn = () => useCurrentUser() -> Option.getExn
+
 let useIsAddressCurrentUser: Ethers.ethAddress => bool = address => {
   let currentUser = useCurrentUser()
   switch currentUser {
   | Some(currentUserAddress) =>
-    address->Ethers.Utils.toLowerString == currentUserAddress->Ethers.Utils.toLowerString
+    address->Ethers.Utils.ethAdrToLowerStr == currentUserAddress->Ethers.Utils.ethAdrToLowerStr
   | None => false
   }
 }
@@ -184,6 +186,8 @@ let useSigner: unit => option<Ethers.Wallet.t> = () => {
   | _ => None
   }
 }
+
+let useSignerExn = () => useSigner() -> Option.getExn
 
 type connection =
   | Standby

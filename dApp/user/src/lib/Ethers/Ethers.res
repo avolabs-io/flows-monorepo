@@ -48,27 +48,36 @@ type ethersBigNumber
 module BigNumber = {
   type t = ethersBigNumber
 
+  @module("ethers") @scope("BigNumber")
+  external fromUnsafe: string => t = "from"
+  @module("ethers") @scope("BigNumber")
+  external fromInt: int => t = "from"
+
   @send external add: (t, t) => t = "add"
   @send external sub: (t, t) => t = "sub"
   @send external mul: (t, t) => t = "mul"
   @send external div: (t, t) => t = "div"
+  @send external mod: (t, t) => t = "mod"
+  @send external pow: (t, t) => t = "pow"
+  @send external abs: t => t = "abs"
+
   @send external gt: (t, t) => bool = "gt"
+  @send external gte: (t, t) => bool = "gte"
   @send external lt: (t, t) => bool = "lt"
-  @dead("+eq") @send external eq: (t, t) => bool = "eq"
-  @send external cmp: (t, t) => int = "cmp"
-  @dead("+sqr") @send external sqr: t => t = "sqr"
+  @send external lte: (t, t) => bool = "lte"
+  @send external eq: (t, t) => bool = "eq"
+
   @send external toString: t => string = "toString"
-  @send external toStringRad: (t, int) => string = "toString"
 
   @send external toNumber: t => int = "toNumber"
   @send external toNumberFloat: t => float = "toNumber"
 }
 
-@send
-external waitForTransaction: (Web3.rawProvider, string) => JsPromise.t<txResult> =
-  "waitForTransaction"
-
 type providerType
+
+@send
+external waitForTransaction: (providerType, string) => JsPromise.t<txResult> = "waitForTransaction"
+
 type walletType = {address: string, provider: providerType}
 
 module Wallet = {
@@ -76,13 +85,17 @@ module Wallet = {
 
   @new @module("ethers")
   external makePrivKeyWallet: (string, providerType) => t = "Wallet"
+
+  type rawSignature
+  @send
+  external signMessage: (t, string) => JsPromise.t<rawSignature> = "signMessage"
 }
 
 module Providers = {
   type t = providerType
 
   @new @module("ethers") @scope("providers")
-  external makeProvider: string => Web3.rawProvider = "JsonRpcProvider"
+  external makeProvider: string => t = "JsonRpcProvider"
 
   @send external getBalance: (t, ethAddress) => JsPromise.t<option<BigNumber.t>> = "getBalance"
   @send
@@ -138,12 +151,31 @@ module Utils = {
   let parseUnits = (~amount, ~unit) => Misc.unsafeToOption(() => parseUnitsUnsafe(. amount, unit))
 
   let parseEther = (~amount) => parseUnits(~amount, ~unit=#ether)
+  let parseEtherUnsafe = (~amount) => parseUnitsUnsafe(. amount, #ether)
 
   @module("ethers") @scope("utils")
   external getAddressUnsafe: string => ethAddress = "getAddress"
   let getAddress: string => option<ethAddress> = addressString =>
     Misc.unsafeToOption(() => getAddressUnsafe(addressString))
 
-  let toString: ethAddress => string = Obj.magic
-  let toLowerString: ethAddress => string = address => address->toString->Js.String.toLowerCase
+  @module("ethers") @scope("utils")
+  external formatUnits: (. BigNumber.t, ethUnit) => string = "formatUnits"
+
+  let formatEther = formatUnits(. _, #ether)
+
+  let formatEtherToPrecision = (number, digits) => {
+    let digitMultiplier = Js.Math.pow_float(~base=10.0, ~exp=digits->Float.fromInt)
+    number
+    ->formatEther
+    ->Float.fromString
+    ->Option.getExn
+    ->(x => x *. digitMultiplier)
+    ->Js.Math.floor_float
+    ->(x => x /. digitMultiplier)
+    ->Float.toString
+  }
+
+  let ethAdrToStr: ethAddress => string = Obj.magic
+  let ethAdrToLowerStr: ethAddress => string = address =>
+    address->ethAdrToStr->Js.String.toLowerCase
 }

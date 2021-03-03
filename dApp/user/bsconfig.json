@@ -3,10 +3,7 @@
   "reason": {
     "react-jsx": 3
   },
-  "bsc-flags": [
-    "-open Belt",
-    "-bs-super-errors"
-  ],
+  "bsc-flags": ["-open Belt", "-bs-super-errors"],
   "sources": [
     {
       "dir": "src",
@@ -36,10 +33,9 @@
     "bs-moment",
     "bs-css",
     "bs-css-emotion",
+    "re-formality",
     "rescript-apollo-client"
   ],
-  "ppx-flags": [
-    "@reasonml-community/graphql-ppx/ppx"
-  ],
+  "ppx-flags": ["re-formality/ppx", "@reasonml-community/graphql-ppx/ppx"],
   "refmt": 3
 }

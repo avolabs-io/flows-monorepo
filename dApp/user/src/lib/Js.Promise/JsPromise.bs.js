@@ -3,7 +3,7 @@
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as Caml_exceptions from "bs-platform/lib/es6/caml_exceptions.js";
 
-var JsError = Caml_exceptions.create("JsPromise-FlowsUserApp.JsError");
+var JsError = /* @__PURE__ */Caml_exceptions.create("JsPromise-FlowsUserApp.JsError");
 
 function $$catch(promise, callback) {
   return promise.catch(function (err) {

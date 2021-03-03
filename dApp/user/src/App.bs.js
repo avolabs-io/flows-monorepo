@@ -6,6 +6,7 @@ import * as Dapp$FlowsUserApp from "./Dapp.bs.js";
 import * as Login$FlowsUserApp from "./Login/Login.bs.js";
 import * as Apollo$FlowsUserApp from "./Apollo.bs.js";
 import * as Router$FlowsUserApp from "./Router.bs.js";
+import * as AuthProvider$FlowsUserApp from "./lib/Auth/AuthProvider.bs.js";
 import * as RootProvider$FlowsUserApp from "./lib/Old/RootProvider.bs.js";
 
 function App$OnlyLoggedIn(Props) {
@@ -59,11 +60,28 @@ var Router = {
   make: App$Router
 };
 
-function App(Props) {
+function App$GraphQl(Props) {
+  var children = Props.children;
+  var user = RootProvider$FlowsUserApp.useCurrentUser(undefined);
+  var client = React.useMemo((function () {
+          return Apollo$FlowsUserApp.makeClient(user);
+        }), [user]);
   return React.createElement(Client.ApolloProvider, {
-              client: Apollo$FlowsUserApp.client,
-              children: React.createElement(RootProvider$FlowsUserApp.make, {
-                    children: React.createElement(App$Router, {})
+              client: client,
+              children: children
+            });
+}
+
+var GraphQl = {
+  make: App$GraphQl
+};
+
+function App(Props) {
+  return React.createElement(RootProvider$FlowsUserApp.make, {
+              children: React.createElement(App$GraphQl, {
+                    children: React.createElement(AuthProvider$FlowsUserApp.make, {
+                          children: React.createElement(App$Router, {})
+                        })
                   })
             });
 }
@@ -75,6 +93,7 @@ export {
   Main ,
   NotFound ,
   Router ,
+  GraphQl ,
   make ,
   
 }
