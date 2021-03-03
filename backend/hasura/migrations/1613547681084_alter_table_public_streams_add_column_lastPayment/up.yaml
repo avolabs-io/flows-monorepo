@@ -1,0 +1,6 @@
+- args:
+    cascade: false
+    read_only: false
+    sql: ALTER TABLE "public"."streams" ADD COLUMN "lastPayment" integer NOT NULL
+      DEFAULT 0;
+  type: run_sql

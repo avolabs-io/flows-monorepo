@@ -1,0 +1,12 @@
+- args:
+    cascade: false
+    read_only: false
+    sql: CREATE TABLE "public"."payments"("id" serial NOT NULL, "streamID" integer
+      NOT NULL, "paymentState" text NOT NULL, "currentPayment" integer NOT NULL, PRIMARY
+      KEY ("id") , FOREIGN KEY ("streamID") REFERENCES "public"."streams"("id") ON
+      UPDATE restrict ON DELETE restrict, UNIQUE ("id"));
+  type: run_sql
+- args:
+    name: payments
+    schema: public
+  type: add_existing_table_or_view
