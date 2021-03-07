@@ -34,91 +34,17 @@ function makePayment(recipientAddress, paymentData) {
   var extraPaymentsMade = extraPayments.add(CONSTANTS.big1);
   var finalPayment = BnJs.min(extraPaymentsMade, remainingPayments);
   var finalAmount = paymentData.amount.mul(finalPayment);
-  Curry.app(PaymentStreamManager.gqlClient.reason_mutate, [
-          {
-            query: Query.AddNewPayment.query,
-            Raw: Query.AddNewPayment.Raw,
-            parse: Query.AddNewPayment.parse,
-            serialize: Query.AddNewPayment.serialize,
-            serializeVariables: Query.AddNewPayment.serializeVariables
-          },
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          Query.AddNewPayment.makeVariables(paymentData.streamID, paymentData.currentPayment.toNumber(), "PENDING", finalAmount.toString(), undefined)
-        ]).then(function (result) {
-        if (result.TAG === /* Ok */0) {
-          console.log("success payment added");
-          return ;
-        }
-        console.log("error payment added: ", result._0);
-        
-      });
-  if (paymentData.numberOfPayments.eq(paymentData.numberOfPaymentsMade.add(finalPayment))) {
-    Curry.app(PaymentStreamManager.gqlClient.reason_mutate, [
-            {
-              query: Query.CloseStreamEntry.query,
-              Raw: Query.CloseStreamEntry.Raw,
-              parse: Query.CloseStreamEntry.parse,
-              serialize: Query.CloseStreamEntry.serialize,
-              serializeVariables: Query.CloseStreamEntry.serializeVariables
-            },
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            Query.CloseStreamEntry.makeVariables(paymentData.streamID, paymentData.numberOfPayments.toNumber(), "CLOSED", undefined)
-          ]).then(function (result) {
-          if (result.TAG === /* Ok */0) {
-            console.log("success close entry: CLOSED");
-            return ;
-          }
-          console.log("error close entry: ", result._0);
-          
-        });
+  PaymentStreamManager.addPaymentEntry(paymentData.streamID, paymentData.nextPayment.toNumber(), finalAmount.toString());
+  var totalPayments = paymentData.numberOfPaymentsMade.add(finalPayment);
+  if (paymentData.numberOfPayments.eq(totalPayments)) {
+    PaymentStreamManager.closeStreamEntry(paymentData.streamID, paymentData.numberOfPayments.toNumber());
   } else {
     var newPaymentsMade = paymentData.numberOfPaymentsMade.add(finalPayment);
     var intervalInSeconds$1 = paymentData.interval.mul(CONSTANTS.big60);
     var newNextPayment = paymentData.nextPayment.add(finalPayment.mul(intervalInSeconds$1));
-    Curry.app(PaymentStreamManager.gqlClient.reason_mutate, [
-            {
-              query: Query.UpdateStreamEntry.query,
-              Raw: Query.UpdateStreamEntry.Raw,
-              parse: Query.UpdateStreamEntry.parse,
-              serialize: Query.UpdateStreamEntry.serialize,
-              serializeVariables: Query.UpdateStreamEntry.serializeVariables
-            },
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            Query.UpdateStreamEntry.makeVariables(paymentData.streamID, newPaymentsMade.toNumber(), newNextPayment.toNumber(), paymentData.nextPayment.toNumber(), undefined)
-          ]).then(function (result) {
-          if (result.TAG === /* Ok */0) {
-            console.log("success payment made: ", newPaymentsMade, newNextPayment);
-            return ;
-          }
-          console.log("error payment made: ", result._0);
-          
-        });
+    PaymentStreamManager.updateStreamEntry(paymentData.streamID, newPaymentsMade.toNumber(), newNextPayment.toNumber(), paymentData.nextPayment.toNumber());
   }
-  var requestString = "http://localhost:5001/api/v1/payments/0xC563388e2e2fdD422166eD5E76971D11eD37A466/" + recipientAddress;
+  var requestString = "http://raiden1:5001/api/v1/payments/0xC563388e2e2fdD422166eD5E76971D11eD37A466/" + recipientAddress;
   console.log(requestString, finalAmount.toString());
   return fetch(requestString, Fetch.RequestInit.make(/* Post */2, {
                         "Content-Type": "application/json"
@@ -129,6 +55,11 @@ function makePayment(recipientAddress, paymentData) {
                 return prim.json();
               }).then(function (json) {
               console.log("THE RESULT:", json);
+              if (JSON.stringify(json).includes("errors") === false) {
+                console.log("SUCCESS");
+              } else {
+                console.log("ERROR");
+              }
               
             });
 }

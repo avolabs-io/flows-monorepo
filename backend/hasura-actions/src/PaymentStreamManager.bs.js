@@ -192,6 +192,156 @@ var createStream = Serbet.endpoint(undefined, {
         })
     });
 
+function addPaymentEntry(streamID, timestamp, amount) {
+  Curry.app(gqlClient.reason_mutate, [
+          {
+            query: Query.AddPaymentEntry.query,
+            Raw: Query.AddPaymentEntry.Raw,
+            parse: Query.AddPaymentEntry.parse,
+            serialize: Query.AddPaymentEntry.serialize,
+            serializeVariables: Query.AddPaymentEntry.serializeVariables
+          },
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          Query.AddPaymentEntry.makeVariables(streamID, timestamp, "PENDING", amount, undefined)
+        ]).then(function (result) {
+        if (result.TAG === /* Ok */0) {
+          console.log("success payment added", result._0.data.insert_payments_one);
+          return ;
+        }
+        console.log("error payment added: ", result._0);
+        
+      });
+  
+}
+
+function updatePaymentEntry(paymentID, state) {
+  Curry.app(gqlClient.reason_mutate, [
+          {
+            query: Query.UpdatePaymentEntry.query,
+            Raw: Query.UpdatePaymentEntry.Raw,
+            parse: Query.UpdatePaymentEntry.parse,
+            serialize: Query.UpdatePaymentEntry.serialize,
+            serializeVariables: Query.UpdatePaymentEntry.serializeVariables
+          },
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          Query.UpdatePaymentEntry.makeVariables(paymentID, state, undefined)
+        ]).then(function (result) {
+        if (result.TAG === /* Ok */0) {
+          console.log("success update payment: ", state);
+          return ;
+        }
+        console.log("error update payment: ", state, result._0);
+        
+      });
+  
+}
+
+function updateStreamEntry(streamID, totalPaymentsMade, nextPayment, lastPayment) {
+  Curry.app(gqlClient.reason_mutate, [
+          {
+            query: Query.UpdateStreamEntry.query,
+            Raw: Query.UpdateStreamEntry.Raw,
+            parse: Query.UpdateStreamEntry.parse,
+            serialize: Query.UpdateStreamEntry.serialize,
+            serializeVariables: Query.UpdateStreamEntry.serializeVariables
+          },
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          Query.UpdateStreamEntry.makeVariables(streamID, totalPaymentsMade, nextPayment, lastPayment, undefined)
+        ]).then(function (result) {
+        if (result.TAG === /* Ok */0) {
+          console.log("success payment made: ", totalPaymentsMade, nextPayment);
+          return ;
+        }
+        console.log("error payment made: ", result._0);
+        
+      });
+  
+}
+
+function closeStreamEntry(streamID, totalPaymentsMade) {
+  Curry.app(gqlClient.reason_mutate, [
+          {
+            query: Query.CloseStreamEntry.query,
+            Raw: Query.CloseStreamEntry.Raw,
+            parse: Query.CloseStreamEntry.parse,
+            serialize: Query.CloseStreamEntry.serialize,
+            serializeVariables: Query.CloseStreamEntry.serializeVariables
+          },
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          Query.CloseStreamEntry.makeVariables(streamID, totalPaymentsMade, "CLOSED", undefined)
+        ]).then(function (result) {
+        if (result.TAG === /* Ok */0) {
+          console.log("success close entry: CLOSED");
+          return ;
+        }
+        console.log("error close entry: ", result._0);
+        
+      });
+  
+}
+
+function addUser(username, ethAddress, description) {
+  Curry.app(gqlClient.reason_mutate, [
+          {
+            query: Query.AddUser.query,
+            Raw: Query.AddUser.Raw,
+            parse: Query.AddUser.parse,
+            serialize: Query.AddUser.serialize,
+            serializeVariables: Query.AddUser.serializeVariables
+          },
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          Query.AddUser.makeVariables(username, ethAddress, description, undefined)
+        ]).then(function (result) {
+        if (result.TAG === /* Ok */0) {
+          console.log("success user added");
+          return ;
+        }
+        console.log("error user added: ", result._0);
+        
+      });
+  
+}
+
 var ApolloQueryResult;
 
 exports.ApolloQueryResult = ApolloQueryResult;
@@ -200,4 +350,9 @@ exports.body_in_decode = body_in_decode;
 exports.body_out_encode = body_out_encode;
 exports.gqlClient = gqlClient;
 exports.createStream = createStream;
+exports.addPaymentEntry = addPaymentEntry;
+exports.updatePaymentEntry = updatePaymentEntry;
+exports.updateStreamEntry = updateStreamEntry;
+exports.closeStreamEntry = closeStreamEntry;
+exports.addUser = addUser;
 /* gqlClient Not a pure module */

@@ -1,6 +1,52 @@
 // File to put all GQL Queries.
 // open GqlConverters;
 
+module AddUser = %graphql(`
+  mutation AddUser ($name: String!, $address: String!, $description: String!){
+    insert_user_one(object: {name: $name, ethAddress: $address, description: $description}) {
+      name
+      ethAddress
+      description
+    }
+  }
+`)
+
+module ViewPaymentStreams = %graphql(`
+  query ViewPaymentStreams ($state: String!){
+    streams(where: {state: {_eq: $state}}){
+      id
+      amount @ppxCustom(module: "GqlConverters.BigInt")
+      interval @ppxCustom(module: "GqlConverters.IntToBigInt")
+      numberOfPayments @ppxCustom(module: "GqlConverters.IntToBigInt")
+      numberOfPaymentsMade @ppxCustom(module: "GqlConverters.IntToBigInt")
+      recipient
+      state
+      tokenAddress
+      startPayment @ppxCustom(module: "GqlConverters.IntToBigInt")
+      nextPayment @ppxCustom(module: "GqlConverters.IntToBigInt")
+      lastPayment
+    }
+  }
+`)
+
+module ViewPaymentsStreamsWithAddress = %graphql(`
+  query ViewPaymentsStreamsWithAddress ($address: String!){
+    streams(where: {recipient: {_eq: $address}}){
+      id
+      amount @ppxCustom(module: "GqlConverters.BigInt")
+      interval @ppxCustom(module: "GqlConverters.IntToBigInt")
+      numberOfPayments @ppxCustom(module: "GqlConverters.IntToBigInt")
+      numberOfPaymentsMade @ppxCustom(module: "GqlConverters.IntToBigInt")
+      recipient
+      state
+      tokenAddress
+      startPayment @ppxCustom(module: "GqlConverters.IntToBigInt")
+      nextPayment @ppxCustom(module: "GqlConverters.IntToBigInt")
+      lastPayment
+    }
+  }
+`)
+
 module CreatePaymentStream = %graphql(`
   mutation CreatePayment ($amount: String!, $interval: Int!, $numberOfPayments: Int!, $recipient: String!, $start: Int!, $state: String, $tokenAddress: String!) {
     insert_streams_one(object: {amount: $amount, interval: $interval, numberOfPayments: $numberOfPayments, numberOfPaymentsMade: 0, recipient: $recipient, start: $start, state: $state, tokenAddress: $tokenAddress}) {
@@ -47,11 +93,19 @@ module UpdateStreamEntry = %graphql(`
   }
 `)
 
-module AddNewPayment = %graphql(`
-  mutation AddNewPayment ($streamID: Int!, $paymentTimestamp: Int!, $paymentState: String!, $paymentAmount: String!){
+module AddPaymentEntry = %graphql(`
+  mutation AddPaymentEntry ($streamID: Int!, $paymentTimestamp: Int!, $paymentState: String!, $paymentAmount: String!){
     insert_payments_one(object: {streamID: $streamID, paymentTimestamp: $paymentTimestamp, paymentState: $paymentState, paymentAmount: $paymentAmount}) {
       id
-      streamID
+    }
+  }
+`)
+
+module UpdatePaymentEntry = %graphql(`
+  mutation UpdatePaymentEntry ($paymentID: Int!, $paymentState: String!){
+    update_payments_by_pk(pk_columns: {id: $paymentID}, _set: {paymentState: $paymentState}) {
+      id
+      paymentState
     }
   }
 `)
