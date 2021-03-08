@@ -29,6 +29,6 @@ let elipsifyMiddle: (string, int, int) => string = (inputString, maxLength, trai
 
 let bnToMoment = bn =>
   bn
-  ->BN.toString
+  ->Ethers.BigNumber.toString
   ->int_of_string /* trusting that gql will be reliable here */
   ->MomentRe.momentWithUnix
