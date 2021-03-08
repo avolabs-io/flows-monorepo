@@ -94,7 +94,7 @@ module UpdateStreamEntry = %graphql(`
 `)
 
 module AddPaymentEntry = %graphql(`
-  mutation AddPaymentEntry ($streamID: Int!, $paymentTimestamp: Int!, $paymentState: String!, $paymentAmount: String!){
+  mutation AddPaymentEntry ($streamID: Int!, $paymentTimestamp: Int!, $paymentState: payment_states_enum!, $paymentAmount: String!){
     insert_payments_one(object: {streamID: $streamID, paymentTimestamp: $paymentTimestamp, paymentState: $paymentState, paymentAmount: $paymentAmount}) {
       id
     }
@@ -102,7 +102,7 @@ module AddPaymentEntry = %graphql(`
 `)
 
 module UpdatePaymentEntry = %graphql(`
-  mutation UpdatePaymentEntry ($paymentID: Int!, $paymentState: String!){
+  mutation UpdatePaymentEntry ($paymentID: Int!, $paymentState: payment_states_enum!){
     update_payments_by_pk(pk_columns: {id: $paymentID}, _set: {paymentState: $paymentState}) {
       id
       paymentState

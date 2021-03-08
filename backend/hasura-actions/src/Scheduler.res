@@ -144,14 +144,14 @@ let startProcess = () => {
                     let paymentState = payment.paymentState
                     //let paymentAmount = payment.paymentAmount
                     //let paymentTimestamp = payment.paymentTimestamp
-                    if paymentState == "COMPLETE" {
+                    if paymentState == #COMPLETE {
                       Js.log("last payment is COMPLETE")
                       let _ = makePayment(~recipientAddress=recipient, ~paymentData)
                     }
-                    if paymentState == "PENDING" {
+                    if paymentState == #PENDING {
                       Js.log("last payment is PENDING")
                     }
-                    if paymentState == "ERROR" {
+                    if paymentState == #ERROR {
                       Js.log("last payment is ERROR")
                     }
                   })
