@@ -2,6 +2,7 @@
 
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as ApolloClient from "rescript-apollo-client/src/ApolloClient.bs.js";
+import * as Ethers$FlowsUserApp from "./lib/Ethers/Ethers.bs.js";
 import * as ApolloClient__Link_Ws from "rescript-apollo-client/src/@apollo/client/link/ws/ApolloClient__Link_Ws.bs.js";
 import * as ApolloClient__Utilities from "rescript-apollo-client/src/@apollo/client/utilities/ApolloClient__Utilities.bs.js";
 import * as ApolloClient__ApolloClient from "rescript-apollo-client/src/@apollo/client/ApolloClient__ApolloClient.bs.js";
@@ -16,9 +17,36 @@ var headers = {
   "x-hasura-admin-secret": "testing"
 };
 
+function getAuthHeaders(user) {
+  if (user === undefined) {
+    return ;
+  }
+  var u = Caml_option.valFromOption(user);
+  var getUserSignature = function (__x) {
+    return Caml_option.null_to_opt(__x.getItem(Ethers$FlowsUserApp.Utils.ethAdrToLowerStr(u)));
+  };
+  var uS = getUserSignature(localStorage);
+  if (uS !== undefined) {
+    return {
+            "eth-address": Ethers$FlowsUserApp.Utils.ethAdrToStr(u),
+            "eth-signature": uS
+          };
+  }
+  
+}
+
 var httpLink = ApolloClient__Link_Http_HttpLink.make((function (param) {
         return "http://localhost:8080/v1/graphql";
       }), undefined, undefined, Caml_option.some(headers), undefined, undefined, undefined, undefined);
+
+function makeHttpLink(user) {
+  var headers = getAuthHeaders(user);
+  return ApolloClient__Link_Http_HttpLink.make((function (param) {
+                return "http://localhost:8080/v1/graphql";
+              }), undefined, undefined, Caml_option.some(headers !== undefined ? headers : (function (prim) {
+                      return {};
+                    })), undefined, undefined, undefined, undefined);
+}
 
 var wsLink = ApolloClient__Link_Ws.WebSocketLink.make("ws://localhost:8080/v1/graphql", ApolloClient__SubscriptionsTransportWs.ClientOptions.make({
           TAG: /* ConnectionParams */0,
@@ -27,24 +55,30 @@ var wsLink = ApolloClient__Link_Ws.WebSocketLink.make("ws://localhost:8080/v1/gr
           }
         }, undefined, true, undefined, undefined, undefined, undefined, undefined), undefined, undefined);
 
-var terminatingLink = ReasonMLCommunity__ApolloClient.Link.split((function (param) {
-        var definition = ApolloClient__Utilities.getOperationDefinition(param.query);
-        if (definition !== undefined && definition.kind === "OperationDefinition") {
-          return definition.operation === "subscription";
-        } else {
-          return false;
-        }
-      }), wsLink, httpLink);
+function terminatingLink(user) {
+  return ReasonMLCommunity__ApolloClient.Link.split((function (param) {
+                var definition = ApolloClient__Utilities.getOperationDefinition(param.query);
+                if (definition !== undefined && definition.kind === "OperationDefinition") {
+                  return definition.operation === "subscription";
+                } else {
+                  return false;
+                }
+              }), wsLink, makeHttpLink(user));
+}
 
-var client = ApolloClient.make(undefined, undefined, undefined, Caml_option.some(terminatingLink), ApolloClient__Cache_InMemory_InMemoryCache.make(undefined, undefined, undefined, undefined, undefined, undefined), undefined, undefined, true, undefined, ApolloClient__ApolloClient.DefaultOptions.make(ApolloClient__ApolloClient.DefaultMutateOptions.make(undefined, undefined, true, /* All */2, undefined, undefined), ApolloClient__ApolloClient.DefaultQueryOptions.make(/* NetworkOnly */2, /* All */2, undefined, undefined), ApolloClient__ApolloClient.DefaultWatchQueryOptions.make(/* NetworkOnly */3, /* All */2, undefined, undefined), undefined), undefined, undefined, undefined, undefined, undefined, undefined, undefined);
+function makeClient(user) {
+  return ApolloClient.make(undefined, undefined, undefined, Caml_option.some(terminatingLink(user)), ApolloClient__Cache_InMemory_InMemoryCache.make(undefined, undefined, undefined, undefined, undefined, undefined), undefined, undefined, true, undefined, ApolloClient__ApolloClient.DefaultOptions.make(ApolloClient__ApolloClient.DefaultMutateOptions.make(undefined, undefined, true, /* All */2, undefined, undefined), ApolloClient__ApolloClient.DefaultQueryOptions.make(/* NetworkOnly */2, /* All */2, undefined, undefined), ApolloClient__ApolloClient.DefaultWatchQueryOptions.make(/* NetworkOnly */3, /* All */2, undefined, undefined), undefined), undefined, undefined, undefined, undefined, undefined, undefined, undefined);
+}
 
 export {
   graphqlEndpoint ,
   headers ,
+  getAuthHeaders ,
   httpLink ,
+  makeHttpLink ,
   wsLink ,
   terminatingLink ,
-  client ,
+  makeClient ,
   
 }
 /* httpLink Not a pure module */

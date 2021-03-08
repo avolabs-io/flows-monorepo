@@ -2,11 +2,42 @@ let graphqlEndpoint = "localhost:8080/v1/graphql"
 
 let headers = {"x-hasura-admin-secret": "testing"}
 
+
+type clientHeaders = {
+    @as("eth-address")
+    ethAddress: string,
+    @as("eth-signature")
+    ethSignature: string,
+}
+
+let getAuthHeaders = (~user) => {
+  open Ethers.Utils
+    switch(user){
+      | None => None
+      | Some(u) => {
+          let getUserSignature = Dom.Storage2.getItem(_, u->ethAdrToLowerStr)
+          switch(getUserSignature(Dom.Storage2.localStorage)){
+            | None => None
+            | Some(uS) => Some({ethAddress: u->ethAdrToStr, ethSignature: uS})
+          }
+      }
+    }
+}
+
 let httpLink = ApolloClient.Link.HttpLink.make(
   ~uri=_ => "http://" ++ graphqlEndpoint,
   ~headers=Obj.magic(headers),
   (),
 )
+
+let makeHttpLink = (~user) => ApolloClient.Link.HttpLink.make(
+    ~uri= _ => "http://" ++ graphqlEndpoint, 
+    ~headers={
+    switch(getAuthHeaders(~user)){
+      | Some(headers) => headers->Obj.magic
+      | None => Js.Obj.empty->Obj.magic
+    }
+}, ())
 
 let wsLink = {
   open ApolloClient.Link.WebSocketLink
@@ -21,15 +52,15 @@ let wsLink = {
   )
 }
 
-let terminatingLink = ApolloClient.Link.split(~test=({query}) => {
+let terminatingLink = (~user) => ApolloClient.Link.split(~test=({query}) => {
   let definition = ApolloClient.Utilities.getOperationDefinition(query)
   switch definition {
   | Some({kind, operation}) => kind === "OperationDefinition" && operation === "subscription"
   | None => false
   }
-}, ~whenTrue=wsLink, ~whenFalse=httpLink)
+}, ~whenTrue=wsLink, ~whenFalse=makeHttpLink(~user))
 
-let client = {
+let makeClient = (~user) => {
   open ApolloClient
   make(
     ~cache=Cache.InMemoryCache.make(),
@@ -40,7 +71,7 @@ let client = {
       ~watchQuery=DefaultWatchQueryOptions.make(~fetchPolicy=NetworkOnly, ~errorPolicy=All, ()),
       (),
     ),
-    ~link=terminatingLink,
+    ~link=terminatingLink(~user),
     (),
   )
 }

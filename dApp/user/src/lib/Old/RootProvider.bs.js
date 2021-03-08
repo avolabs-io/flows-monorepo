@@ -171,10 +171,14 @@ function useCurrentUser(param) {
   
 }
 
+function useCurrentUserExn(param) {
+  return Belt_Option.getExn(useCurrentUser(undefined));
+}
+
 function useIsAddressCurrentUser(address) {
   var currentUser = useCurrentUser(undefined);
   if (currentUser !== undefined) {
-    return Ethers$FlowsUserApp.Utils.toLowerString(address) === Ethers$FlowsUserApp.Utils.toLowerString(Caml_option.valFromOption(currentUser));
+    return Ethers$FlowsUserApp.Utils.ethAdrToLowerStr(address) === Ethers$FlowsUserApp.Utils.ethAdrToLowerStr(Caml_option.valFromOption(currentUser));
   } else {
     return false;
   }
@@ -228,6 +232,10 @@ function useSigner(param) {
   
 }
 
+function useSignerExn(param) {
+  return Belt_Option.getExn(useSigner(undefined));
+}
+
 function useActivateConnector(param) {
   var context = Core.useWeb3React();
   var match = React.useState(function () {
@@ -277,6 +285,7 @@ export {
   RootContext ,
   RootWithWeb3 ,
   useCurrentUser ,
+  useCurrentUserExn ,
   useIsAddressCurrentUser ,
   useEthBalance ,
   useNetworkId ,
@@ -284,6 +293,7 @@ export {
   useDeactivateWeb3 ,
   useWeb3 ,
   useSigner ,
+  useSignerExn ,
   useActivateConnector ,
   make$1 as make,
   

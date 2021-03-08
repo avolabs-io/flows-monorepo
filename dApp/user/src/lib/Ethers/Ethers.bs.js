@@ -3,6 +3,8 @@
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as Js_exn from "bs-platform/lib/es6/js_exn.js";
 import * as Ethers from "ethers";
+import * as Belt_Float from "bs-platform/lib/es6/belt_Float.js";
+import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as Caml_js_exceptions from "bs-platform/lib/es6/caml_js_exceptions.js";
 
@@ -51,26 +53,42 @@ function parseEther(amount) {
   return parseUnits(amount, "ether");
 }
 
+function parseEtherUnsafe(amount) {
+  return Ethers.utils.parseUnits(amount, "ether");
+}
+
 function getAddress(addressString) {
   return unsafeToOption(function (param) {
               return Ethers.utils.getAddress(addressString);
             });
 }
 
-function toString(prim) {
+function formatEther(__x) {
+  return Ethers.utils.formatUnits(__x, "ether");
+}
+
+function formatEtherToPrecision(number, digits) {
+  var digitMultiplier = Math.pow(10.0, digits);
+  return String(Math.floor(Belt_Option.getExn(Belt_Float.fromString(Ethers.utils.formatUnits(number, "ether"))) * digitMultiplier) / digitMultiplier);
+}
+
+function ethAdrToStr(prim) {
   return prim;
 }
 
-function toLowerString(address) {
+function ethAdrToLowerStr(address) {
   return address.toLowerCase();
 }
 
 var Utils = {
   parseUnits: parseUnits,
   parseEther: parseEther,
+  parseEtherUnsafe: parseEtherUnsafe,
   getAddress: getAddress,
-  toString: toString,
-  toLowerString: toLowerString
+  formatEther: formatEther,
+  formatEtherToPrecision: formatEtherToPrecision,
+  ethAdrToStr: ethAdrToStr,
+  ethAdrToLowerStr: ethAdrToLowerStr
 };
 
 export {

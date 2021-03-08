@@ -3,11 +3,15 @@
 import * as React from "react";
 import * as RaidenTs from "raiden-ts";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
+import * as SignUp$FlowsUserApp from "./components/Auth/SignUp.bs.js";
+import * as AuthProvider$FlowsUserApp from "./lib/Auth/AuthProvider.bs.js";
 import * as RootProvider$FlowsUserApp from "./lib/Old/RootProvider.bs.js";
+import * as AuthenticateButton$FlowsUserApp from "./components/Auth/AuthenticateButton.bs.js";
 
 function Dapp(Props) {
   var optWeb3Provider = RootProvider$FlowsUserApp.useWeb3(undefined);
   var optSigner = RootProvider$FlowsUserApp.useSigner(undefined);
+  var match = AuthProvider$FlowsUserApp.useAuthStatus(undefined);
   React.useEffect((function () {
           if (optWeb3Provider !== undefined && optSigner !== undefined) {
             RaidenTs.Raiden.create(Caml_option.valFromOption(optWeb3Provider), 0);
@@ -17,7 +21,7 @@ function Dapp(Props) {
         optWeb3Provider,
         optSigner
       ]);
-  return React.createElement("div", undefined, React.createElement("p", undefined, "something"));
+  return React.createElement("div", undefined, match.isAuthorized ? React.createElement(SignUp$FlowsUserApp.make, {}) : React.createElement(AuthenticateButton$FlowsUserApp.make, {}), React.createElement("p", undefined, "something"));
 }
 
 var make = Dapp;
