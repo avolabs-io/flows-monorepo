@@ -12,7 +12,20 @@ module OnlyLoggedIn = {
 module Main = {
   @react.component
   let make = () => {
-    <OnlyLoggedIn> <h1> {"Main component"->React.string} </h1> <Dapp /> </OnlyLoggedIn>
+    open AuthProvider
+    let { loggedInStatus } = useAuthStatus()
+    <>
+    <h3>
+      {"Auth Status" -> React.string}
+    </h3>
+    <div>
+      { loggedInStatus->loggedInStatusToStr->React.string }
+    </div>
+    <OnlyLoggedIn> 
+      <h1> {"Main component"->React.string} </h1>
+      <Dapp />
+    </OnlyLoggedIn>
+    </>
   }
 }
 module NotFound = {
@@ -38,12 +51,27 @@ module Router = {
 module GraphQl = {
   @react.component
   let make = (~children) => {
-    let user = RootProvider.useCurrentUser()
+    let optWeb3User = RootProvider.useCurrentUser()
+    let { loggedInStatus } = AuthProvider.useAuthStatus()
+    let optDbOnlyUser = switch(loggedInStatus){
+      | DbOnly(user) => Some(user)
+      | _ => None
+    }
+
+    let optUser = if(Option.isSome(optWeb3User)){
+      optWeb3User
+    }else if(Option.isSome(optDbOnlyUser)){
+      optDbOnlyUser
+    } else{
+      None
+    }
+
+
     let client = React.useMemo1(() =>
       Apollo.makeClient(
-        ~user
+        ~user=optUser
       )
-    , [user])
+    , [optUser])
 
     <ApolloClient.React.ApolloProvider client> children </ApolloClient.React.ApolloProvider>
   }
@@ -51,9 +79,9 @@ module GraphQl = {
 @react.component
 let make = () =>
   <RootProvider>
-    <GraphQl>
     <AuthProvider>
-      <Router /> 
+      <GraphQl>
+        <Router /> 
+      </GraphQl>
     </AuthProvider>
-    </GraphQl>
   </RootProvider>

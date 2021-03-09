@@ -12,6 +12,7 @@ function Dapp(Props) {
   var optWeb3Provider = RootProvider$FlowsUserApp.useWeb3(undefined);
   var optSigner = RootProvider$FlowsUserApp.useSigner(undefined);
   var match = AuthProvider$FlowsUserApp.useAuthStatus(undefined);
+  var loggedInStatus = match.loggedInStatus;
   React.useEffect((function () {
           if (optWeb3Provider !== undefined && optSigner !== undefined) {
             RaidenTs.Raiden.create(Caml_option.valFromOption(optWeb3Provider), 0);
@@ -21,7 +22,24 @@ function Dapp(Props) {
         optWeb3Provider,
         optSigner
       ]);
-  return React.createElement("div", undefined, match.isAuthorized ? React.createElement(SignUp$FlowsUserApp.make, {}) : React.createElement(AuthenticateButton$FlowsUserApp.make, {}), React.createElement("p", undefined, "something"));
+  var tmp;
+  if (typeof loggedInStatus === "number") {
+    switch (loggedInStatus) {
+      case /* Web3AndDb */0 :
+          tmp = React.createElement(SignUp$FlowsUserApp.make, {});
+          break;
+      case /* Web3Only */1 :
+          tmp = React.createElement(AuthenticateButton$FlowsUserApp.make, {});
+          break;
+      case /* NotLoggedIn */2 :
+          tmp = null;
+          break;
+      
+    }
+  } else {
+    tmp = React.createElement(SignUp$FlowsUserApp.make, {});
+  }
+  return React.createElement("div", undefined, tmp, React.createElement("p", undefined, "something"));
 }
 
 var make = Dapp;
