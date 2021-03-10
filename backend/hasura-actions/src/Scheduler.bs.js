@@ -7,11 +7,15 @@ var Fetch = require("bs-fetch/src/Fetch.bs.js");
 var Query = require("./Query.bs.js");
 var BnJs = require("bn.js");
 var BsCron = require("bs-cron/src/BsCron.bs.js");
+var Dotenv = require("dotenv");
 var Js_dict = require("bs-platform/lib/js/js_dict.js");
 var CONSTANTS = require("./CONSTANTS.bs.js");
 var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
+var Belt_Option = require("bs-platform/lib/js/belt_Option.js");
 var Caml_option = require("bs-platform/lib/js/caml_option.js");
 var PaymentStreamManager = require("./PaymentStreamManager.bs.js");
+
+Dotenv.config();
 
 function makePaymentRequest_encode(v) {
   return Js_dict.fromArray([
@@ -44,7 +48,8 @@ function makePayment(recipientAddress, paymentData) {
     var newNextPayment = paymentData.nextPayment.add(finalPayment.mul(intervalInSeconds$1));
     PaymentStreamManager.updateStreamEntry(paymentData.streamID, newPaymentsMade.toNumber(), newNextPayment.toNumber(), paymentData.nextPayment.toNumber());
   }
-  var requestString = "http://raiden1:5001/api/v1/payments/0xC563388e2e2fdD422166eD5E76971D11eD37A466/" + recipientAddress;
+  var address = Belt_Option.getWithDefault(process.env.HUB_ADDRESS, "http://raiden1:5001");
+  var requestString = address + "/api/v1/payments/0xC563388e2e2fdD422166eD5E76971D11eD37A466/" + recipientAddress;
   console.log(requestString, finalAmount.toString());
   return fetch(requestString, Fetch.RequestInit.make(/* Post */2, {
                         "Content-Type": "application/json"
@@ -77,6 +82,7 @@ function getCurrentTimestamp(param) {
 }
 
 function startProcess(param) {
+  console.log(Belt_Option.getWithDefault(process.env.HUB_ADDRESS, "http://raiden1:5001"));
   var now = getTimestamp(new Date());
   console.log("start timestamp:", now);
   var job = BsCron.CronJob.make({
@@ -165,4 +171,4 @@ exports.getTimestamp = getTimestamp;
 exports.fromTimeStampToDate = fromTimeStampToDate;
 exports.getCurrentTimestamp = getCurrentTimestamp;
 exports.startProcess = startProcess;
-/* Query Not a pure module */
+/*  Not a pure module */
