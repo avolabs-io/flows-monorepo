@@ -3,15 +3,15 @@
       allow_aggregations: false
       backend_only: false
       columns:
-      - id
-      - recipient
-      - tokenAddress
-      - numberOfPayments
-      - start
-      - interval
-      - amount
-      - numberOfPaymentsMade
-      - state
+        - id
+        - recipient
+        - tokenAddress
+        - numberOfPayments
+        - startPayment
+        - interval
+        - amount
+        - numberOfPaymentsMade
+        - state
       computed_fields: []
       filter:
         recipient:
