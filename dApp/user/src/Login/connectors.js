@@ -9,6 +9,7 @@ import { FortmaticConnector } from "@web3-react/fortmatic-connector";
 import { PortisConnector } from "@web3-react/portis-connector";
 import { SquarelinkConnector } from "@web3-react/squarelink-connector";
 import { TorusConnector } from "@web3-react/torus-connector";
+// import { PrivateKeyProvider } from '@avolabs/private-key-connector'
 // import { AuthereumConnector } from "@web3-react/authereum-connector";
 
 const POLLING_INTERVAL = 8000;
@@ -37,6 +38,10 @@ export const sideChainNetwork = (defaultChainId) => {
     pollingInterval: POLLING_INTERVAL,
   });
 };
+
+// export const privateKeyProvider = (providerUri, providerKey) => {
+//   new PrivateKeyProvider({providerUri, providerKey})
+// }
 
 export const walletconnect = new WalletConnectConnector({
   rpc: { 1: RPC_URLS[1] },
@@ -89,6 +94,12 @@ export const torus = new TorusConnector(
 // export const authereum = new AuthereumConnector({ chainId: 42 });
 
 export default [
+  // {
+  //   name: "Private Key Provider",
+  //   connector: privateKeyProvider("https://rpc.goerli.mudit.blog/", "0x2c1de23b5457bba0b6e30645f6e6632510e404a09142fc7148f52230c7e6ee5f"),
+  //   img: "/",
+  //   connectionPhrase: "Connect via private key"
+  // },
   {
     name: "MetaMask",
     connector: injected,

@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@apollo/client": "^3.3.7",
+    "@avolabs/private-key-connector": "6.1.11",
     "@web3-react/core": "^6.1.1",
     "@web3-react/fortmatic-connector": "^6.1.6",
     "@web3-react/injected-connector": "^6.0.7",
