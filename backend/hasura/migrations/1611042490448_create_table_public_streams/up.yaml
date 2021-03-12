@@ -1,8 +1,9 @@
 - args:
     cascade: false
     read_only: false
-    sql: CREATE TABLE "public"."streams"("id" serial NOT NULL, "recipient" text NOT
-      NULL, "tokenAddress" text NOT NULL, "numberOfPayments" integer, "start" integer
+    sql:
+      CREATE TABLE "public"."streams"("id" serial NOT NULL, "recipient" text NOT
+      NULL, "tokenAddress" text NOT NULL, "numberOfPayments" integer, "startPayment" integer
       NOT NULL, "interval" integer NOT NULL, "amount" text NOT NULL, "numberOfPaymentsMade"
       integer NOT NULL, "state" text NOT NULL, PRIMARY KEY ("id") , FOREIGN KEY ("recipient")
       REFERENCES "public"."user"("ethAddress") ON UPDATE restrict ON DELETE restrict,
