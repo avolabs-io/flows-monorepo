@@ -1,6 +1,7 @@
 - args:
     cascade: false
     read_only: false
-    sql: ALTER TABLE "public"."streams" ADD COLUMN "paymentTick" integer NOT NULL
+    sql:
+      ALTER TABLE "public"."streams" ADD COLUMN "nextPayment" integer NOT NULL
       DEFAULT 1;
   type: run_sql
