@@ -382,8 +382,8 @@ var ViewPaymentsStreamsWithAddress = {
 var Raw$3 = {};
 
 var query$3 = (require("@apollo/client").gql`
-  mutation CreatePayment($amount: String!, $interval: Int!, $numberOfPayments: Int!, $recipient: String!, $start: Int!, $state: String, $tokenAddress: String!)  {
-    insert_streams_one(object: {amount: $amount, interval: $interval, numberOfPayments: $numberOfPayments, numberOfPaymentsMade: 0, recipient: $recipient, start: $start, state: $state, tokenAddress: $tokenAddress})  {
+  mutation CreatePaymentStream($amount: String!, $interval: Int!, $numberOfPayments: Int!, $recipient: String!, $startPayment: Int!, $state: String, $tokenAddress: String!, $nextPayment: Int!)  {
+    insert_streams_one(object: {amount: $amount, interval: $interval, numberOfPayments: $numberOfPayments, numberOfPaymentsMade: 0, recipient: $recipient, startPayment: $startPayment, nextPayment: $nextPayment, state: $state, tokenAddress: $tokenAddress})  {
       __typename
       id
     }
@@ -425,21 +425,23 @@ function serializeVariables$3(inp) {
           interval: inp.interval,
           numberOfPayments: inp.numberOfPayments,
           recipient: inp.recipient,
-          start: inp.start,
+          startPayment: inp.startPayment,
           state: a !== undefined ? a : undefined,
-          tokenAddress: inp.tokenAddress
+          tokenAddress: inp.tokenAddress,
+          nextPayment: inp.nextPayment
         };
 }
 
-function makeVariables$3(amount, interval, numberOfPayments, recipient, start, state, tokenAddress, param) {
+function makeVariables$3(amount, interval, numberOfPayments, recipient, startPayment, state, tokenAddress, nextPayment, param) {
   return {
           amount: amount,
           interval: interval,
           numberOfPayments: numberOfPayments,
           recipient: recipient,
-          start: start,
+          startPayment: startPayment,
           state: state,
-          tokenAddress: tokenAddress
+          tokenAddress: tokenAddress,
+          nextPayment: nextPayment
         };
 }
 

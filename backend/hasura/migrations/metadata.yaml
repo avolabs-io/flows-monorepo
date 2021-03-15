@@ -21,14 +21,41 @@ tables:
 - table:
     schema: public
     name: streams
-  array_relationships:
-  - name: payments
-    using:
-      foreign_key_constraint_on:
-        column: streamID
-        table:
-          schema: public
-          name: payments
+  insert_permissions:
+  - role: user
+    permission:
+      check: {}
+      columns:
+      - id
+      - recipient
+      - tokenAddress
+      - numberOfPayments
+      - interval
+      - amount
+      - numberOfPaymentsMade
+      - state
+      - startPayment
+      - nextPayment
+      - lastPayment
+      backend_only: false
+  select_permissions:
+  - role: user
+    permission:
+      columns:
+      - amount
+      - id
+      - interval
+      - lastPayment
+      - nextPayment
+      - numberOfPayments
+      - numberOfPaymentsMade
+      - recipient
+      - startPayment
+      - state
+      - tokenAddress
+      filter:
+        recipient:
+          _eq: X-Hasura-User-Id
 - table:
     schema: public
     name: user
@@ -68,21 +95,24 @@ actions:
   definition:
     handler: http://hasura-actions:9898/create-stream
     output_type: Output
+    forward_client_headers: true
     arguments:
-    - name: recipient
+    - name: userAddress
       type: String!
-    - name: addressTokenStream
+    - name: tokenAddress
       type: String!
-    - name: lengthOfPayment
+    - name: amount
+      type: String!
+    - name: numberOfPayments
       type: Int!
     - name: interval
       type: Int!
-    - name: rate
-      type: String!
-    - name: deposit
-      type: String!
+    - name: startPayment
+      type: Int!
     type: mutation
     kind: synchronous
+  permissions:
+  - role: user
 custom_types:
   input_objects:
   - name: Input

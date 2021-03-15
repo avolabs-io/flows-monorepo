@@ -17,9 +17,20 @@ module ViewPaymentsStreamsWithAddress = %graphql(`
 `)
 
 module CreatePaymentStream = %graphql(`
-  mutation CreatePaymentStream ($amount: String!, $interval: Int!, $numberOfPayments: Int!, $recipient: String!, $startPayment: Int!, $state: String, $tokenAddress: String!) {
-    insert_streams_one(object: {amount: $amount, interval: $interval, numberOfPayments: $numberOfPayments, numberOfPaymentsMade: 0, recipient: $recipient, startPayment: $startPayment, state: $state, tokenAddress: $tokenAddress}) {
-      id
+  mutation CreatePaymentStream ($amount: String!, $interval: Int!, $numberOfPayments: Int!, $recipient: String!, $startPayment: Int!, $tokenAddress: String!) {
+  createStream(amount: $amount, interval: $interval, numberOfPayments: $numberOfPayments, startPayment: $startPayment, tokenAddress: $tokenAddress, userAddress: $recipient){
+    success
+    error
+  }
+}
+`)
+
+module AddUser = %graphql(`
+  mutation AddUser ($name: String!, $address: String!, $description: String!){
+    insert_user_one(object: {name: $name, ethAddress: $address, description: $description}) {
+      name
+      ethAddress
+      description
     }
   }
 `)

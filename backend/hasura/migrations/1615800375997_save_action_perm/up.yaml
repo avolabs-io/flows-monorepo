@@ -1,0 +1,7 @@
+- args:
+    action: createStream
+    definition:
+      select:
+        filter: {}
+    role: user
+  type: create_action_permission

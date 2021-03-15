@@ -142,63 +142,72 @@ var ViewPaymentsStreamsWithAddress = {
 var Raw$1 = {};
 
 var query$1 = (require("@apollo/client").gql`
-  mutation CreatePaymentStream($amount: String!, $interval: Int!, $numberOfPayments: Int!, $recipient: String!, $startPayment: Int!, $state: String, $tokenAddress: String!)  {
-    insert_streams_one(object: {amount: $amount, interval: $interval, numberOfPayments: $numberOfPayments, numberOfPaymentsMade: 0, recipient: $recipient, startPayment: $startPayment, state: $state, tokenAddress: $tokenAddress})  {
+  mutation CreatePaymentStream($amount: String!, $interval: Int!, $numberOfPayments: Int!, $recipient: String!, $startPayment: Int!, $tokenAddress: String!)  {
+    createStream(amount: $amount, interval: $interval, numberOfPayments: $numberOfPayments, startPayment: $startPayment, tokenAddress: $tokenAddress, userAddress: $recipient)  {
       __typename
-      id
+      success
+      error
     }
   }
 `);
 
 function parse$1(value) {
-  var value$1 = value.insert_streams_one;
+  var value$1 = value.createStream;
+  var tmp;
+  if (value$1 == null) {
+    tmp = undefined;
+  } else {
+    var value$2 = value$1.error;
+    tmp = {
+      __typename: value$1.__typename,
+      success: value$1.success,
+      error: !(value$2 == null) ? value$2 : undefined
+    };
+  }
   return {
-          insert_streams_one: !(value$1 == null) ? ({
-                __typename: value$1.__typename,
-                id: value$1.id
-              }) : undefined
+          createStream: tmp
         };
 }
 
 function serialize$1(value) {
-  var value$1 = value.insert_streams_one;
-  var insert_streams_one;
+  var value$1 = value.createStream;
+  var createStream;
   if (value$1 !== undefined) {
-    var value$2 = value$1.id;
-    var value$3 = value$1.__typename;
-    insert_streams_one = {
-      __typename: value$3,
-      id: value$2
+    var value$2 = value$1.error;
+    var error = value$2 !== undefined ? value$2 : null;
+    var value$3 = value$1.success;
+    var value$4 = value$1.__typename;
+    createStream = {
+      __typename: value$4,
+      success: value$3,
+      error: error
     };
   } else {
-    insert_streams_one = null;
+    createStream = null;
   }
   return {
-          insert_streams_one: insert_streams_one
+          createStream: createStream
         };
 }
 
 function serializeVariables$1(inp) {
-  var a = inp.state;
   return {
           amount: inp.amount,
           interval: inp.interval,
           numberOfPayments: inp.numberOfPayments,
           recipient: inp.recipient,
           startPayment: inp.startPayment,
-          state: a !== undefined ? a : undefined,
           tokenAddress: inp.tokenAddress
         };
 }
 
-function makeVariables$1(amount, interval, numberOfPayments, recipient, startPayment, state, tokenAddress, param) {
+function makeVariables$1(amount, interval, numberOfPayments, recipient, startPayment, tokenAddress, param) {
   return {
           amount: amount,
           interval: interval,
           numberOfPayments: numberOfPayments,
           recipient: recipient,
           startPayment: startPayment,
-          state: state,
           tokenAddress: tokenAddress
         };
 }
@@ -236,9 +245,114 @@ var CreatePaymentStream = {
   useWithVariables: CreatePaymentStream_useWithVariables
 };
 
+var Raw$2 = {};
+
+var query$2 = (require("@apollo/client").gql`
+  mutation AddUser($name: String!, $address: String!, $description: String!)  {
+    insert_user_one(object: {name: $name, ethAddress: $address, description: $description})  {
+      __typename
+      name
+      ethAddress
+      description
+    }
+  }
+`);
+
+function parse$2(value) {
+  var value$1 = value.insert_user_one;
+  var tmp;
+  if (value$1 == null) {
+    tmp = undefined;
+  } else {
+    var value$2 = value$1.description;
+    tmp = {
+      __typename: value$1.__typename,
+      name: value$1.name,
+      ethAddress: value$1.ethAddress,
+      description: !(value$2 == null) ? value$2 : undefined
+    };
+  }
+  return {
+          insert_user_one: tmp
+        };
+}
+
+function serialize$2(value) {
+  var value$1 = value.insert_user_one;
+  var insert_user_one;
+  if (value$1 !== undefined) {
+    var value$2 = value$1.description;
+    var description = value$2 !== undefined ? value$2 : null;
+    var value$3 = value$1.ethAddress;
+    var value$4 = value$1.name;
+    var value$5 = value$1.__typename;
+    insert_user_one = {
+      __typename: value$5,
+      name: value$4,
+      ethAddress: value$3,
+      description: description
+    };
+  } else {
+    insert_user_one = null;
+  }
+  return {
+          insert_user_one: insert_user_one
+        };
+}
+
+function serializeVariables$2(inp) {
+  return {
+          name: inp.name,
+          address: inp.address,
+          description: inp.description
+        };
+}
+
+function makeVariables$2(name, address, description, param) {
+  return {
+          name: name,
+          address: address,
+          description: description
+        };
+}
+
+var AddUser_inner = {
+  Raw: Raw$2,
+  query: query$2,
+  parse: parse$2,
+  serialize: serialize$2,
+  serializeVariables: serializeVariables$2,
+  makeVariables: makeVariables$2
+};
+
+var include$2 = ApolloClient__React_Hooks_UseMutation.Extend({
+      query: query$2,
+      Raw: Raw$2,
+      parse: parse$2,
+      serialize: serialize$2,
+      serializeVariables: serializeVariables$2
+    });
+
+var AddUser_use = include$2.use;
+
+var AddUser_useWithVariables = include$2.useWithVariables;
+
+var AddUser = {
+  AddUser_inner: AddUser_inner,
+  Raw: Raw$2,
+  query: query$2,
+  parse: parse$2,
+  serialize: serialize$2,
+  serializeVariables: serializeVariables$2,
+  makeVariables: makeVariables$2,
+  use: AddUser_use,
+  useWithVariables: AddUser_useWithVariables
+};
+
 export {
   ViewPaymentsStreamsWithAddress ,
   CreatePaymentStream ,
+  AddUser ,
   
 }
 /* query Not a pure module */

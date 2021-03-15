@@ -1,6 +1,6 @@
 module SignUpForm = %form(
-  type input = {address: string, name: string}
-  type output = {address: Ethers.ethAddress, name: string}
+  type input = {address: string, name: string, description: string}
+  type output = {address: string, name: string, description: string}
 
   let validators = {
     address: {
@@ -11,79 +11,83 @@ module SignUpForm = %form(
         | address =>
           Ethers.Utils.getAddress(address)->Option.mapWithDefault(
             Error("Couldn't parse address"),
-            address => address->Ok,
+            address => address->Ethers.Utils.ethAdrToStr->Ok,
           )
         }
       },
     },
     name: {
       strategy: OnFirstBlur,
-      validate: ({name}) => if(name == ""){
-        Error("Name is required")
-      }else{
-        name->Ok
-      }
-    }
+      validate: ({name}) =>
+        if name == "" {
+          Error("Name is required")
+        } else {
+          name->Ok
+        },
+    },
+    description: {
+      strategy: OnFirstBlur,
+      validate: ({description}) => description->Ok,
+    },
   }
 )
 
 let initialInput: SignUpForm.input = {
   address: "",
-  name: ""
+  name: "",
+  description: "",
 }
 
 @react.component
 let make = () => {
-  let form = SignUpForm.useForm(~initialInput, ~onSubmit=(_, _)=>{
-    Js.log("NEEDS TO BE IMPLEMENTED")
+  let (addUser, _addUserResult) = Queries.AddUser.use()
+  let form = SignUpForm.useForm(~initialInput, ~onSubmit=({address, name, description}, _) => {
+    let _ = addUser({
+      address: address,
+      name: name,
+      description: description,
+    })
   })
-  <Form
-    className=""
-    onSubmit={()=>form.submit()}
-  >
-    <h2>{"Sign Up"->React.string}</h2>
-    <label htmlFor="address"> {"Raiden Address: "->React.string} </label>
-    <input
-      id="address"
-      type_="text"
-      value=form.input.address
-      disabled=form.submitting
-      onBlur={_=>form.blurAddress()}
-      onChange={
-        event => form.updateAddress((input, value) => {
-          ...input,
-          address: value,
-        }, (event->ReactEvent.Form.target)["value"])
-      }
+  <Form className="" onSubmit={() => form.submit()}>
+    <h2> {"Sign Up"->React.string} </h2>
+    <Form.Input
+      label="address"
+      title="Raiden Address: "
+      value={form.input.address}
+      disabled={form.submitting}
+      blur={form.blurAddress}
+      updateCurried={form.updateAddress((input, value) => {
+        ...input,
+        address: value,
+      })}
+      result={form.addressResult}
     />
-    {
-      {switch form.addressResult {
-          | Some(Error(message)) => <div> {message->React.string} </div>
-          | _ => React.null
-      }}
-    }
-    <br/>
-    <label htmlFor="name"> {"Name: "->React.string} </label>
-    <input
-      id="name"
-      type_="text"
-      value=form.input.name
-      disabled=form.submitting
-      onBlur={_=>form.blurName()}
-      onChange={
-        event => form.updateName((input, value) => {
-          ...input,
-          name: value,
-        }, (event->ReactEvent.Form.target)["value"])
-      }
+    <br />
+    <Form.Input
+      label="name"
+      title="User name: "
+      value={form.input.name}
+      disabled={form.submitting}
+      blur={form.blurName}
+      updateCurried={form.updateName((input, value) => {
+        ...input,
+        name: value,
+      })}
+      result={form.nameResult}
     />
-    {
-      {switch form.nameResult {
-          | Some(Error(message)) => <div> {message->React.string} </div>
-          | _ => React.null
-      }}
-    }
-    <br/>
-    <button>{"Sign Up"->React.string}</button>
+    <br />
+    <Form.Input
+      label="name"
+      title="Description: "
+      value={form.input.description}
+      disabled={form.submitting}
+      blur={form.blurDescription}
+      updateCurried={form.updateDescription((input, value) => {
+        ...input,
+        description: value,
+      })}
+      result={form.descriptionResult}
+    />
+    <button> {"Sign Up"->React.string} </button>
   </Form>
 }

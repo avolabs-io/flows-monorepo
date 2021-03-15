@@ -9,6 +9,7 @@ import * as SignUp$FlowsUserApp from "./components/Auth/SignUp.bs.js";
 import * as ViewStreams$FlowsUserApp from "./ViewStreams.bs.js";
 import * as AuthProvider$FlowsUserApp from "./lib/Auth/AuthProvider.bs.js";
 import * as RootProvider$FlowsUserApp from "./lib/Old/RootProvider.bs.js";
+import * as CreatePayment$FlowsUserApp from "./CreatePayment.bs.js";
 import * as AuthenticateButton$FlowsUserApp from "./components/Auth/AuthenticateButton.bs.js";
 
 function Dapp(Props) {
@@ -36,7 +37,7 @@ function Dapp(Props) {
                                     return "hello world 2";
                                   }));
                     })
-                }, "Click me!"), React.createElement(ViewStreams$FlowsUserApp.make, {}));
+                }, "Click me!"), React.createElement(ViewStreams$FlowsUserApp.make, {}), React.createElement(CreatePayment$FlowsUserApp.make, {}));
 }
 
 var make = Dapp;

@@ -18,10 +18,41 @@ function Form(Props) {
             }, children);
 }
 
+function Form$Input(Props) {
+  var label = Props.label;
+  var title = Props.title;
+  var value = Props.value;
+  var blur = Props.blur;
+  var updateCurried = Props.updateCurried;
+  var result = Props.result;
+  var disabled = Props.disabled;
+  var tmp;
+  tmp = result !== undefined && result.TAG !== /* Ok */0 ? React.createElement("div", undefined, result._0) : null;
+  return React.createElement(React.Fragment, undefined, React.createElement("label", {
+                  htmlFor: label
+                }, title), React.createElement("input", {
+                  id: label,
+                  disabled: disabled,
+                  type: "text",
+                  value: value,
+                  onBlur: (function (param) {
+                      return Curry._1(blur, undefined);
+                    }),
+                  onChange: (function ($$event) {
+                      return Curry._1(updateCurried, $$event.target.value);
+                    })
+                }), tmp);
+}
+
+var Input = {
+  make: Form$Input
+};
+
 var make = Form;
 
 export {
   make ,
+  Input ,
   
 }
 /* react Not a pure module */

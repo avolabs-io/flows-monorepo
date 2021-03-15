@@ -1,0 +1,67 @@
+- args:
+    enums: []
+    input_objects:
+    - description: null
+      fields:
+      - description: null
+        name: recipient
+        type: String!
+      - description: null
+        name: addressTokenStream
+        type: String!
+      - description: null
+        name: lengthOfPayment
+        type: Int!
+      - description: null
+        name: interval
+        type: Int!
+      - description: null
+        name: rate
+        type: String!
+      - description: null
+        name: deposit
+        type: String!
+      name: Input
+    objects:
+    - description: null
+      fields:
+      - description: null
+        name: success
+        type: Boolean!
+      - description: null
+        name: error
+        type: String
+      name: Output
+      relationships: null
+    scalars: []
+  type: set_custom_types
+- args:
+    comment: null
+    definition:
+      arguments:
+      - description: null
+        name: userAddress
+        type: String!
+      - description: null
+        name: tokenAddress
+        type: String!
+      - description: null
+        name: amount
+        type: String!
+      - description: null
+        name: numberOfPayments
+        type: Int!
+      - description: null
+        name: interval
+        type: Int!
+      - description: null
+        name: startPayment
+        type: Int!
+      forward_client_headers: true
+      handler: http://hasura-actions:9898/create-stream
+      headers: []
+      kind: synchronous
+      output_type: Output
+      type: mutation
+    name: createStream
+  type: update_action

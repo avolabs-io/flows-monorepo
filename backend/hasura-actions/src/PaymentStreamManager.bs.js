@@ -10,6 +10,100 @@ var Js_json = require("bs-platform/lib/js/js_json.js");
 var Belt_Option = require("bs-platform/lib/js/belt_Option.js");
 var ClientConfig = require("./gql/ClientConfig.bs.js");
 
+function streamData_decode(v) {
+  var dict = Js_json.classify(v);
+  if (typeof dict === "number") {
+    return Decco.error(undefined, "Not an object", v);
+  }
+  if (dict.TAG !== /* JSONObject */2) {
+    return Decco.error(undefined, "Not an object", v);
+  }
+  var dict$1 = dict._0;
+  var userAddress = Decco.stringFromJson(Belt_Option.getWithDefault(Js_dict.get(dict$1, "userAddress"), null));
+  if (userAddress.TAG === /* Ok */0) {
+    var tokenAddress = Decco.stringFromJson(Belt_Option.getWithDefault(Js_dict.get(dict$1, "tokenAddress"), null));
+    if (tokenAddress.TAG === /* Ok */0) {
+      var amount = Decco.stringFromJson(Belt_Option.getWithDefault(Js_dict.get(dict$1, "amount"), null));
+      if (amount.TAG === /* Ok */0) {
+        var numberOfPayments = Decco.intFromJson(Belt_Option.getWithDefault(Js_dict.get(dict$1, "numberOfPayments"), null));
+        if (numberOfPayments.TAG === /* Ok */0) {
+          var interval = Decco.intFromJson(Belt_Option.getWithDefault(Js_dict.get(dict$1, "interval"), null));
+          if (interval.TAG === /* Ok */0) {
+            var startPayment = Decco.intFromJson(Belt_Option.getWithDefault(Js_dict.get(dict$1, "startPayment"), null));
+            if (startPayment.TAG === /* Ok */0) {
+              return {
+                      TAG: /* Ok */0,
+                      _0: {
+                        userAddress: userAddress._0,
+                        tokenAddress: tokenAddress._0,
+                        amount: amount._0,
+                        numberOfPayments: numberOfPayments._0,
+                        interval: interval._0,
+                        startPayment: startPayment._0
+                      }
+                    };
+            }
+            var e = startPayment._0;
+            return {
+                    TAG: /* Error */1,
+                    _0: {
+                      path: ".startPayment" + e.path,
+                      message: e.message,
+                      value: e.value
+                    }
+                  };
+          }
+          var e$1 = interval._0;
+          return {
+                  TAG: /* Error */1,
+                  _0: {
+                    path: ".interval" + e$1.path,
+                    message: e$1.message,
+                    value: e$1.value
+                  }
+                };
+        }
+        var e$2 = numberOfPayments._0;
+        return {
+                TAG: /* Error */1,
+                _0: {
+                  path: ".numberOfPayments" + e$2.path,
+                  message: e$2.message,
+                  value: e$2.value
+                }
+              };
+      }
+      var e$3 = amount._0;
+      return {
+              TAG: /* Error */1,
+              _0: {
+                path: ".amount" + e$3.path,
+                message: e$3.message,
+                value: e$3.value
+              }
+            };
+    }
+    var e$4 = tokenAddress._0;
+    return {
+            TAG: /* Error */1,
+            _0: {
+              path: ".tokenAddress" + e$4.path,
+              message: e$4.message,
+              value: e$4.value
+            }
+          };
+  }
+  var e$5 = userAddress._0;
+  return {
+          TAG: /* Error */1,
+          _0: {
+            path: ".userAddress" + e$5.path,
+            message: e$5.message,
+            value: e$5.value
+          }
+        };
+}
+
 function recipientData_decode(v) {
   var dict = Js_json.classify(v);
   if (typeof dict === "number") {
@@ -112,7 +206,7 @@ function body_in_decode(v) {
   if (dict.TAG !== /* JSONObject */2) {
     return Decco.error(undefined, "Not an object", v);
   }
-  var input = recipientData_decode(Belt_Option.getWithDefault(Js_dict.get(dict._0, "input"), null));
+  var input = streamData_decode(Belt_Option.getWithDefault(Js_dict.get(dict._0, "input"), null));
   if (input.TAG === /* Ok */0) {
     return {
             TAG: /* Ok */0,
@@ -155,7 +249,9 @@ var createStream = Serbet.endpoint(undefined, {
       handler: (function (req) {
           return Curry._1(req.requireBody, body_in_decode).then(function (param) {
                       var match = param.input;
-                      console.log("TODO: we must still make the deposit here " + match.deposit);
+                      var startPayment = match.startPayment;
+                      var interval = match.interval;
+                      var actualNextPayment = startPayment + Math.imul(interval, 60) | 0;
                       return Curry.app(gqlClient.reason_mutate, [
                                     {
                                       query: Query.CreatePaymentStream.query,
@@ -173,7 +269,7 @@ var createStream = Serbet.endpoint(undefined, {
                                     undefined,
                                     undefined,
                                     undefined,
-                                    Query.CreatePaymentStream.makeVariables(match.rate, match.interval, match.lengthOfPayment, match.recipient, 1, "TODO: Pending DepositCreation", match.addressTokenStream, undefined)
+                                    Query.CreatePaymentStream.makeVariables(match.amount, interval, match.numberOfPayments, match.userAddress, startPayment, "OPEN", match.tokenAddress, actualNextPayment, undefined)
                                   ]).then(function (result) {
                                   var tmp;
                                   tmp = result.TAG === /* Ok */0 ? ({
@@ -345,6 +441,7 @@ function addUser(username, ethAddress, description) {
 var ApolloQueryResult;
 
 exports.ApolloQueryResult = ApolloQueryResult;
+exports.streamData_decode = streamData_decode;
 exports.recipientData_decode = recipientData_decode;
 exports.body_in_decode = body_in_decode;
 exports.body_out_encode = body_out_encode;

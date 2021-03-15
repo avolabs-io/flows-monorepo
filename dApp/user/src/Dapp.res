@@ -3,7 +3,7 @@ let make = () => {
   let optWeb3Provider = RootProvider.useWeb3()
   let optSigner = RootProvider.useSigner()
 
-  let { isAuthorized } = AuthProvider.useAuthStatus()
+  let {isAuthorized} = AuthProvider.useAuthStatus()
 
   let (renderString, setRenderString) = React.useState(_ => "hello world")
 
@@ -16,24 +16,19 @@ let make = () => {
     }
     None
   }, (optWeb3Provider, optSigner))
-  <div> 
-    {
-      if(!isAuthorized){
-        <AuthenticateButton/>
-      }else{
-        <SignUp/>
-      }
-    }
-    <p>
-      {"something"->React.string}
-    </p>
-    <Test renderString={renderString}/>
-
+  <div>
+    {if !isAuthorized {
+      <AuthenticateButton />
+    } else {
+      <SignUp />
+    }}
+    <p> {"something"->React.string} </p>
+    <Test renderString={renderString} />
     <button onClick={_ => setRenderString(_ => "hello world 2")}>
       {"Click me!"->React.string}
     </button>
-
-    <ViewStreams/>
+    <ViewStreams />
+    <CreatePayment />
   </div>
 }
 

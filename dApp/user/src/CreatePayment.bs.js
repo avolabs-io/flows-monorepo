@@ -5,6 +5,7 @@ import * as React from "react";
 import * as Belt_Int from "bs-platform/lib/es6/belt_Int.js";
 import * as Formality from "re-formality/src/Formality.bs.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
+import * as Form$FlowsUserApp from "./components/Form.bs.js";
 import * as Ethers$FlowsUserApp from "./lib/Ethers/Ethers.bs.js";
 import * as Queries$FlowsUserApp from "./Queries.bs.js";
 import * as Formality__ReactUpdate from "re-formality/src/Formality__ReactUpdate.bs.js";
@@ -834,7 +835,7 @@ function useForm(initialInput, onSubmit) {
         };
 }
 
-var ChangeUsernameForm = {
+var CreatePaymentStreamForm = {
   validators: validators,
   initialFieldsStatuses: initialFieldsStatuses,
   initialCollectionsStatuses: undefined,
@@ -843,8 +844,17 @@ var ChangeUsernameForm = {
   useForm: useForm
 };
 
+var initialInput = {
+  userAddress: "",
+  amount: "",
+  interval: "",
+  numberOfPayments: "",
+  tokenAddress: "",
+  startPayment: ""
+};
+
 function CreatePayment(Props) {
-  Curry.app(Queries$FlowsUserApp.CreatePaymentStream.use, [
+  var match = Curry.app(Queries$FlowsUserApp.CreatePaymentStream.use, [
         undefined,
         undefined,
         undefined,
@@ -859,7 +869,127 @@ function CreatePayment(Props) {
         undefined,
         undefined
       ]);
-  
+  var createProfileMutate = match[0];
+  var form = useForm(initialInput, (function (param, _form) {
+          Curry._8(createProfileMutate, undefined, undefined, undefined, undefined, undefined, undefined, undefined, {
+                amount: param.amount,
+                interval: param.interval,
+                numberOfPayments: param.numberOfPayments,
+                recipient: param.userAddress,
+                startPayment: param.startPayment,
+                tokenAddress: param.tokenAddress
+              });
+          
+        }));
+  return React.createElement(Form$FlowsUserApp.make, {
+              className: "",
+              onSubmit: (function (param) {
+                  return Curry._1(form.submit, undefined);
+                }),
+              children: null
+            }, React.createElement("h2", undefined, "Create Payment"), React.createElement(Form$FlowsUserApp.Input.make, {
+                  label: "address",
+                  title: "Recipient: ",
+                  value: form.input.userAddress,
+                  blur: form.blurUserAddress,
+                  updateCurried: Curry._1(form.updateUserAddress, (function (input, value) {
+                          return {
+                                  userAddress: value,
+                                  amount: input.amount,
+                                  interval: input.interval,
+                                  numberOfPayments: input.numberOfPayments,
+                                  tokenAddress: input.tokenAddress,
+                                  startPayment: input.startPayment
+                                };
+                        })),
+                  result: form.userAddressResult,
+                  disabled: form.submitting
+                }), React.createElement("br", undefined), React.createElement(Form$FlowsUserApp.Input.make, {
+                  label: "amount",
+                  title: "Amount: ",
+                  value: form.input.amount,
+                  blur: form.blurAmount,
+                  updateCurried: Curry._1(form.updateAmount, (function (input, value) {
+                          return {
+                                  userAddress: input.userAddress,
+                                  amount: value,
+                                  interval: input.interval,
+                                  numberOfPayments: input.numberOfPayments,
+                                  tokenAddress: input.tokenAddress,
+                                  startPayment: input.startPayment
+                                };
+                        })),
+                  result: form.amountResult,
+                  disabled: form.submitting
+                }), React.createElement("br", undefined), React.createElement(Form$FlowsUserApp.Input.make, {
+                  label: "interval",
+                  title: "Interval: ",
+                  value: form.input.interval,
+                  blur: form.blurInterval,
+                  updateCurried: Curry._1(form.updateInterval, (function (input, value) {
+                          return {
+                                  userAddress: input.userAddress,
+                                  amount: input.amount,
+                                  interval: value,
+                                  numberOfPayments: input.numberOfPayments,
+                                  tokenAddress: input.tokenAddress,
+                                  startPayment: input.startPayment
+                                };
+                        })),
+                  result: form.intervalResult,
+                  disabled: form.submitting
+                }), React.createElement("br", undefined), React.createElement(Form$FlowsUserApp.Input.make, {
+                  label: "numberPayments",
+                  title: "Number of payments",
+                  value: form.input.numberOfPayments,
+                  blur: form.blurNumberOfPayments,
+                  updateCurried: Curry._1(form.updateNumberOfPayments, (function (input, value) {
+                          return {
+                                  userAddress: input.userAddress,
+                                  amount: input.amount,
+                                  interval: input.interval,
+                                  numberOfPayments: value,
+                                  tokenAddress: input.tokenAddress,
+                                  startPayment: input.startPayment
+                                };
+                        })),
+                  result: form.numberOfPaymentsResult,
+                  disabled: form.submitting
+                }), React.createElement("br", undefined), React.createElement(Form$FlowsUserApp.Input.make, {
+                  label: "tokenAddress",
+                  title: "Token Address",
+                  value: form.input.tokenAddress,
+                  blur: form.blurTokenAddress,
+                  updateCurried: Curry._1(form.updateTokenAddress, (function (input, value) {
+                          return {
+                                  userAddress: input.userAddress,
+                                  amount: input.amount,
+                                  interval: input.interval,
+                                  numberOfPayments: input.numberOfPayments,
+                                  tokenAddress: value,
+                                  startPayment: input.startPayment
+                                };
+                        })),
+                  result: form.tokenAddressResult,
+                  disabled: form.submitting
+                }), React.createElement("br", undefined), React.createElement(Form$FlowsUserApp.Input.make, {
+                  label: "startPayment",
+                  title: "Start Payment",
+                  value: form.input.startPayment,
+                  blur: form.blurStartPayment,
+                  updateCurried: Curry._1(form.updateStartPayment, (function (input, value) {
+                          return {
+                                  userAddress: input.userAddress,
+                                  amount: input.amount,
+                                  interval: input.interval,
+                                  numberOfPayments: input.numberOfPayments,
+                                  tokenAddress: input.tokenAddress,
+                                  startPayment: value
+                                };
+                        })),
+                  result: form.startPaymentResult,
+                  disabled: form.submitting
+                }), React.createElement("br", undefined), React.createElement("button", undefined, "CREATE STREAM"));
 }
 
 var make = CreatePayment;
@@ -867,7 +997,8 @@ var make = CreatePayment;
 export {
   validateInt ,
   validateAddress ,
-  ChangeUsernameForm ,
+  CreatePaymentStreamForm ,
+  initialInput ,
   make ,
   
 }
