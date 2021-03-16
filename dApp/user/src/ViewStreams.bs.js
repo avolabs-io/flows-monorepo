@@ -7,9 +7,75 @@ import * as Ethers$FlowsUserApp from "./lib/Ethers/Ethers.bs.js";
 import * as Queries$FlowsUserApp from "./Queries.bs.js";
 import * as RootProvider$FlowsUserApp from "./lib/Old/RootProvider.bs.js";
 
+function ViewStreams$StreamsTable(Props) {
+  var streamsQuery = Props.streamsQuery;
+  var match = React.useState(function () {
+        return false;
+      });
+  var setViewingStream = match[1];
+  var match$1 = React.useState(function () {
+        
+      });
+  var setCurrentStream = match$1[1];
+  var currentStream = match$1[0];
+  var tmp;
+  if (match[0]) {
+    tmp = React.createElement(React.Fragment, undefined, React.createElement("h1", undefined, "Viewing Stream"), currentStream !== undefined ? String(currentStream.recipient) : null, React.createElement("button", {
+              onClick: (function (param) {
+                  return Curry._1(setViewingStream, (function (param) {
+                                return false;
+                              }));
+                })
+            }, "BACK"));
+  } else {
+    var match$2 = streamsQuery.data;
+    var exit = 0;
+    if (match$2 !== undefined || !streamsQuery.loading) {
+      exit = 1;
+    } else {
+      tmp = React.createElement("p", undefined, "Loading");
+    }
+    if (exit === 1) {
+      var error = streamsQuery.error;
+      if (error !== undefined) {
+        console.log(error);
+        tmp = React.createElement("p", undefined, "Data is loaded");
+      } else {
+        tmp = match$2 !== undefined ? React.createElement("table", {
+                id: "streams"
+              }, React.createElement("tbody", undefined, Belt_Array.map(match$2.streams, (function (stream) {
+                          return React.createElement("tr", {
+                                      key: String(stream.id)
+                                    }, React.createElement("td", undefined, "Stream " + String(stream.id)), React.createElement("td", undefined, React.createElement("button", {
+                                              onClick: (function (param) {
+                                                  Curry._1(setViewingStream, (function (param) {
+                                                          return true;
+                                                        }));
+                                                  return Curry._1(setCurrentStream, (function (param) {
+                                                                return stream;
+                                                              }));
+                                                })
+                                            }, "View More Info")));
+                        })))) : React.createElement("p", undefined, "Error loading data");
+      }
+    }
+    
+  }
+  return React.createElement("div", undefined, tmp);
+}
+
+var StreamsTable = {
+  make: ViewStreams$StreamsTable
+};
+
 function ViewStreams(Props) {
   var user = RootProvider$FlowsUserApp.useCurrentUserExn(undefined);
-  var viewStreamsQuery = Curry.app(Queries$FlowsUserApp.ViewPaymentsStreamsWithAddress.use, [
+  var match = React.useState(function () {
+        return true;
+      });
+  var setIsOpen = match[1];
+  var isOpen = match[0];
+  var viewOpenStreamsQuery = Curry.app(Queries$FlowsUserApp.ViewPaymentsStreamsWithAddress.use, [
         undefined,
         undefined,
         undefined,
@@ -24,37 +90,54 @@ function ViewStreams(Props) {
         undefined,
         undefined,
         {
-          address: Ethers$FlowsUserApp.Utils.ethAdrToStr(user)
+          address: Ethers$FlowsUserApp.Utils.ethAdrToStr(user),
+          state: "OPEN"
         }
       ]);
-  var match = viewStreamsQuery.data;
-  var tmp;
-  var exit = 0;
-  if (match !== undefined || !viewStreamsQuery.loading) {
-    exit = 1;
-  } else {
-    tmp = React.createElement("p", undefined, "Loading");
-  }
-  if (exit === 1) {
-    var error = viewStreamsQuery.error;
-    if (error !== undefined) {
-      console.log(error);
-      tmp = React.createElement("p", undefined, "Data is loaded");
-    } else {
-      tmp = match !== undefined ? Belt_Array.map(match.streams, (function (param) {
-                var id = param.id;
-                return React.createElement("div", {
-                            key: String(id)
-                          }, String(id), React.createElement("br", undefined), String(param.amount), React.createElement("br", undefined), String(param.interval), React.createElement("br", undefined), String(param.numberOfPayments), React.createElement("br", undefined), String(param.numberOfPaymentsMade), React.createElement("br", undefined), String(param.recipient), React.createElement("br", undefined), String(param.state), React.createElement("br", undefined), String(param.tokenAddress), React.createElement("br", undefined), String(param.startPayment), React.createElement("br", undefined), String(param.nextPayment), React.createElement("br", undefined), String(param.lastPayment));
-              })) : React.createElement("p", undefined, "Error loading data");
-    }
-  }
-  return React.createElement("div", undefined, tmp);
+  var viewClosedStreamsQuery = Curry.app(Queries$FlowsUserApp.ViewPaymentsStreamsWithAddress.use, [
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        {
+          address: Ethers$FlowsUserApp.Utils.ethAdrToStr(user),
+          state: "CLOSED"
+        }
+      ]);
+  return React.createElement(React.Fragment, undefined, React.createElement("h2", undefined, (
+                  isOpen ? "OPEN" : "CLOSED"
+                ) + " STREAMS"), React.createElement("button", {
+                  disabled: isOpen,
+                  onClick: (function (param) {
+                      return Curry._1(setIsOpen, (function (param) {
+                                    return true;
+                                  }));
+                    })
+                }, "VIEW OPEN"), React.createElement("button", {
+                  disabled: !isOpen,
+                  onClick: (function (param) {
+                      return Curry._1(setIsOpen, (function (param) {
+                                    return false;
+                                  }));
+                    })
+                }, "VIEW CLOSED"), React.createElement(ViewStreams$StreamsTable, {
+                  streamsQuery: isOpen ? viewOpenStreamsQuery : viewClosedStreamsQuery
+                }));
 }
 
 var make = ViewStreams;
 
 export {
+  StreamsTable ,
   make ,
   
 }

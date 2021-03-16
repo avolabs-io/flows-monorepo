@@ -1,6 +1,6 @@
 module ViewPaymentsStreamsWithAddress = %graphql(`
-  query ViewPaymentsStreamsWithAddress ($address: String!){
-    streams(where: {recipient: {_eq: $address}}){
+  query ViewPaymentsStreamsWithAddress ($address: String!, $state: String!){
+    streams(where: {recipient: {_eq: $address}, state: {_eq: $state}}){
       id
       amount @ppxCustom(module: "GqlConverters.BigInt")
       interval @ppxCustom(module: "GqlConverters.IntToBigInt")

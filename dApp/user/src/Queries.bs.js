@@ -7,8 +7,8 @@ import * as ApolloClient__React_Hooks_UseMutation from "rescript-apollo-client/s
 var Raw = {};
 
 var query = (require("@apollo/client").gql`
-  query ViewPaymentsStreamsWithAddress($address: String!)  {
-    streams(where: {recipient: {_eq: $address}})  {
+  query ViewPaymentsStreamsWithAddress($address: String!, $state: String!)  {
+    streams(where: {recipient: {_eq: $address}, state: {_eq: $state}})  {
       __typename
       id
       amount
@@ -90,13 +90,15 @@ function serialize(value) {
 
 function serializeVariables(inp) {
   return {
-          address: inp.address
+          address: inp.address,
+          state: inp.state
         };
 }
 
-function makeVariables(address, param) {
+function makeVariables(address, state, param) {
   return {
-          address: address
+          address: address,
+          state: state
         };
 }
 

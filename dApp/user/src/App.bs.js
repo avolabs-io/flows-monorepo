@@ -6,6 +6,7 @@ import * as Dapp$FlowsUserApp from "./Dapp.bs.js";
 import * as Login$FlowsUserApp from "./Login/Login.bs.js";
 import * as Apollo$FlowsUserApp from "./Apollo.bs.js";
 import * as Router$FlowsUserApp from "./Router.bs.js";
+import * as ViewStreams$FlowsUserApp from "./ViewStreams.bs.js";
 import * as AuthProvider$FlowsUserApp from "./lib/Auth/AuthProvider.bs.js";
 import * as RootProvider$FlowsUserApp from "./lib/Old/RootProvider.bs.js";
 
@@ -33,6 +34,16 @@ function App$Main(Props) {
 
 var Main = {
   make: App$Main
+};
+
+function App$Streams(Props) {
+  return React.createElement(App$OnlyLoggedIn, {
+              children: React.createElement(ViewStreams$FlowsUserApp.make, {})
+            });
+}
+
+var Streams = {
+  make: App$Streams
 };
 
 function App$NotFound(Props) {
@@ -91,6 +102,7 @@ var make = App;
 export {
   OnlyLoggedIn ,
   Main ,
+  Streams ,
   NotFound ,
   Router ,
   GraphQl ,

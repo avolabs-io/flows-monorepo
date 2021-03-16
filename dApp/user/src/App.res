@@ -15,6 +15,14 @@ module Main = {
     <OnlyLoggedIn> <h1> {"Main component"->React.string} </h1> <Dapp /> </OnlyLoggedIn>
   }
 }
+
+module Streams = {
+  @react.component
+  let make = () => {
+    <OnlyLoggedIn> <ViewStreams /> </OnlyLoggedIn>
+  }
+}
+
 module NotFound = {
   @react.component
   let make = () => {
@@ -39,21 +47,11 @@ module GraphQl = {
   @react.component
   let make = (~children) => {
     let user = RootProvider.useCurrentUser()
-    let client = React.useMemo1(() =>
-      Apollo.makeClient(
-        ~user
-      )
-    , [user])
+    let client = React.useMemo1(() => Apollo.makeClient(~user), [user])
 
     <ApolloClient.React.ApolloProvider client> children </ApolloClient.React.ApolloProvider>
   }
 }
 @react.component
 let make = () =>
-  <RootProvider>
-    <GraphQl>
-    <AuthProvider>
-      <Router /> 
-    </AuthProvider>
-    </GraphQl>
-  </RootProvider>
+  <RootProvider> <GraphQl> <AuthProvider> <Router /> </AuthProvider> </GraphQl> </RootProvider>

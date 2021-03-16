@@ -104,100 +104,6 @@ function streamData_decode(v) {
         };
 }
 
-function recipientData_decode(v) {
-  var dict = Js_json.classify(v);
-  if (typeof dict === "number") {
-    return Decco.error(undefined, "Not an object", v);
-  }
-  if (dict.TAG !== /* JSONObject */2) {
-    return Decco.error(undefined, "Not an object", v);
-  }
-  var dict$1 = dict._0;
-  var recipient = Decco.stringFromJson(Belt_Option.getWithDefault(Js_dict.get(dict$1, "recipient"), null));
-  if (recipient.TAG === /* Ok */0) {
-    var addressTokenStream = Decco.stringFromJson(Belt_Option.getWithDefault(Js_dict.get(dict$1, "addressTokenStream"), null));
-    if (addressTokenStream.TAG === /* Ok */0) {
-      var lengthOfPayment = Decco.intFromJson(Belt_Option.getWithDefault(Js_dict.get(dict$1, "lengthOfPayment"), null));
-      if (lengthOfPayment.TAG === /* Ok */0) {
-        var interval = Decco.intFromJson(Belt_Option.getWithDefault(Js_dict.get(dict$1, "interval"), null));
-        if (interval.TAG === /* Ok */0) {
-          var rate = Decco.stringFromJson(Belt_Option.getWithDefault(Js_dict.get(dict$1, "rate"), null));
-          if (rate.TAG === /* Ok */0) {
-            var deposit = Decco.stringFromJson(Belt_Option.getWithDefault(Js_dict.get(dict$1, "deposit"), null));
-            if (deposit.TAG === /* Ok */0) {
-              return {
-                      TAG: /* Ok */0,
-                      _0: {
-                        recipient: recipient._0,
-                        addressTokenStream: addressTokenStream._0,
-                        lengthOfPayment: lengthOfPayment._0,
-                        interval: interval._0,
-                        rate: rate._0,
-                        deposit: deposit._0
-                      }
-                    };
-            }
-            var e = deposit._0;
-            return {
-                    TAG: /* Error */1,
-                    _0: {
-                      path: ".deposit" + e.path,
-                      message: e.message,
-                      value: e.value
-                    }
-                  };
-          }
-          var e$1 = rate._0;
-          return {
-                  TAG: /* Error */1,
-                  _0: {
-                    path: ".rate" + e$1.path,
-                    message: e$1.message,
-                    value: e$1.value
-                  }
-                };
-        }
-        var e$2 = interval._0;
-        return {
-                TAG: /* Error */1,
-                _0: {
-                  path: ".interval" + e$2.path,
-                  message: e$2.message,
-                  value: e$2.value
-                }
-              };
-      }
-      var e$3 = lengthOfPayment._0;
-      return {
-              TAG: /* Error */1,
-              _0: {
-                path: ".lengthOfPayment" + e$3.path,
-                message: e$3.message,
-                value: e$3.value
-              }
-            };
-    }
-    var e$4 = addressTokenStream._0;
-    return {
-            TAG: /* Error */1,
-            _0: {
-              path: ".addressTokenStream" + e$4.path,
-              message: e$4.message,
-              value: e$4.value
-            }
-          };
-  }
-  var e$5 = recipient._0;
-  return {
-          TAG: /* Error */1,
-          _0: {
-            path: ".recipient" + e$5.path,
-            message: e$5.message,
-            value: e$5.value
-          }
-        };
-}
-
 function body_in_decode(v) {
   var dict = Js_json.classify(v);
   if (typeof dict === "number") {
@@ -442,7 +348,6 @@ var ApolloQueryResult;
 
 exports.ApolloQueryResult = ApolloQueryResult;
 exports.streamData_decode = streamData_decode;
-exports.recipientData_decode = recipientData_decode;
 exports.body_in_decode = body_in_decode;
 exports.body_out_encode = body_out_encode;
 exports.gqlClient = gqlClient;
