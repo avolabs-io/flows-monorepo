@@ -3,7 +3,7 @@ let make = () => {
   let optWeb3Provider = RootProvider.useWeb3()
   let optSigner = RootProvider.useSigner()
 
-  let { isAuthorized } = AuthProvider.useAuthStatus()
+  let { loggedInStatus } = AuthProvider.useAuthStatus()
 
   React.useEffect2(() => {
     switch (optWeb3Provider, optSigner) {
@@ -16,10 +16,10 @@ let make = () => {
   }, (optWeb3Provider, optSigner))
   <div> 
     {
-      if(!isAuthorized){
-        <AuthenticateButton/>
-      }else{
-        <SignUp/>
+      switch(loggedInStatus){
+        | Web3Only => <AuthenticateButton/>
+        | NotLoggedIn => React.null
+        | _ => <SignUp/>
       }
     }
     <p>

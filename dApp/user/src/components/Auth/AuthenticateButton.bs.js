@@ -2,6 +2,7 @@
 
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
+import * as Auth$FlowsUserApp from "../../lib/Auth/Auth.bs.js";
 import * as Ethers$FlowsUserApp from "../../lib/Ethers/Ethers.bs.js";
 import * as AuthProvider$FlowsUserApp from "../../lib/Auth/AuthProvider.bs.js";
 import * as RootProvider$FlowsUserApp from "../../lib/Old/RootProvider.bs.js";
@@ -15,13 +16,14 @@ function AuthenticateButton(Props) {
   var signer = RootProvider$FlowsUserApp.useSignerExn(undefined);
   var userAddress = RootProvider$FlowsUserApp.useCurrentUserExn(undefined);
   var match = AuthProvider$FlowsUserApp.useAuthStatus(undefined);
-  var setIsAuthorized = match.setIsAuthorized;
+  var setLoggedInStatus = match.setLoggedInStatus;
   return React.createElement("button", {
               onClick: (function (param) {
                   signer.signMessage("flows.finance-signin-string:" + Ethers$FlowsUserApp.Utils.ethAdrToStr(userAddress)).then(function (result) {
-                        setSignInData(Ethers$FlowsUserApp.Utils.ethAdrToLowerStr(userAddress), String(result));
-                        return Curry._1(setIsAuthorized, (function (param) {
-                                      return true;
+                        Auth$FlowsUserApp.LocalStorage.setSignInData(userAddress, String(result));
+                        Auth$FlowsUserApp.LocalStorage.setCurrentUser(userAddress);
+                        return Curry._1(setLoggedInStatus, (function (param) {
+                                      return /* Web3AndDb */0;
                                     }));
                       });
                   
