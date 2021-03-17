@@ -13,6 +13,10 @@ tables:
       filter: {}
 - table:
     schema: public
+    name: payment_states
+  is_enum: true
+- table:
+    schema: public
     name: payments
   object_relationships:
   - name: stream
