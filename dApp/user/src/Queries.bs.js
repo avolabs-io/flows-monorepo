@@ -369,11 +369,29 @@ function parse$3(value) {
   var value$1 = value.payments;
   return {
           payments: value$1.map(function (value) {
+                var value$1 = value.paymentState;
+                var tmp;
+                switch (value$1) {
+                  case "COMPLETE" :
+                      tmp = "COMPLETE";
+                      break;
+                  case "ERROR" :
+                      tmp = "ERROR";
+                      break;
+                  case "PENDING" :
+                      tmp = "PENDING";
+                      break;
+                  default:
+                    tmp = {
+                      NAME: "FutureAddedValue",
+                      VAL: value$1
+                    };
+                }
                 return {
                         __typename: value.__typename,
                         id: value.id,
                         paymentAmount: GqlConverters$FlowsUserApp.IntToBigInt.parse(value.paymentAmount),
-                        paymentState: value.paymentState,
+                        paymentState: tmp,
                         paymentTimestamp: GqlConverters$FlowsUserApp.IntToBigInt.parse(value.paymentTimestamp)
                       };
               })
@@ -386,6 +404,11 @@ function serialize$3(value) {
         var value$1 = value.paymentTimestamp;
         var value$2 = GqlConverters$FlowsUserApp.IntToBigInt.serialize(value$1);
         var value$3 = value.paymentState;
+        var paymentState = typeof value$3 === "string" ? (
+            value$3 === "ERROR" ? "ERROR" : (
+                value$3 === "PENDING" ? "PENDING" : "COMPLETE"
+              )
+          ) : value$3.VAL;
         var value$4 = value.paymentAmount;
         var value$5 = GqlConverters$FlowsUserApp.IntToBigInt.serialize(value$4);
         var value$6 = value.id;
@@ -394,7 +417,7 @@ function serialize$3(value) {
                 __typename: value$7,
                 id: value$6,
                 paymentAmount: value$5,
-                paymentState: value$3,
+                paymentState: paymentState,
                 paymentTimestamp: value$2
               };
       });

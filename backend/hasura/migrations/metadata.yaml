@@ -22,41 +22,34 @@ tables:
   - name: stream
     using:
       foreign_key_constraint_on: streamID
-- table:
-    schema: public
-    name: streams
-  insert_permissions:
-  - role: user
-    permission:
-      check: {}
-      columns:
-      - id
-      - recipient
-      - tokenAddress
-      - numberOfPayments
-      - interval
-      - amount
-      - numberOfPaymentsMade
-      - state
-      - startPayment
-      - nextPayment
-      - lastPayment
-      backend_only: false
   select_permissions:
   - role: user
     permission:
       columns:
-      - amount
       - id
-      - interval
-      - lastPayment
-      - nextPayment
-      - numberOfPayments
-      - numberOfPaymentsMade
+      - streamID
+      - paymentState
+      - paymentTimestamp
+      - paymentAmount
+      filter: {}
+- table:
+    schema: public
+    name: streams
+  select_permissions:
+  - role: user
+    permission:
+      columns:
+      - id
       - recipient
-      - startPayment
-      - state
       - tokenAddress
+      - numberOfPayments
+      - interval
+      - amount
+      - numberOfPaymentsMade
+      - state
+      - startPayment
+      - nextPayment
+      - lastPayment
       filter:
         recipient:
           _eq: X-Hasura-User-Id

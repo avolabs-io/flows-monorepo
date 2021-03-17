@@ -1,3 +1,5 @@
+let paymentStateToStr = Obj.magic
+
 module StreamsInfo = {
   @react.component
   let make = (
@@ -32,7 +34,7 @@ module StreamsInfo = {
                   <div>
                     {`Payment amount: ${p.paymentAmount->Ethers.BigNumber.toString}`->React.string}
                   </div>
-                  <div> {`Payment state: ${p.paymentState}`->React.string} </div>
+                  <div> {`Payment state: ${p.paymentState->paymentStateToStr}`->React.string} </div>
                   <div>
                     {`Payment timestamp: ${p.paymentTimestamp->Ethers.BigNumber.toString}`->React.string}
                   </div>

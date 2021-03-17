@@ -1624,6 +1624,60 @@
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
+                    "name": "payment_states_bool_exp",
+                    "ofType": null
+                  }
+                },
+                "description": "filter the rows which have to be deleted"
+              }
+            ],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "delete_payment_states",
+            "type": {
+              "kind": "OBJECT",
+              "name": "payment_states_mutation_response",
+              "ofType": null
+            },
+            "description": "delete data from the table: \"payment_states\""
+          },
+          {
+            "args": [
+              {
+                "name": "state",
+                "defaultValue": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "description": null
+              }
+            ],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "delete_payment_states_by_pk",
+            "type": {
+              "kind": "OBJECT",
+              "name": "payment_states",
+              "ofType": null
+            },
+            "description": "delete single row from the table: \"payment_states\""
+          },
+          {
+            "args": [
+              {
+                "name": "where",
+                "defaultValue": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
                     "name": "payments_bool_exp",
                     "ofType": null
                   }
@@ -1857,6 +1911,88 @@
               "ofType": null
             },
             "description": "insert a single row into the table: \"paymentTokens\""
+          },
+          {
+            "args": [
+              {
+                "name": "objects",
+                "defaultValue": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "INPUT_OBJECT",
+                        "name": "payment_states_insert_input",
+                        "ofType": null
+                      }
+                    }
+                  }
+                },
+                "description": "the rows to be inserted"
+              },
+              {
+                "name": "on_conflict",
+                "defaultValue": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "payment_states_on_conflict",
+                  "ofType": null
+                },
+                "description": "on conflict condition"
+              }
+            ],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "insert_payment_states",
+            "type": {
+              "kind": "OBJECT",
+              "name": "payment_states_mutation_response",
+              "ofType": null
+            },
+            "description": "insert data into the table: \"payment_states\""
+          },
+          {
+            "args": [
+              {
+                "name": "object",
+                "defaultValue": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "payment_states_insert_input",
+                    "ofType": null
+                  }
+                },
+                "description": "the row to be inserted"
+              },
+              {
+                "name": "on_conflict",
+                "defaultValue": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "payment_states_on_conflict",
+                  "ofType": null
+                },
+                "description": "on conflict condition"
+              }
+            ],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "insert_payment_states_one",
+            "type": {
+              "kind": "OBJECT",
+              "name": "payment_states",
+              "ofType": null
+            },
+            "description": "insert a single row into the table: \"payment_states\""
           },
           {
             "args": [
@@ -2177,6 +2313,80 @@
               "ofType": null
             },
             "description": "update single row of the table: \"paymentTokens\""
+          },
+          {
+            "args": [
+              {
+                "name": "_set",
+                "defaultValue": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "payment_states_set_input",
+                  "ofType": null
+                },
+                "description": "sets the columns of the filtered rows to the given values"
+              },
+              {
+                "name": "where",
+                "defaultValue": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "payment_states_bool_exp",
+                    "ofType": null
+                  }
+                },
+                "description": "filter the rows which have to be updated"
+              }
+            ],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "update_payment_states",
+            "type": {
+              "kind": "OBJECT",
+              "name": "payment_states_mutation_response",
+              "ofType": null
+            },
+            "description": "update data of the table: \"payment_states\""
+          },
+          {
+            "args": [
+              {
+                "name": "_set",
+                "defaultValue": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "payment_states_set_input",
+                  "ofType": null
+                },
+                "description": "sets the columns of the filtered rows to the given values"
+              },
+              {
+                "name": "pk_columns",
+                "defaultValue": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "payment_states_pk_columns_input",
+                    "ofType": null
+                  }
+                },
+                "description": null
+              }
+            ],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "update_payment_states_by_pk",
+            "type": {
+              "kind": "OBJECT",
+              "name": "payment_states",
+              "ofType": null
+            },
+            "description": "update single row of the table: \"payment_states\""
           },
           {
             "args": [
@@ -3383,6 +3593,887 @@
         "kind": "OBJECT",
         "possibleTypes": null,
         "interfaces": [],
+        "name": "payment_states",
+        "enumValues": null,
+        "description": "columns and relationships of \"payment_states\"",
+        "fields": [
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "description",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "description": null
+          },
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "state",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "description": null
+          }
+        ]
+      },
+      {
+        "inputFields": null,
+        "kind": "OBJECT",
+        "possibleTypes": null,
+        "interfaces": [],
+        "name": "payment_states_aggregate",
+        "enumValues": null,
+        "description": "aggregated selection of \"payment_states\"",
+        "fields": [
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "aggregate",
+            "type": {
+              "kind": "OBJECT",
+              "name": "payment_states_aggregate_fields",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "nodes",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "payment_states",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "description": null
+          }
+        ]
+      },
+      {
+        "inputFields": null,
+        "kind": "OBJECT",
+        "possibleTypes": null,
+        "interfaces": [],
+        "name": "payment_states_aggregate_fields",
+        "enumValues": null,
+        "description": "aggregate fields of \"payment_states\"",
+        "fields": [
+          {
+            "args": [
+              {
+                "name": "columns",
+                "defaultValue": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "payment_states_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "description": null
+              },
+              {
+                "name": "distinct",
+                "defaultValue": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                },
+                "description": null
+              }
+            ],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "count",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "max",
+            "type": {
+              "kind": "OBJECT",
+              "name": "payment_states_max_fields",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "min",
+            "type": {
+              "kind": "OBJECT",
+              "name": "payment_states_min_fields",
+              "ofType": null
+            },
+            "description": null
+          }
+        ]
+      },
+      {
+        "inputFields": [
+          {
+            "name": "count",
+            "defaultValue": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "name": "max",
+            "defaultValue": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "payment_states_max_order_by",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "name": "min",
+            "defaultValue": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "payment_states_min_order_by",
+              "ofType": null
+            },
+            "description": null
+          }
+        ],
+        "kind": "INPUT_OBJECT",
+        "possibleTypes": null,
+        "interfaces": null,
+        "name": "payment_states_aggregate_order_by",
+        "enumValues": null,
+        "description": "order by aggregate values of table \"payment_states\"",
+        "fields": null
+      },
+      {
+        "inputFields": [
+          {
+            "name": "data",
+            "defaultValue": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "payment_states_insert_input",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "description": null
+          },
+          {
+            "name": "on_conflict",
+            "defaultValue": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "payment_states_on_conflict",
+              "ofType": null
+            },
+            "description": null
+          }
+        ],
+        "kind": "INPUT_OBJECT",
+        "possibleTypes": null,
+        "interfaces": null,
+        "name": "payment_states_arr_rel_insert_input",
+        "enumValues": null,
+        "description": "input type for inserting array relation for remote table \"payment_states\"",
+        "fields": null
+      },
+      {
+        "inputFields": [
+          {
+            "name": "_and",
+            "defaultValue": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "payment_states_bool_exp",
+                "ofType": null
+              }
+            },
+            "description": null
+          },
+          {
+            "name": "_not",
+            "defaultValue": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "payment_states_bool_exp",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "name": "_or",
+            "defaultValue": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "payment_states_bool_exp",
+                "ofType": null
+              }
+            },
+            "description": null
+          },
+          {
+            "name": "description",
+            "defaultValue": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "String_comparison_exp",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "name": "state",
+            "defaultValue": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "String_comparison_exp",
+              "ofType": null
+            },
+            "description": null
+          }
+        ],
+        "kind": "INPUT_OBJECT",
+        "possibleTypes": null,
+        "interfaces": null,
+        "name": "payment_states_bool_exp",
+        "enumValues": null,
+        "description": "Boolean expression to filter rows from the table \"payment_states\". All fields are combined with a logical 'AND'.",
+        "fields": null
+      },
+      {
+        "inputFields": null,
+        "kind": "ENUM",
+        "possibleTypes": null,
+        "interfaces": null,
+        "name": "payment_states_constraint",
+        "enumValues": [
+          {
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "payment_states_pkey",
+            "description": "unique or primary key constraint"
+          }
+        ],
+        "description": "unique or primary key constraints on table \"payment_states\"",
+        "fields": null
+      },
+      {
+        "inputFields": null,
+        "kind": "ENUM",
+        "possibleTypes": null,
+        "interfaces": null,
+        "name": "payment_states_enum",
+        "enumValues": [
+          {
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "COMPLETE",
+            "description": "Payment is complete. Free to make next payment."
+          },
+          {
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "ERROR",
+            "description": "Payment is in error. Error must be handled."
+          },
+          {
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "PENDING",
+            "description": "Payment is pending. Further payments are suspended."
+          }
+        ],
+        "description": null,
+        "fields": null
+      },
+      {
+        "inputFields": [
+          {
+            "name": "_eq",
+            "defaultValue": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "payment_states_enum",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "name": "_in",
+            "defaultValue": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "payment_states_enum",
+                  "ofType": null
+                }
+              }
+            },
+            "description": null
+          },
+          {
+            "name": "_is_null",
+            "defaultValue": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "name": "_neq",
+            "defaultValue": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "payment_states_enum",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "name": "_nin",
+            "defaultValue": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "payment_states_enum",
+                  "ofType": null
+                }
+              }
+            },
+            "description": null
+          }
+        ],
+        "kind": "INPUT_OBJECT",
+        "possibleTypes": null,
+        "interfaces": null,
+        "name": "payment_states_enum_comparison_exp",
+        "enumValues": null,
+        "description": "expression to compare columns of type payment_states_enum. All fields are combined with logical 'AND'.",
+        "fields": null
+      },
+      {
+        "inputFields": [
+          {
+            "name": "description",
+            "defaultValue": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "name": "state",
+            "defaultValue": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "description": null
+          }
+        ],
+        "kind": "INPUT_OBJECT",
+        "possibleTypes": null,
+        "interfaces": null,
+        "name": "payment_states_insert_input",
+        "enumValues": null,
+        "description": "input type for inserting data into table \"payment_states\"",
+        "fields": null
+      },
+      {
+        "inputFields": null,
+        "kind": "OBJECT",
+        "possibleTypes": null,
+        "interfaces": [],
+        "name": "payment_states_max_fields",
+        "enumValues": null,
+        "description": "aggregate max on columns",
+        "fields": [
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "description",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "state",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "description": null
+          }
+        ]
+      },
+      {
+        "inputFields": [
+          {
+            "name": "description",
+            "defaultValue": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "name": "state",
+            "defaultValue": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "description": null
+          }
+        ],
+        "kind": "INPUT_OBJECT",
+        "possibleTypes": null,
+        "interfaces": null,
+        "name": "payment_states_max_order_by",
+        "enumValues": null,
+        "description": "order by max() on columns of table \"payment_states\"",
+        "fields": null
+      },
+      {
+        "inputFields": null,
+        "kind": "OBJECT",
+        "possibleTypes": null,
+        "interfaces": [],
+        "name": "payment_states_min_fields",
+        "enumValues": null,
+        "description": "aggregate min on columns",
+        "fields": [
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "description",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "state",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "description": null
+          }
+        ]
+      },
+      {
+        "inputFields": [
+          {
+            "name": "description",
+            "defaultValue": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "name": "state",
+            "defaultValue": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "description": null
+          }
+        ],
+        "kind": "INPUT_OBJECT",
+        "possibleTypes": null,
+        "interfaces": null,
+        "name": "payment_states_min_order_by",
+        "enumValues": null,
+        "description": "order by min() on columns of table \"payment_states\"",
+        "fields": null
+      },
+      {
+        "inputFields": null,
+        "kind": "OBJECT",
+        "possibleTypes": null,
+        "interfaces": [],
+        "name": "payment_states_mutation_response",
+        "enumValues": null,
+        "description": "response of any mutation on the table \"payment_states\"",
+        "fields": [
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "affected_rows",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "description": "number of affected rows by the mutation"
+          },
+          {
+            "args": [],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "returning",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "payment_states",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "description": "data of the affected rows by the mutation"
+          }
+        ]
+      },
+      {
+        "inputFields": [
+          {
+            "name": "data",
+            "defaultValue": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "INPUT_OBJECT",
+                "name": "payment_states_insert_input",
+                "ofType": null
+              }
+            },
+            "description": null
+          },
+          {
+            "name": "on_conflict",
+            "defaultValue": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "payment_states_on_conflict",
+              "ofType": null
+            },
+            "description": null
+          }
+        ],
+        "kind": "INPUT_OBJECT",
+        "possibleTypes": null,
+        "interfaces": null,
+        "name": "payment_states_obj_rel_insert_input",
+        "enumValues": null,
+        "description": "input type for inserting object relation for remote table \"payment_states\"",
+        "fields": null
+      },
+      {
+        "inputFields": [
+          {
+            "name": "constraint",
+            "defaultValue": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "payment_states_constraint",
+                "ofType": null
+              }
+            },
+            "description": null
+          },
+          {
+            "name": "update_columns",
+            "defaultValue": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "ENUM",
+                    "name": "payment_states_update_column",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "description": null
+          },
+          {
+            "name": "where",
+            "defaultValue": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "payment_states_bool_exp",
+              "ofType": null
+            },
+            "description": null
+          }
+        ],
+        "kind": "INPUT_OBJECT",
+        "possibleTypes": null,
+        "interfaces": null,
+        "name": "payment_states_on_conflict",
+        "enumValues": null,
+        "description": "on conflict condition type for table \"payment_states\"",
+        "fields": null
+      },
+      {
+        "inputFields": [
+          {
+            "name": "description",
+            "defaultValue": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "name": "state",
+            "defaultValue": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "description": null
+          }
+        ],
+        "kind": "INPUT_OBJECT",
+        "possibleTypes": null,
+        "interfaces": null,
+        "name": "payment_states_order_by",
+        "enumValues": null,
+        "description": "ordering options when selecting data from \"payment_states\"",
+        "fields": null
+      },
+      {
+        "inputFields": [
+          {
+            "name": "state",
+            "defaultValue": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "description": null
+          }
+        ],
+        "kind": "INPUT_OBJECT",
+        "possibleTypes": null,
+        "interfaces": null,
+        "name": "payment_states_pk_columns_input",
+        "enumValues": null,
+        "description": "primary key columns input for table: \"payment_states\"",
+        "fields": null
+      },
+      {
+        "inputFields": null,
+        "kind": "ENUM",
+        "possibleTypes": null,
+        "interfaces": null,
+        "name": "payment_states_select_column",
+        "enumValues": [
+          {
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "description",
+            "description": "column name"
+          },
+          {
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "state",
+            "description": "column name"
+          }
+        ],
+        "description": "select columns of table \"payment_states\"",
+        "fields": null
+      },
+      {
+        "inputFields": [
+          {
+            "name": "description",
+            "defaultValue": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "description": null
+          },
+          {
+            "name": "state",
+            "defaultValue": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "description": null
+          }
+        ],
+        "kind": "INPUT_OBJECT",
+        "possibleTypes": null,
+        "interfaces": null,
+        "name": "payment_states_set_input",
+        "enumValues": null,
+        "description": "input type for updating data in table \"payment_states\"",
+        "fields": null
+      },
+      {
+        "inputFields": null,
+        "kind": "ENUM",
+        "possibleTypes": null,
+        "interfaces": null,
+        "name": "payment_states_update_column",
+        "enumValues": [
+          {
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "description",
+            "description": "column name"
+          },
+          {
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "state",
+            "description": "column name"
+          }
+        ],
+        "description": "update columns of table \"payment_states\"",
+        "fields": null
+      },
+      {
+        "inputFields": null,
+        "kind": "OBJECT",
+        "possibleTypes": null,
+        "interfaces": [],
         "name": "payments",
         "enumValues": null,
         "description": "columns and relationships of \"payments\"",
@@ -3428,8 +4519,8 @@
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
+                "kind": "ENUM",
+                "name": "payment_states_enum",
                 "ofType": null
               }
             },
@@ -4043,7 +5134,7 @@
             "defaultValue": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "String_comparison_exp",
+              "name": "payment_states_enum_comparison_exp",
               "ofType": null
             },
             "description": null
@@ -4181,8 +5272,8 @@
             "name": "paymentState",
             "defaultValue": null,
             "type": {
-              "kind": "SCALAR",
-              "name": "String",
+              "kind": "ENUM",
+              "name": "payment_states_enum",
               "ofType": null
             },
             "description": null
@@ -4263,18 +5354,6 @@
             "args": [],
             "isDeprecated": false,
             "deprecationReason": null,
-            "name": "paymentState",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "args": [],
-            "isDeprecated": false,
-            "deprecationReason": null,
             "name": "paymentTimestamp",
             "type": {
               "kind": "SCALAR",
@@ -4311,16 +5390,6 @@
           },
           {
             "name": "paymentAmount",
-            "defaultValue": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "paymentState",
             "defaultValue": null,
             "type": {
               "kind": "ENUM",
@@ -4395,18 +5464,6 @@
             "args": [],
             "isDeprecated": false,
             "deprecationReason": null,
-            "name": "paymentState",
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "args": [],
-            "isDeprecated": false,
-            "deprecationReason": null,
             "name": "paymentTimestamp",
             "type": {
               "kind": "SCALAR",
@@ -4443,16 +5500,6 @@
           },
           {
             "name": "paymentAmount",
-            "defaultValue": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "description": null
-          },
-          {
-            "name": "paymentState",
             "defaultValue": null,
             "type": {
               "kind": "ENUM",
@@ -4796,8 +5843,8 @@
             "name": "paymentState",
             "defaultValue": null,
             "type": {
-              "kind": "SCALAR",
-              "name": "String",
+              "kind": "ENUM",
+              "name": "payment_states_enum",
               "ofType": null
             },
             "description": null
@@ -5851,6 +6898,207 @@
               "ofType": null
             },
             "description": "fetch data from the table: \"paymentTokens\" using primary key columns"
+          },
+          {
+            "args": [
+              {
+                "name": "distinct_on",
+                "defaultValue": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "payment_states_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "description": "distinct select on columns"
+              },
+              {
+                "name": "limit",
+                "defaultValue": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "description": "limit the number of rows returned"
+              },
+              {
+                "name": "offset",
+                "defaultValue": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "description": "skip the first n rows. Use only with order_by"
+              },
+              {
+                "name": "order_by",
+                "defaultValue": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "payment_states_order_by",
+                      "ofType": null
+                    }
+                  }
+                },
+                "description": "sort the rows by one or more columns"
+              },
+              {
+                "name": "where",
+                "defaultValue": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "payment_states_bool_exp",
+                  "ofType": null
+                },
+                "description": "filter the rows returned"
+              }
+            ],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "payment_states",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "payment_states",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "description": "fetch data from the table: \"payment_states\""
+          },
+          {
+            "args": [
+              {
+                "name": "distinct_on",
+                "defaultValue": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "payment_states_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "description": "distinct select on columns"
+              },
+              {
+                "name": "limit",
+                "defaultValue": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "description": "limit the number of rows returned"
+              },
+              {
+                "name": "offset",
+                "defaultValue": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "description": "skip the first n rows. Use only with order_by"
+              },
+              {
+                "name": "order_by",
+                "defaultValue": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "payment_states_order_by",
+                      "ofType": null
+                    }
+                  }
+                },
+                "description": "sort the rows by one or more columns"
+              },
+              {
+                "name": "where",
+                "defaultValue": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "payment_states_bool_exp",
+                  "ofType": null
+                },
+                "description": "filter the rows returned"
+              }
+            ],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "payment_states_aggregate",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "payment_states_aggregate",
+                "ofType": null
+              }
+            },
+            "description": "fetch aggregated fields from the table: \"payment_states\""
+          },
+          {
+            "args": [
+              {
+                "name": "state",
+                "defaultValue": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "description": null
+              }
+            ],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "payment_states_by_pk",
+            "type": {
+              "kind": "OBJECT",
+              "name": "payment_states",
+              "ofType": null
+            },
+            "description": "fetch data from the table: \"payment_states\" using primary key columns"
           },
           {
             "args": [
@@ -10114,6 +11362,207 @@
               "ofType": null
             },
             "description": "fetch data from the table: \"paymentTokens\" using primary key columns"
+          },
+          {
+            "args": [
+              {
+                "name": "distinct_on",
+                "defaultValue": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "payment_states_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "description": "distinct select on columns"
+              },
+              {
+                "name": "limit",
+                "defaultValue": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "description": "limit the number of rows returned"
+              },
+              {
+                "name": "offset",
+                "defaultValue": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "description": "skip the first n rows. Use only with order_by"
+              },
+              {
+                "name": "order_by",
+                "defaultValue": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "payment_states_order_by",
+                      "ofType": null
+                    }
+                  }
+                },
+                "description": "sort the rows by one or more columns"
+              },
+              {
+                "name": "where",
+                "defaultValue": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "payment_states_bool_exp",
+                  "ofType": null
+                },
+                "description": "filter the rows returned"
+              }
+            ],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "payment_states",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "payment_states",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "description": "fetch data from the table: \"payment_states\""
+          },
+          {
+            "args": [
+              {
+                "name": "distinct_on",
+                "defaultValue": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "ENUM",
+                      "name": "payment_states_select_column",
+                      "ofType": null
+                    }
+                  }
+                },
+                "description": "distinct select on columns"
+              },
+              {
+                "name": "limit",
+                "defaultValue": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "description": "limit the number of rows returned"
+              },
+              {
+                "name": "offset",
+                "defaultValue": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                },
+                "description": "skip the first n rows. Use only with order_by"
+              },
+              {
+                "name": "order_by",
+                "defaultValue": null,
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "payment_states_order_by",
+                      "ofType": null
+                    }
+                  }
+                },
+                "description": "sort the rows by one or more columns"
+              },
+              {
+                "name": "where",
+                "defaultValue": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "payment_states_bool_exp",
+                  "ofType": null
+                },
+                "description": "filter the rows returned"
+              }
+            ],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "payment_states_aggregate",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "payment_states_aggregate",
+                "ofType": null
+              }
+            },
+            "description": "fetch aggregated fields from the table: \"payment_states\""
+          },
+          {
+            "args": [
+              {
+                "name": "state",
+                "defaultValue": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "description": null
+              }
+            ],
+            "isDeprecated": false,
+            "deprecationReason": null,
+            "name": "payment_states_by_pk",
+            "type": {
+              "kind": "OBJECT",
+              "name": "payment_states",
+              "ofType": null
+            },
+            "description": "fetch data from the table: \"payment_states\" using primary key columns"
           },
           {
             "args": [

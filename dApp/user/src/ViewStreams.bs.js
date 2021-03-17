@@ -7,6 +7,10 @@ import * as Ethers$FlowsUserApp from "./lib/Ethers/Ethers.bs.js";
 import * as Queries$FlowsUserApp from "./Queries.bs.js";
 import * as RootProvider$FlowsUserApp from "./lib/Old/RootProvider.bs.js";
 
+function paymentStateToStr(prim) {
+  return prim;
+}
+
 function ViewStreams$StreamsInfo(Props) {
   var stream = Props.stream;
   var numberOfPaymentsMade = stream.numberOfPaymentsMade;
@@ -202,6 +206,7 @@ function ViewStreams(Props) {
 var make = ViewStreams;
 
 export {
+  paymentStateToStr ,
   StreamsInfo ,
   StreamsTable ,
   make ,
