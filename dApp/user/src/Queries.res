@@ -34,3 +34,14 @@ module AddUser = %graphql(`
     }
   }
 `)
+
+module GetPaymentHistory = %graphql(`
+  query GetPaymentHistory ($streamID: Int!){
+    payments(where: {streamID: {_eq: $streamID}}){
+      id
+      paymentAmount @ppxCustom(module: "GqlConverters.IntToBigInt")
+      paymentState
+      paymentTimestamp @ppxCustom(module: "GqlConverters.IntToBigInt")
+    }
+  }
+`)
