@@ -6,15 +6,18 @@ let setSignInData = (~ethAddress: string, ~ethSignature: string) => Dom.Storage2
 let make = () => {
     let signer = RootProvider.useSignerExn()
     let userAddress = RootProvider.useCurrentUserExn()
-    let { setIsAuthorized } = AuthProvider.useAuthStatus()
+    let { setLoggedInStatus } = AuthProvider.useAuthStatus()
     <button
         onClick={(_) => {
             let _ = Ethers.Wallet.signMessage(
             signer,
             `flows.finance-signin-string:${userAddress->ethAdrToStr}`,
             )->JsPromise.map(result => {
-                setSignInData(~ethAddress=userAddress->ethAdrToLowerStr, ~ethSignature=result->Js.String2.make)
-                setIsAuthorized(_ => true)
+                Auth.LocalStorage.setSignInData(
+                    ~ethAddress=userAddress, 
+                    ~ethSignature=result->Js.String2.make)
+                Auth.LocalStorage.setCurrentUser(~ethAddress=userAddress)
+                setLoggedInStatus(_ => Web3AndDb)
             })
         }}
     >

@@ -6,7 +6,6 @@ import * as Ethers from "ethers";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as Core from "@web3-react/core";
-import * as Eth$FlowsUserApp from "./Eth.bs.js";
 import * as Ethers$FlowsUserApp from "../Ethers/Ethers.bs.js";
 import * as JsPromise$FlowsUserApp from "../Js.Promise/JsPromise.bs.js";
 import * as Web3Connectors$FlowsUserApp from "../../Login/Web3Connectors.bs.js";
@@ -138,9 +137,7 @@ function RootProvider$RootWithWeb3(Props) {
           JsPromise$FlowsUserApp.$$catch(library.getBalance(account).then(function (newBalance) {
                     return Curry._1(dispatch, /* LoadAddress */{
                                 _0: account,
-                                _1: Belt_Option.flatMap(newBalance, (function (balance) {
-                                        return Eth$FlowsUserApp.make(balance.toString());
-                                      }))
+                                _1: newBalance
                               });
                   }), (function (param) {
                   

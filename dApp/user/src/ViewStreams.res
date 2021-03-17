@@ -6,13 +6,15 @@ module StreamsInfo = {
     let {numberOfPayments, numberOfPaymentsMade, amount, id} = stream
 
     let paymentsQuery = Queries.GetPaymentHistory.use({streamID: id})
-    let paymentsLeft = BN.sub(numberOfPayments, numberOfPaymentsMade)
-    let amountReceived = BN.mul(amount, numberOfPaymentsMade)
+    let paymentsLeft = Ethers.BigNumber.sub(numberOfPayments, numberOfPaymentsMade)
+    let amountReceived = Ethers.BigNumber.mul(amount, numberOfPaymentsMade)
     <>
-      <div> {`Payment amount: ${amount->BN.toString}`->React.string} </div>
-      <div> {`Payments left: ${paymentsLeft->BN.toString}`->React.string} </div>
-      <div> {`Payments made: ${numberOfPaymentsMade->BN.toString}`->React.string} </div>
-      <div> {`Amount Recieved: ${amountReceived->BN.toString}`->React.string} </div>
+      <div> {`Payment amount: ${amount->Ethers.BigNumber.toString}`->React.string} </div>
+      <div> {`Payments left: ${paymentsLeft->Ethers.BigNumber.toString}`->React.string} </div>
+      <div>
+        {`Payments made: ${numberOfPaymentsMade->Ethers.BigNumber.toString}`->React.string}
+      </div>
+      <div> {`Amount Recieved: ${amountReceived->Ethers.BigNumber.toString}`->React.string} </div>
       {switch paymentsQuery {
       | {loading: true, data: None} => <p> {"Loading"->React.string} </p>
       | {error: Some(error)} =>
@@ -27,10 +29,12 @@ module StreamsInfo = {
               ->Array.map(p => {
                 <div key={p.id->Js.String2.make}>
                   <hr />
-                  <div> {`Payment amount: ${p.paymentAmount->BN.toString}`->React.string} </div>
+                  <div>
+                    {`Payment amount: ${p.paymentAmount->Ethers.BigNumber.toString}`->React.string}
+                  </div>
                   <div> {`Payment state: ${p.paymentState}`->React.string} </div>
                   <div>
-                    {`Payment timestamp: ${p.paymentTimestamp->BN.toString}`->React.string}
+                    {`Payment timestamp: ${p.paymentTimestamp->Ethers.BigNumber.toString}`->React.string}
                   </div>
                 </div>
               })

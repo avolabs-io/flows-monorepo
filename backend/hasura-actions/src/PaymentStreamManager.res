@@ -74,7 +74,7 @@ let addPaymentEntry = (~streamID, ~timestamp, ~amount) => {
     Query.AddPaymentEntry.makeVariables(
       ~streamID,
       ~paymentTimestamp=timestamp,
-      ~paymentState="PENDING",
+      ~paymentState=#PENDING,
       ~paymentAmount=amount,
       (),
     ),

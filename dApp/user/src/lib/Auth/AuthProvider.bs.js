@@ -3,12 +3,28 @@
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
-import * as Apollo$FlowsUserApp from "../../Apollo.bs.js";
+import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
+import * as Auth$FlowsUserApp from "./Auth.bs.js";
 import * as RootProvider$FlowsUserApp from "../Old/RootProvider.bs.js";
 
+function loggedInStatusToStr(status) {
+  if (typeof status !== "number") {
+    return "DbOnly";
+  }
+  switch (status) {
+    case /* Web3AndDb */0 :
+        return "Web3AndDb";
+    case /* Web3Only */1 :
+        return "Web3Only";
+    case /* NotLoggedIn */2 :
+        return "NotLoggedIn";
+    
+  }
+}
+
 var context = React.createContext({
-      isAuthorized: false,
-      setIsAuthorized: (function (param) {
+      loggedInStatus: /* NotLoggedIn */2,
+      setLoggedInStatus: (function (param) {
           
         })
     });
@@ -34,27 +50,51 @@ var AuthContext = {
   Provider: Provider
 };
 
-function getUserAuthStatus(user) {
-  return Belt_Option.isSome(Apollo$FlowsUserApp.getAuthHeaders(user));
+function getDBAuthStatus(user) {
+  return Belt_Option.isSome(Auth$FlowsUserApp.$$Headers.make(user));
 }
 
 function AuthProvider(Props) {
   var children = Props.children;
   var user = RootProvider$FlowsUserApp.useCurrentUser(undefined);
   var match = React.useState(function () {
-        return false;
+        return /* NotLoggedIn */2;
       });
-  var setIsAuthorized = match[1];
+  var setLoggedInStatus = match[1];
   React.useEffect((function () {
-          Curry._1(setIsAuthorized, (function (param) {
-                  return Belt_Option.isSome(Apollo$FlowsUserApp.getAuthHeaders(user));
-                }));
+          if (user !== undefined) {
+            var user$1 = Caml_option.valFromOption(user);
+            Auth$FlowsUserApp.LocalStorage.setCurrentUser(user$1);
+            if (Belt_Option.isSome(Auth$FlowsUserApp.$$Headers.make(user$1))) {
+              Curry._1(setLoggedInStatus, (function (param) {
+                      return /* Web3AndDb */0;
+                    }));
+            } else {
+              Curry._1(setLoggedInStatus, (function (param) {
+                      return /* Web3Only */1;
+                    }));
+            }
+          } else {
+            var userOpt = Auth$FlowsUserApp.LocalStorage.getCurrentLoggedInUserOpt(undefined);
+            if (userOpt !== undefined) {
+              var user$2 = Caml_option.valFromOption(userOpt);
+              Curry._1(setLoggedInStatus, (function (param) {
+                      return /* DbOnly */{
+                              _0: user$2
+                            };
+                    }));
+            } else {
+              Curry._1(setLoggedInStatus, (function (param) {
+                      return /* NotLoggedIn */2;
+                    }));
+            }
+          }
           
         }), [user]);
   return React.createElement(AuthProvider$AuthContext$Provider, {
               value: {
-                isAuthorized: match[0],
-                setIsAuthorized: setIsAuthorized
+                loggedInStatus: match[0],
+                setLoggedInStatus: setLoggedInStatus
               },
               children: children
             });
@@ -67,8 +107,9 @@ function useAuthStatus(param) {
 var make = AuthProvider;
 
 export {
+  loggedInStatusToStr ,
   AuthContext ,
-  getUserAuthStatus ,
+  getDBAuthStatus ,
   make ,
   useAuthStatus ,
   

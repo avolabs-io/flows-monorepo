@@ -1,3 +1,6 @@
+Dotenv.config()
+@val external hubAddress: option<string> = "process.env.HUB_ADDRESS"
+
 open BsCron
 
 @decco.encode
@@ -49,9 +52,9 @@ let makePayment = (~recipientAddress, ~paymentData: streamData) => {
       ~lastPayment=paymentData.nextPayment->BN.toNumber,
     )
   }
+  let address = hubAddress->Option.getWithDefault("http://raiden1:5001")
   let requestString =
-    "http://raiden1:5001/api/v1/payments/0xC563388e2e2fdD422166eD5E76971D11eD37A466/" ++
-    recipientAddress
+    address ++ "/api/v1/payments/0xC563388e2e2fdD422166eD5E76971D11eD37A466/" ++ recipientAddress
   Js.log2(requestString, finalAmount->BN.toString)
   Fetch.fetchWithInit(
     requestString,
@@ -144,14 +147,14 @@ let startProcess = () => {
                     let paymentState = payment.paymentState
                     //let paymentAmount = payment.paymentAmount
                     //let paymentTimestamp = payment.paymentTimestamp
-                    if paymentState == "COMPLETE" {
+                    if paymentState == #COMPLETE {
                       Js.log("last payment is COMPLETE")
                       let _ = makePayment(~recipientAddress=recipient, ~paymentData)
                     }
-                    if paymentState == "PENDING" {
+                    if paymentState == #PENDING {
                       Js.log("last payment is PENDING")
                     }
-                    if paymentState == "ERROR" {
+                    if paymentState == #ERROR {
                       Js.log("last payment is ERROR")
                     }
                   })

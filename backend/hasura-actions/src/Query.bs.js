@@ -810,7 +810,7 @@ var UpdateStreamEntry = {
 var Raw$7 = {};
 
 var query$7 = (require("@apollo/client").gql`
-  mutation AddPaymentEntry($streamID: Int!, $paymentTimestamp: Int!, $paymentState: String!, $paymentAmount: String!)  {
+  mutation AddPaymentEntry($streamID: Int!, $paymentTimestamp: Int!, $paymentState: payment_states_enum!, $paymentAmount: String!)  {
     insert_payments_one(object: {streamID: $streamID, paymentTimestamp: $paymentTimestamp, paymentState: $paymentState, paymentAmount: $paymentAmount})  {
       __typename
       id
@@ -847,10 +847,13 @@ function serialize$7(value) {
 }
 
 function serializeVariables$7(inp) {
+  var a = inp.paymentState;
   return {
           streamID: inp.streamID,
           paymentTimestamp: inp.paymentTimestamp,
-          paymentState: inp.paymentState,
+          paymentState: a === "ERROR" ? "ERROR" : (
+              a === "PENDING" ? "PENDING" : "COMPLETE"
+            ),
           paymentAmount: inp.paymentAmount
         };
 }
@@ -900,7 +903,7 @@ var AddPaymentEntry = {
 var Raw$8 = {};
 
 var query$8 = (require("@apollo/client").gql`
-  mutation UpdatePaymentEntry($paymentID: Int!, $paymentState: String!)  {
+  mutation UpdatePaymentEntry($paymentID: Int!, $paymentState: payment_states_enum!)  {
     update_payments_by_pk(pk_columns: {id: $paymentID}, _set: {paymentState: $paymentState})  {
       __typename
       id
@@ -911,12 +914,36 @@ var query$8 = (require("@apollo/client").gql`
 
 function parse$8(value) {
   var value$1 = value.update_payments_by_pk;
+  var tmp;
+  if (value$1 == null) {
+    tmp = undefined;
+  } else {
+    var value$2 = value$1.paymentState;
+    var tmp$1;
+    switch (value$2) {
+      case "COMPLETE" :
+          tmp$1 = "COMPLETE";
+          break;
+      case "ERROR" :
+          tmp$1 = "ERROR";
+          break;
+      case "PENDING" :
+          tmp$1 = "PENDING";
+          break;
+      default:
+        tmp$1 = {
+          NAME: "FutureAddedValue",
+          VAL: value$2
+        };
+    }
+    tmp = {
+      __typename: value$1.__typename,
+      id: value$1.id,
+      paymentState: tmp$1
+    };
+  }
   return {
-          update_payments_by_pk: !(value$1 == null) ? ({
-                __typename: value$1.__typename,
-                id: value$1.id,
-                paymentState: value$1.paymentState
-              }) : undefined
+          update_payments_by_pk: tmp
         };
 }
 
@@ -925,12 +952,17 @@ function serialize$8(value) {
   var update_payments_by_pk;
   if (value$1 !== undefined) {
     var value$2 = value$1.paymentState;
+    var paymentState = typeof value$2 === "string" ? (
+        value$2 === "ERROR" ? "ERROR" : (
+            value$2 === "PENDING" ? "PENDING" : "COMPLETE"
+          )
+      ) : value$2.VAL;
     var value$3 = value$1.id;
     var value$4 = value$1.__typename;
     update_payments_by_pk = {
       __typename: value$4,
       id: value$3,
-      paymentState: value$2
+      paymentState: paymentState
     };
   } else {
     update_payments_by_pk = null;
@@ -941,9 +973,12 @@ function serialize$8(value) {
 }
 
 function serializeVariables$8(inp) {
+  var a = inp.paymentState;
   return {
           paymentID: inp.paymentID,
-          paymentState: inp.paymentState
+          paymentState: a === "ERROR" ? "ERROR" : (
+              a === "PENDING" ? "PENDING" : "COMPLETE"
+            )
         };
 }
 
@@ -1006,11 +1041,29 @@ function parse$9(value) {
   var value$1 = value.payments;
   return {
           payments: value$1.map(function (value) {
+                var value$1 = value.paymentState;
+                var tmp;
+                switch (value$1) {
+                  case "COMPLETE" :
+                      tmp = "COMPLETE";
+                      break;
+                  case "ERROR" :
+                      tmp = "ERROR";
+                      break;
+                  case "PENDING" :
+                      tmp = "PENDING";
+                      break;
+                  default:
+                    tmp = {
+                      NAME: "FutureAddedValue",
+                      VAL: value$1
+                    };
+                }
                 return {
                         __typename: value.__typename,
                         id: value.id,
                         paymentAmount: value.paymentAmount,
-                        paymentState: value.paymentState,
+                        paymentState: tmp,
                         paymentTimestamp: GqlConverters.IntToBigInt.parse(value.paymentTimestamp),
                         streamID: value.streamID
                       };
@@ -1025,6 +1078,11 @@ function serialize$9(value) {
         var value$2 = value.paymentTimestamp;
         var value$3 = GqlConverters.IntToBigInt.serialize(value$2);
         var value$4 = value.paymentState;
+        var paymentState = typeof value$4 === "string" ? (
+            value$4 === "ERROR" ? "ERROR" : (
+                value$4 === "PENDING" ? "PENDING" : "COMPLETE"
+              )
+          ) : value$4.VAL;
         var value$5 = value.paymentAmount;
         var value$6 = value.id;
         var value$7 = value.__typename;
@@ -1032,7 +1090,7 @@ function serialize$9(value) {
                 __typename: value$7,
                 id: value$6,
                 paymentAmount: value$5,
-                paymentState: value$4,
+                paymentState: paymentState,
                 paymentTimestamp: value$3,
                 streamID: value$1
               };

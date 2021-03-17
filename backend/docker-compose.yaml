@@ -73,6 +73,7 @@ services:
     environment:
       PORT: ${ACTIONS_PORT}
       GRAPHQL_ENDPOINT: graphql-engine:8080/v1/graphql
+      HUB_ADDRESS: ${HUB_ADDRESS}
     command: ${ACTIONS_START_COMMAND}
     restart: always
 
