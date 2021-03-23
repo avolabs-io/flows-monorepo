@@ -13,21 +13,22 @@ module Main = {
   @react.component
   let make = () => {
     open AuthProvider
-    let { loggedInStatus } = useAuthStatus()
+    let {loggedInStatus} = useAuthStatus()
     <>
-    <h3>
-      {"Auth Status" -> React.string}
-    </h3>
-    <div>
-      { loggedInStatus->loggedInStatusToStr->React.string }
-    </div>
-    <OnlyLoggedIn> 
-      <h1> {"Main component"->React.string} </h1>
-      <Dapp />
-    </OnlyLoggedIn>
+      <h3> {"Auth Status"->React.string} </h3>
+      <div> {loggedInStatus->loggedInStatusToStr->React.string} </div>
+      <OnlyLoggedIn> <h1> {"Main component"->React.string} </h1> <Dapp /> </OnlyLoggedIn>
     </>
   }
 }
+
+module Streams = {
+  @react.component
+  let make = () => {
+    <OnlyLoggedIn> <ViewStreams /> </OnlyLoggedIn>
+  }
+}
+
 module NotFound = {
   @react.component
   let make = () => {
@@ -52,36 +53,25 @@ module GraphQl = {
   @react.component
   let make = (~children) => {
     let optWeb3User = RootProvider.useCurrentUser()
-    let { loggedInStatus } = AuthProvider.useAuthStatus()
-    let optDbOnlyUser = switch(loggedInStatus){
-      | DbOnly(user) => Some(user)
-      | _ => None
+    let {loggedInStatus} = AuthProvider.useAuthStatus()
+    let optDbOnlyUser = switch loggedInStatus {
+    | DbOnly(user) => Some(user)
+    | _ => None
     }
 
-    let optUser = if(Option.isSome(optWeb3User)){
+    let optUser = if Option.isSome(optWeb3User) {
       optWeb3User
-    }else if(Option.isSome(optDbOnlyUser)){
+    } else if Option.isSome(optDbOnlyUser) {
       optDbOnlyUser
-    } else{
+    } else {
       None
     }
 
-
-    let client = React.useMemo1(() =>
-      Apollo.makeClient(
-        ~user=optUser
-      )
-    , [optUser])
+    let client = React.useMemo1(() => Apollo.makeClient(~user=optUser), [optUser])
 
     <ApolloClient.React.ApolloProvider client> children </ApolloClient.React.ApolloProvider>
   }
 }
 @react.component
 let make = () =>
-  <RootProvider>
-    <AuthProvider>
-      <GraphQl>
-        <Router /> 
-      </GraphQl>
-    </AuthProvider>
-  </RootProvider>
+  <RootProvider> <AuthProvider> <GraphQl> <Router /> </GraphQl> </AuthProvider> </RootProvider>

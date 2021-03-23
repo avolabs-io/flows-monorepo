@@ -1,17 +1,19 @@
 module ApolloQueryResult = ApolloClient.Types.ApolloQueryResult
 
 @decco.decode
-type recipientData = {
-  recipient: string,
-  addressTokenStream: string,
-  lengthOfPayment: int,
+type streamData = {
+  userAddress: string,
+  tokenAddress: string,
+  amount: string,
+  numberOfPayments: int,
   interval: int,
+  startPayment: int,
   // TODO: these values should be BigInt and use `@decco.codec` as the conversion function
-  rate: string,
-  deposit: string,
+  //deposit: string,
 }
+
 @decco.decode
-type body_in = {input: recipientData}
+type body_in = {input: streamData}
 
 @decco.encode
 type body_out = {
@@ -33,20 +35,21 @@ let createStream = Serbet.endpoint({
     req.requireBody(value => {
       body_in_decode(value)
     })->JsPromise.then(({
-      input: {recipient, addressTokenStream, lengthOfPayment, interval, rate, deposit},
+      input: {userAddress, tokenAddress, amount, numberOfPayments, interval, startPayment},
     }) => {
-      Js.log(`TODO: we must still make the deposit here ${deposit}`)
-
+      //Js.log(`TODO: we must still make the deposit here ${deposit}`)
+      let actualNextPayment = startPayment + interval * 60
       gqlClient.mutate(
         ~mutation=module(Query.CreatePaymentStream),
         Query.CreatePaymentStream.makeVariables(
-          ~amount=rate,
+          ~amount,
           ~interval,
-          ~numberOfPayments=lengthOfPayment,
-          ~recipient,
-          ~start=1,
-          ~state="TODO: Pending DepositCreation",
-          ~tokenAddress=addressTokenStream,
+          ~numberOfPayments,
+          ~recipient=userAddress,
+          ~startPayment,
+          ~state="OPEN",
+          ~tokenAddress,
+          ~nextPayment=actualNextPayment,
           (),
         ),
       )->JsPromise.map(result =>

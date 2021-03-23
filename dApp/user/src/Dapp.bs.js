@@ -4,8 +4,10 @@ import * as React from "react";
 import * as RaidenTs from "raiden-ts";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as SignUp$FlowsUserApp from "./components/Auth/SignUp.bs.js";
+import * as ViewStreams$FlowsUserApp from "./ViewStreams.bs.js";
 import * as AuthProvider$FlowsUserApp from "./lib/Auth/AuthProvider.bs.js";
 import * as RootProvider$FlowsUserApp from "./lib/Old/RootProvider.bs.js";
+import * as CreatePayment$FlowsUserApp from "./CreatePayment.bs.js";
 import * as AuthenticateButton$FlowsUserApp from "./components/Auth/AuthenticateButton.bs.js";
 
 function Dapp(Props) {
@@ -23,10 +25,11 @@ function Dapp(Props) {
         optSigner
       ]);
   var tmp;
+  var exit = 0;
   if (typeof loggedInStatus === "number") {
     switch (loggedInStatus) {
       case /* Web3AndDb */0 :
-          tmp = React.createElement(SignUp$FlowsUserApp.make, {});
+          exit = 1;
           break;
       case /* Web3Only */1 :
           tmp = React.createElement(AuthenticateButton$FlowsUserApp.make, {});
@@ -37,9 +40,12 @@ function Dapp(Props) {
       
     }
   } else {
-    tmp = React.createElement(SignUp$FlowsUserApp.make, {});
+    exit = 1;
   }
-  return React.createElement("div", undefined, tmp, React.createElement("p", undefined, "something"));
+  if (exit === 1) {
+    tmp = React.createElement(React.Fragment, undefined, React.createElement(SignUp$FlowsUserApp.make, {}), React.createElement(ViewStreams$FlowsUserApp.make, {}), React.createElement(CreatePayment$FlowsUserApp.make, {}));
+  }
+  return React.createElement("div", undefined, tmp);
 }
 
 var make = Dapp;

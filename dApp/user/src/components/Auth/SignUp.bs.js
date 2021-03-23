@@ -7,7 +7,18 @@ import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as Form$FlowsUserApp from "../Form.bs.js";
 import * as Ethers$FlowsUserApp from "../../lib/Ethers/Ethers.bs.js";
+import * as Queries$FlowsUserApp from "../../Queries.bs.js";
 import * as Formality__ReactUpdate from "re-formality/src/Formality__ReactUpdate.bs.js";
+
+var validators_description = {
+  strategy: /* OnFirstBlur */0,
+  validate: (function (param) {
+      return {
+              TAG: /* Ok */0,
+              _0: param.description
+            };
+    })
+};
 
 var validators_name = {
   strategy: /* OnFirstBlur */0,
@@ -43,7 +54,7 @@ var validators_address = {
                   }, (function (address) {
                       return {
                               TAG: /* Ok */0,
-                              _0: address
+                              _0: Ethers$FlowsUserApp.Utils.ethAdrToStr(address)
                             };
                     }));
       }
@@ -51,12 +62,14 @@ var validators_address = {
 };
 
 var validators = {
+  description: validators_description,
   name: validators_name,
   address: validators_address
 };
 
 function initialFieldsStatuses(_input) {
   return {
+          description: /* Pristine */0,
           name: /* Pristine */0,
           address: /* Pristine */0
         };
@@ -66,6 +79,7 @@ function initialState(input) {
   return {
           input: input,
           fieldsStatuses: {
+            description: /* Pristine */0,
             name: /* Pristine */0,
             address: /* Pristine */0
           },
@@ -76,47 +90,63 @@ function initialState(input) {
 }
 
 function validateForm(input, validators, fieldsStatuses) {
-  var match = fieldsStatuses.name;
-  var match_0 = match ? match._0 : Curry._1(validators.name.validate, input);
-  var match$1 = fieldsStatuses.address;
-  var match_0$1 = match$1 ? match$1._0 : Curry._1(validators.address.validate, input);
-  var nameResult = match_0;
-  var nameResult$1;
-  if (nameResult.TAG === /* Ok */0) {
-    var addressResult = match_0$1;
-    if (addressResult.TAG === /* Ok */0) {
-      return {
-              TAG: /* Valid */0,
-              output: {
-                address: addressResult._0,
-                name: nameResult._0
-              },
-              fieldsStatuses: {
-                name: /* Dirty */{
-                  _0: nameResult,
-                  _1: /* Shown */0
+  var match = fieldsStatuses.description;
+  var match_0 = match ? match._0 : Curry._1(validators.description.validate, input);
+  var match$1 = fieldsStatuses.name;
+  var match_0$1 = match$1 ? match$1._0 : Curry._1(validators.name.validate, input);
+  var match$2 = fieldsStatuses.address;
+  var match_0$2 = match$2 ? match$2._0 : Curry._1(validators.address.validate, input);
+  var descriptionResult = match_0;
+  var descriptionResult$1;
+  if (descriptionResult.TAG === /* Ok */0) {
+    var nameResult = match_0$1;
+    if (nameResult.TAG === /* Ok */0) {
+      var addressResult = match_0$2;
+      if (addressResult.TAG === /* Ok */0) {
+        return {
+                TAG: /* Valid */0,
+                output: {
+                  address: addressResult._0,
+                  name: nameResult._0,
+                  description: descriptionResult._0
                 },
-                address: /* Dirty */{
-                  _0: addressResult,
-                  _1: /* Shown */0
-                }
-              },
-              collectionsStatuses: undefined
-            };
+                fieldsStatuses: {
+                  description: /* Dirty */{
+                    _0: descriptionResult,
+                    _1: /* Shown */0
+                  },
+                  name: /* Dirty */{
+                    _0: nameResult,
+                    _1: /* Shown */0
+                  },
+                  address: /* Dirty */{
+                    _0: addressResult,
+                    _1: /* Shown */0
+                  }
+                },
+                collectionsStatuses: undefined
+              };
+      }
+      descriptionResult$1 = descriptionResult;
+    } else {
+      descriptionResult$1 = descriptionResult;
     }
-    nameResult$1 = nameResult;
   } else {
-    nameResult$1 = nameResult;
+    descriptionResult$1 = descriptionResult;
   }
   return {
           TAG: /* Invalid */1,
           fieldsStatuses: {
+            description: /* Dirty */{
+              _0: descriptionResult$1,
+              _1: /* Shown */0
+            },
             name: /* Dirty */{
-              _0: nameResult$1,
+              _0: match_0$1,
               _1: /* Shown */0
             },
             address: /* Dirty */{
-              _0: match_0$1,
+              _0: match_0$2,
               _1: /* Shown */0
             }
           },
@@ -131,11 +161,12 @@ function useForm(initialInput, onSubmit) {
   var match = Formality__ReactUpdate.useReducer(memoizedInitialState, (function (state, action) {
           if (typeof action === "number") {
             switch (action) {
-              case /* BlurNameField */0 :
-                  var result = Formality.validateFieldOnBlurWithValidator(state.input, state.fieldsStatuses.name, validators_name, (function (status) {
+              case /* BlurDescriptionField */0 :
+                  var result = Formality.validateFieldOnBlurWithValidator(state.input, state.fieldsStatuses.description, validators_description, (function (status) {
                           var init = state.fieldsStatuses;
                           return {
-                                  name: status,
+                                  description: status,
+                                  name: init.name,
                                   address: init.address
                                 };
                         }));
@@ -153,12 +184,13 @@ function useForm(initialInput, onSubmit) {
                   } else {
                     return /* NoUpdate */0;
                   }
-              case /* BlurAddressField */1 :
-                  var result$1 = Formality.validateFieldOnBlurWithValidator(state.input, state.fieldsStatuses.address, validators_address, (function (status) {
+              case /* BlurNameField */1 :
+                  var result$1 = Formality.validateFieldOnBlurWithValidator(state.input, state.fieldsStatuses.name, validators_name, (function (status) {
                           var init = state.fieldsStatuses;
                           return {
-                                  name: init.name,
-                                  address: status
+                                  description: init.description,
+                                  name: status,
+                                  address: init.address
                                 };
                         }));
                   if (result$1 !== undefined) {
@@ -175,7 +207,30 @@ function useForm(initialInput, onSubmit) {
                   } else {
                     return /* NoUpdate */0;
                   }
-              case /* Submit */2 :
+              case /* BlurAddressField */2 :
+                  var result$2 = Formality.validateFieldOnBlurWithValidator(state.input, state.fieldsStatuses.address, validators_address, (function (status) {
+                          var init = state.fieldsStatuses;
+                          return {
+                                  description: init.description,
+                                  name: init.name,
+                                  address: status
+                                };
+                        }));
+                  if (result$2 !== undefined) {
+                    return {
+                            TAG: /* Update */0,
+                            _0: {
+                              input: state.input,
+                              fieldsStatuses: result$2,
+                              collectionsStatuses: state.collectionsStatuses,
+                              formStatus: state.formStatus,
+                              submissionStatus: state.submissionStatus
+                            }
+                          };
+                  } else {
+                    return /* NoUpdate */0;
+                  }
+              case /* Submit */3 :
                   var match = state.formStatus;
                   if (typeof match !== "number" && match.TAG === /* Submitting */0) {
                     return /* NoUpdate */0;
@@ -214,27 +269,27 @@ function useForm(initialInput, onSubmit) {
                               return Curry._2(onSubmit, output, {
                                           notifyOnSuccess: (function (input) {
                                               return Curry._1(dispatch, {
-                                                          TAG: /* SetSubmittedStatus */2,
+                                                          TAG: /* SetSubmittedStatus */3,
                                                           _0: input
                                                         });
                                             }),
                                           notifyOnFailure: (function (error) {
                                               return Curry._1(dispatch, {
-                                                          TAG: /* SetSubmissionFailedStatus */3,
+                                                          TAG: /* SetSubmissionFailedStatus */4,
                                                           _0: error
                                                         });
                                             }),
                                           reset: (function (param) {
-                                              return Curry._1(dispatch, /* Reset */5);
+                                              return Curry._1(dispatch, /* Reset */6);
                                             }),
                                           dismissSubmissionResult: (function (param) {
-                                              return Curry._1(dispatch, /* DismissSubmissionResult */4);
+                                              return Curry._1(dispatch, /* DismissSubmissionResult */5);
                                             })
                                         });
                             })
                         };
                   break;
-              case /* DismissSubmissionError */3 :
+              case /* DismissSubmissionError */4 :
                   var match$2 = state.formStatus;
                   if (typeof match$2 === "number" || match$2.TAG !== /* SubmissionFailed */1) {
                     return /* NoUpdate */0;
@@ -250,7 +305,7 @@ function useForm(initialInput, onSubmit) {
                             }
                           };
                   }
-              case /* DismissSubmissionResult */4 :
+              case /* DismissSubmissionResult */5 :
                   var match$3 = state.formStatus;
                   if (typeof match$3 === "number") {
                     if (match$3 === /* Editing */0) {
@@ -270,7 +325,7 @@ function useForm(initialInput, onSubmit) {
                             submissionStatus: state.submissionStatus
                           }
                         };
-              case /* Reset */5 :
+              case /* Reset */6 :
                   return {
                           TAG: /* Update */0,
                           _0: initialState(initialInput)
@@ -279,15 +334,35 @@ function useForm(initialInput, onSubmit) {
             }
           } else {
             switch (action.TAG | 0) {
-              case /* UpdateNameField */0 :
+              case /* UpdateDescriptionField */0 :
                   var nextInput = Curry._1(action._0, state.input);
                   return {
                           TAG: /* Update */0,
                           _0: {
                             input: nextInput,
-                            fieldsStatuses: Formality.validateFieldOnChangeWithValidator(nextInput, state.fieldsStatuses.name, state.submissionStatus, validators_name, (function (status) {
+                            fieldsStatuses: Formality.validateFieldOnChangeWithValidator(nextInput, state.fieldsStatuses.description, state.submissionStatus, validators_description, (function (status) {
                                     var init = state.fieldsStatuses;
                                     return {
+                                            description: status,
+                                            name: init.name,
+                                            address: init.address
+                                          };
+                                  })),
+                            collectionsStatuses: state.collectionsStatuses,
+                            formStatus: state.formStatus,
+                            submissionStatus: state.submissionStatus
+                          }
+                        };
+              case /* UpdateNameField */1 :
+                  var nextInput$1 = Curry._1(action._0, state.input);
+                  return {
+                          TAG: /* Update */0,
+                          _0: {
+                            input: nextInput$1,
+                            fieldsStatuses: Formality.validateFieldOnChangeWithValidator(nextInput$1, state.fieldsStatuses.name, state.submissionStatus, validators_name, (function (status) {
+                                    var init = state.fieldsStatuses;
+                                    return {
+                                            description: init.description,
                                             name: status,
                                             address: init.address
                                           };
@@ -297,15 +372,16 @@ function useForm(initialInput, onSubmit) {
                             submissionStatus: state.submissionStatus
                           }
                         };
-              case /* UpdateAddressField */1 :
-                  var nextInput$1 = Curry._1(action._0, state.input);
+              case /* UpdateAddressField */2 :
+                  var nextInput$2 = Curry._1(action._0, state.input);
                   return {
                           TAG: /* Update */0,
                           _0: {
-                            input: nextInput$1,
-                            fieldsStatuses: Formality.validateFieldOnChangeWithValidator(nextInput$1, state.fieldsStatuses.address, state.submissionStatus, validators_address, (function (status) {
+                            input: nextInput$2,
+                            fieldsStatuses: Formality.validateFieldOnChangeWithValidator(nextInput$2, state.fieldsStatuses.address, state.submissionStatus, validators_address, (function (status) {
                                     var init = state.fieldsStatuses;
                                     return {
+                                            description: init.description,
                                             name: init.name,
                                             address: status
                                           };
@@ -315,7 +391,7 @@ function useForm(initialInput, onSubmit) {
                             submissionStatus: state.submissionStatus
                           }
                         };
-              case /* SetSubmittedStatus */2 :
+              case /* SetSubmittedStatus */3 :
                   var input = action._0;
                   if (input !== undefined) {
                     return {
@@ -323,6 +399,7 @@ function useForm(initialInput, onSubmit) {
                             _0: {
                               input: input,
                               fieldsStatuses: {
+                                description: /* Pristine */0,
                                 name: /* Pristine */0,
                                 address: /* Pristine */0
                               },
@@ -337,6 +414,7 @@ function useForm(initialInput, onSubmit) {
                             _0: {
                               input: state.input,
                               fieldsStatuses: {
+                                description: /* Pristine */0,
                                 name: /* Pristine */0,
                                 address: /* Pristine */0
                               },
@@ -346,7 +424,7 @@ function useForm(initialInput, onSubmit) {
                             }
                           };
                   }
-              case /* SetSubmissionFailedStatus */3 :
+              case /* SetSubmissionFailedStatus */4 :
                   return {
                           TAG: /* Update */0,
                           _0: {
@@ -360,7 +438,7 @@ function useForm(initialInput, onSubmit) {
                             submissionStatus: state.submissionStatus
                           }
                         };
-              case /* MapSubmissionError */4 :
+              case /* MapSubmissionError */5 :
                   var map = action._0;
                   var error$1 = state.formStatus;
                   if (typeof error$1 === "number") {
@@ -409,9 +487,17 @@ function useForm(initialInput, onSubmit) {
   var tmp;
   tmp = typeof match$1 === "number" || match$1.TAG !== /* Submitting */0 ? false : true;
   return {
+          updateDescription: (function (nextInputFn, nextValue) {
+              return Curry._1(dispatch, {
+                          TAG: /* UpdateDescriptionField */0,
+                          _0: (function (__x) {
+                              return Curry._2(nextInputFn, __x, nextValue);
+                            })
+                        });
+            }),
           updateName: (function (nextInputFn, nextValue) {
               return Curry._1(dispatch, {
-                          TAG: /* UpdateNameField */0,
+                          TAG: /* UpdateNameField */1,
                           _0: (function (__x) {
                               return Curry._2(nextInputFn, __x, nextValue);
                             })
@@ -419,25 +505,29 @@ function useForm(initialInput, onSubmit) {
             }),
           updateAddress: (function (nextInputFn, nextValue) {
               return Curry._1(dispatch, {
-                          TAG: /* UpdateAddressField */1,
+                          TAG: /* UpdateAddressField */2,
                           _0: (function (__x) {
                               return Curry._2(nextInputFn, __x, nextValue);
                             })
                         });
             }),
+          blurDescription: (function (param) {
+              return Curry._1(dispatch, /* BlurDescriptionField */0);
+            }),
           blurName: (function (param) {
-              return Curry._1(dispatch, /* BlurNameField */0);
+              return Curry._1(dispatch, /* BlurNameField */1);
             }),
           blurAddress: (function (param) {
-              return Curry._1(dispatch, /* BlurAddressField */1);
+              return Curry._1(dispatch, /* BlurAddressField */2);
             }),
+          descriptionResult: Formality.exposeFieldResult(state.fieldsStatuses.description),
           nameResult: Formality.exposeFieldResult(state.fieldsStatuses.name),
           addressResult: Formality.exposeFieldResult(state.fieldsStatuses.address),
           input: state.input,
           status: state.formStatus,
           dirty: (function (param) {
               var match = state.fieldsStatuses;
-              if (match.name || match.address) {
+              if (match.description || match.name || match.address) {
                 return true;
               } else {
                 return false;
@@ -453,22 +543,22 @@ function useForm(initialInput, onSubmit) {
             }),
           submitting: tmp,
           submit: (function (param) {
-              return Curry._1(dispatch, /* Submit */2);
+              return Curry._1(dispatch, /* Submit */3);
             }),
           dismissSubmissionError: (function (param) {
-              return Curry._1(dispatch, /* DismissSubmissionError */3);
+              return Curry._1(dispatch, /* DismissSubmissionError */4);
             }),
           dismissSubmissionResult: (function (param) {
-              return Curry._1(dispatch, /* DismissSubmissionResult */4);
+              return Curry._1(dispatch, /* DismissSubmissionResult */5);
             }),
           mapSubmissionError: (function (map) {
               return Curry._1(dispatch, {
-                          TAG: /* MapSubmissionError */4,
+                          TAG: /* MapSubmissionError */5,
                           _0: map
                         });
             }),
           reset: (function (param) {
-              return Curry._1(dispatch, /* Reset */5);
+              return Curry._1(dispatch, /* Reset */6);
             })
         };
 }
@@ -484,63 +574,84 @@ var SignUpForm = {
 
 var initialInput = {
   address: "",
-  name: ""
+  name: "",
+  description: ""
 };
 
 function SignUp(Props) {
+  var match = Curry.app(Queries$FlowsUserApp.AddUser.use, [
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+      ]);
+  var addUser = match[0];
   var form = useForm(initialInput, (function (param, param$1) {
-          console.log("NEEDS TO BE IMPLEMENTED");
+          Curry._8(addUser, undefined, undefined, undefined, undefined, undefined, undefined, undefined, {
+                name: param.name,
+                address: param.address,
+                description: param.description
+              });
           
         }));
-  var match = form.addressResult;
-  var tmp;
-  tmp = match !== undefined && match.TAG !== /* Ok */0 ? React.createElement("div", undefined, match._0) : null;
-  var match$1 = form.nameResult;
-  var tmp$1;
-  tmp$1 = match$1 !== undefined && match$1.TAG !== /* Ok */0 ? React.createElement("div", undefined, match$1._0) : null;
   return React.createElement(Form$FlowsUserApp.make, {
               className: "",
               onSubmit: (function (param) {
                   return Curry._1(form.submit, undefined);
                 }),
               children: null
-            }, React.createElement("h2", undefined, "Sign Up"), React.createElement("label", {
-                  htmlFor: "address"
-                }, "Raiden Address: "), React.createElement("input", {
-                  id: "address",
-                  disabled: form.submitting,
-                  type: "text",
+            }, React.createElement("h2", undefined, "Sign Up"), React.createElement(Form$FlowsUserApp.Input.make, {
+                  label: "address",
+                  title: "Raiden Address: ",
                   value: form.input.address,
-                  onBlur: (function (param) {
-                      return Curry._1(form.blurAddress, undefined);
-                    }),
-                  onChange: (function ($$event) {
-                      return Curry._2(form.updateAddress, (function (input, value) {
-                                    return {
-                                            address: value,
-                                            name: input.name
-                                          };
-                                  }), $$event.target.value);
-                    })
-                }), tmp, React.createElement("br", undefined), React.createElement("label", {
-                  htmlFor: "name"
-                }, "Name: "), React.createElement("input", {
-                  id: "name",
-                  disabled: form.submitting,
-                  type: "text",
+                  blur: form.blurAddress,
+                  updateCurried: Curry._1(form.updateAddress, (function (input, value) {
+                          return {
+                                  address: value,
+                                  name: input.name,
+                                  description: input.description
+                                };
+                        })),
+                  result: form.addressResult,
+                  disabled: form.submitting
+                }), React.createElement("br", undefined), React.createElement(Form$FlowsUserApp.Input.make, {
+                  label: "name",
+                  title: "User name: ",
                   value: form.input.name,
-                  onBlur: (function (param) {
-                      return Curry._1(form.blurName, undefined);
-                    }),
-                  onChange: (function ($$event) {
-                      return Curry._2(form.updateName, (function (input, value) {
-                                    return {
-                                            address: input.address,
-                                            name: value
-                                          };
-                                  }), $$event.target.value);
-                    })
-                }), tmp$1, React.createElement("br", undefined), React.createElement("button", undefined, "Sign Up"));
+                  blur: form.blurName,
+                  updateCurried: Curry._1(form.updateName, (function (input, value) {
+                          return {
+                                  address: input.address,
+                                  name: value,
+                                  description: input.description
+                                };
+                        })),
+                  result: form.nameResult,
+                  disabled: form.submitting
+                }), React.createElement("br", undefined), React.createElement(Form$FlowsUserApp.Input.make, {
+                  label: "name",
+                  title: "Description: ",
+                  value: form.input.description,
+                  blur: form.blurDescription,
+                  updateCurried: Curry._1(form.updateDescription, (function (input, value) {
+                          return {
+                                  address: input.address,
+                                  name: input.name,
+                                  description: value
+                                };
+                        })),
+                  result: form.descriptionResult,
+                  disabled: form.submitting
+                }), React.createElement("button", undefined, "Sign Up"));
 }
 
 var make = SignUp;

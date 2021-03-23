@@ -3,7 +3,7 @@ let make = () => {
   let optWeb3Provider = RootProvider.useWeb3()
   let optSigner = RootProvider.useSigner()
 
-  let { loggedInStatus } = AuthProvider.useAuthStatus()
+  let {loggedInStatus} = AuthProvider.useAuthStatus()
 
   React.useEffect2(() => {
     switch (optWeb3Provider, optSigner) {
@@ -14,16 +14,27 @@ let make = () => {
     }
     None
   }, (optWeb3Provider, optSigner))
-  <div> 
-    {
-      switch(loggedInStatus){
-        | Web3Only => <AuthenticateButton/>
-        | NotLoggedIn => React.null
-        | _ => <SignUp/>
-      }
-    }
-    <p>
-      {"something"->React.string}
-    </p>
+  <div>
+    {switch loggedInStatus {
+    | Web3Only => <AuthenticateButton />
+    | NotLoggedIn => React.null
+    | _ => <> <SignUp /> <ViewStreams /> <CreatePayment /> </>
+    }}
   </div>
 }
+
+// let userAddress = ""
+// PaymentStreamManager.gqlClient.query(
+//                 ~query=module(Query.ViewPaymentsStreamsWithAddress),
+//                 Query.ViewPaymentsStreamsWithAddress.makeVariables(~address=userAddress, ()),
+//               )
+//               ->JsPromise.map(result =>
+//                 switch result {
+//                 | Ok({data: {payments}}) =>
+//                   let _ = Array.map(payments, payment => {
+//                     let id = payment.id
+//                   })
+//                 | Error(error) => Js.log2("error last payment: ", error)
+//                 }
+//               )
+//               ->ignore
