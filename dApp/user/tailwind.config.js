@@ -1,8 +1,6 @@
 module.exports = {
   purge: {
-    content: [
-      ".src/**/*.res"
-    ],
+    content: [".src/**/*.res"],
     options: {
       safelist: ["html", "body"],
     },
@@ -11,7 +9,7 @@ module.exports = {
   theme: {
     extend: {
       // colors: {
-      //   primary: "#064085", // these are float values, can add them back in once
+      //   primary: "#064085",
       //   "light-purple": "#a6accd",
       // },
       // // Doesn't include an opacity gradient, rather use direct css
@@ -70,4 +68,4 @@ module.exports = {
     width: ["responsive"],
   },
   plugins: [],
-}
+};

@@ -3,7 +3,7 @@ const {
   addBabelPlugins,
   addBabelPreset,
   babelInclude,
-  addPostcssPlugins
+  addPostcssPlugins,
 } = require("customize-cra");
 const path = require("path");
 
@@ -18,8 +18,5 @@ module.exports = override(
     path.resolve("src"), // make sure you link your own source
     path.resolve("node_modules/raiden-ts"),
   ]),
-  addPostcssPlugins([
-    require('tailwindcss'),
-    require('autoprefixer')
-  ])
+  addPostcssPlugins([require("tailwindcss"), require("autoprefixer")])
 );
