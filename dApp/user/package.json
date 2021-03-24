@@ -39,14 +39,18 @@
     "@babel/plugin-syntax-optional-chaining": "^7.8.3",
     "@babel/preset-typescript": "^7.12.7",
     "@reasonml-community/graphql-ppx": "^1.0.2",
+    "@tailwindcss/postcss7-compat": "^2.0.4",
     "@truffle/hdwallet-provider": "^1.2.1",
+    "autoprefixer": "^9",
     "bs-platform": "^9.0.1",
     "customize-cra": "^1.0.0",
     "get-graphql-schema": "^2.1.2",
+    "postcss": "^7",
     "react-app-rewired": "^2.1.8",
     "react-scripts": "^4.0.1",
     "reason-react": "^0.9.1",
-    "rescript-apollo-client": "^1.0.0"
+    "rescript-apollo-client": "^1.0.0",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat"
   },
   "browserslist": {
     "production": [
