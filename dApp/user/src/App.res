@@ -42,8 +42,10 @@ module Router = {
     let route = Router.useRouter()
 
     switch route {
-    | Some(Main) => <Main />
+    | Some(Dashboard) => <OnlyLoggedIn> <Dapp /> </OnlyLoggedIn>
+    | Some(Stream) => <Streams />
     | Some(Login) => <Login />
+    | Some(Dev) => <Main />
     | None => <NotFound />
     }
   }
@@ -74,4 +76,6 @@ module GraphQl = {
 }
 @react.component
 let make = () =>
-  <RootProvider> <AuthProvider> <GraphQl> <Router /> </GraphQl> </AuthProvider> </RootProvider>
+  <RootProvider>
+    <AuthProvider> <GraphQl> <Nav /> <Router /> </GraphQl> </AuthProvider>
+  </RootProvider>
