@@ -9,6 +9,11 @@ module.exports = {
   organizationName: "avolabs-io",
   projectName: "Flows.finance",
   themeConfig: {
+    googleAnalytics: {
+      trackingID: "G-1GX3DX6KDG",
+      // Optional fields.
+      anonymizeIP: true, // Should IPs be anonymized?
+    },
     navbar: {
       title: "Flows Finance",
       logo: {
