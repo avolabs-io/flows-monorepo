@@ -4,14 +4,30 @@ import * as ReasonReactRouter from "reason-react/src/ReasonReactRouter.bs.js";
 
 function fromUrl(url) {
   var match = url.path;
-  if (match) {
-    if (match.hd === "login" && !match.tl) {
-      return /* Login */1;
-    } else {
+  if (!match) {
+    return /* Dashboard */0;
+  }
+  switch (match.hd) {
+    case "dev" :
+        if (match.tl) {
+          return ;
+        } else {
+          return /* Dev */3;
+        }
+    case "login" :
+        if (match.tl) {
+          return ;
+        } else {
+          return /* Login */2;
+        }
+    case "stream" :
+        if (match.tl) {
+          return ;
+        } else {
+          return /* Stream */1;
+        }
+    default:
       return ;
-    }
-  } else {
-    return /* Main */0;
   }
 }
 

@@ -194,6 +194,26 @@ function useNetworkId(param) {
   return Core.useWeb3React().chainId;
 }
 
+function useNetworkName(param) {
+  var networkId = Core.useWeb3React().chainId;
+  if (networkId === undefined) {
+    return "unknown";
+  }
+  switch (networkId) {
+    case 1 :
+        return "mainnet";
+    case 2 :
+    case 3 :
+        return "unknown";
+    case 4 :
+        return "rinkeby";
+    case 5 :
+        return "goerli";
+    default:
+      return "unknown";
+  }
+}
+
 function useEtherscanUrl(param) {
   var networkId = Core.useWeb3React().chainId;
   if (networkId !== undefined) {
@@ -286,6 +306,7 @@ export {
   useIsAddressCurrentUser ,
   useEthBalance ,
   useNetworkId ,
+  useNetworkName ,
   useEtherscanUrl ,
   useDeactivateWeb3 ,
   useWeb3 ,

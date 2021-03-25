@@ -109,14 +109,7 @@ module RootWithWeb3 = {
         let _ =
           library
           ->Ethers.Providers.getBalance(account)
-          ->JsPromise.map(newBalance =>
-            dispatch(
-              LoadAddress(
-                account,
-                newBalance,
-              ),
-            )
-          )
+          ->JsPromise.map(newBalance => dispatch(LoadAddress(account, newBalance)))
           ->JsPromise.catch(_ => ())
 
         None
@@ -136,7 +129,7 @@ let useCurrentUser: unit => option<Ethers.ethAddress> = () => {
   }
 }
 
-let useCurrentUserExn = () => useCurrentUser() -> Option.getExn
+let useCurrentUserExn = () => useCurrentUser()->Option.getExn
 
 let useIsAddressCurrentUser: Ethers.ethAddress => bool = address => {
   let currentUser = useCurrentUser()
@@ -159,6 +152,16 @@ let useNetworkId: unit => option<int> = () => {
 
   context.chainId
 }
+let useNetworkName: unit => string = () => {
+  let networkId = useNetworkId()
+  switch networkId {
+  | Some(1) => "mainnet"
+  | Some(5) => "goerli"
+  | Some(4) => "rinkeby"
+  | _ => "unknown"
+  }
+}
+
 let useEtherscanUrl: unit => string = () => {
   let networkId = useNetworkId()
 
@@ -187,7 +190,7 @@ let useSigner: unit => option<Ethers.Wallet.t> = () => {
   }
 }
 
-let useSignerExn = () => useSigner() -> Option.getExn
+let useSignerExn = () => useSigner()->Option.getExn
 
 type connection =
   | Standby

@@ -4,6 +4,7 @@ import * as React from "react";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as Client from "@apollo/client";
+import * as Nav$FlowsUserApp from "./components/Nav.bs.js";
 import * as Dapp$FlowsUserApp from "./Dapp.bs.js";
 import * as Login$FlowsUserApp from "./Login/Login.bs.js";
 import * as Apollo$FlowsUserApp from "./Apollo.bs.js";
@@ -59,14 +60,21 @@ var NotFound = {
 
 function App$Router(Props) {
   var route = Router$FlowsUserApp.useRouter(undefined);
-  if (route !== undefined) {
-    if (route) {
-      return React.createElement(Login$FlowsUserApp.make, {});
-    } else {
-      return React.createElement(App$Main, {});
-    }
-  } else {
+  if (route === undefined) {
     return React.createElement(App$NotFound, {});
+  }
+  switch (route) {
+    case /* Dashboard */0 :
+        return React.createElement(App$OnlyLoggedIn, {
+                    children: React.createElement(Dapp$FlowsUserApp.make, {})
+                  });
+    case /* Stream */1 :
+        return React.createElement(App$Streams, {});
+    case /* Login */2 :
+        return React.createElement(Login$FlowsUserApp.make, {});
+    case /* Dev */3 :
+        return React.createElement(App$Main, {});
+    
   }
 }
 
@@ -100,8 +108,8 @@ function App(Props) {
   return React.createElement(RootProvider$FlowsUserApp.make, {
               children: React.createElement(AuthProvider$FlowsUserApp.make, {
                     children: React.createElement(App$GraphQl, {
-                          children: React.createElement(App$Router, {})
-                        })
+                          children: null
+                        }, React.createElement(Nav$FlowsUserApp.make, {}), React.createElement(App$Router, {}))
                   })
             });
 }
