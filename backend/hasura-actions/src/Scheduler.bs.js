@@ -82,7 +82,6 @@ function getCurrentTimestamp(param) {
 }
 
 function startProcess(param) {
-  console.log(Belt_Option.getWithDefault(process.env.HUB_ADDRESS, "http://raiden1:5001"));
   var now = getTimestamp(new Date());
   console.log("start timestamp:", now);
   var job = BsCron.CronJob.make({

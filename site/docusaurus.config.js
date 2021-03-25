@@ -8,7 +8,13 @@ module.exports = {
   favicon: "img/favicon/favicon.ico",
   organizationName: "avolabs-io",
   projectName: "Flows.finance",
+  plugins: ["@docusaurus/plugin-google-analytics"],
   themeConfig: {
+    googleAnalytics: {
+      trackingID: "G-1GX3DX6KDG",
+      // Optional fields.
+      anonymizeIP: true, // Should IPs be anonymized?
+    },
     navbar: {
       title: "Flows Finance",
       logo: {
