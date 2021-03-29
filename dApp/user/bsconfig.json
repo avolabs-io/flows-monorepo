@@ -34,7 +34,7 @@
     "bs-css",
     "bs-css-emotion",
     "re-formality",
-    "rescript-apollo-client"
+    "rescript-apollo-client"    
   ],
   "ppx-flags": ["re-formality/ppx", "@reasonml-community/graphql-ppx/ppx"],
   "refmt": 3

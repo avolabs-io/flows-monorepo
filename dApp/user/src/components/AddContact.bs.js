@@ -5,9 +5,9 @@ import * as React from "react";
 import * as Formality from "re-formality/src/Formality.bs.js";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
-import * as Form$FlowsUserApp from "../Form.bs.js";
-import * as Ethers$FlowsUserApp from "../../lib/Ethers/Ethers.bs.js";
-import * as Queries$FlowsUserApp from "../../Queries.bs.js";
+import * as Form$FlowsUserApp from "./Form.bs.js";
+import * as Ethers$FlowsUserApp from "../lib/Ethers/Ethers.bs.js";
+import * as Queries$FlowsUserApp from "../Queries.bs.js";
 import * as Formality__ReactUpdate from "re-formality/src/Formality__ReactUpdate.bs.js";
 
 var validators_description = {
@@ -563,7 +563,7 @@ function useForm(initialInput, onSubmit) {
         };
 }
 
-var SignUpForm = {
+var AddContact = {
   validators: validators,
   initialFieldsStatuses: initialFieldsStatuses,
   initialCollectionsStatuses: undefined,
@@ -578,7 +578,8 @@ var initialInput = {
   description: ""
 };
 
-function SignUp(Props) {
+function AddContact$1(Props) {
+  var openModal = Props.openModal;
   var match = Curry.app(Queries$FlowsUserApp.AddUser.use, [
         undefined,
         undefined,
@@ -603,61 +604,113 @@ function SignUp(Props) {
               });
           
         }));
-  return React.createElement(Form$FlowsUserApp.make, {
-              className: "",
-              onSubmit: (function (param) {
-                  return Curry._1(form.submit, undefined);
-                }),
-              children: null
-            }, React.createElement("h2", undefined, "Sign Up"), React.createElement(Form$FlowsUserApp.Input.make, {
-                  label: "address",
-                  title: "Raiden Address: ",
-                  value: form.input.address,
-                  blur: form.blurAddress,
-                  updateCurried: Curry._1(form.updateAddress, (function (input, value) {
-                          return {
-                                  address: value,
-                                  name: input.name,
-                                  description: input.description
-                                };
-                        })),
-                  result: form.addressResult,
-                  disabled: form.submitting
-                }), React.createElement("br", undefined), React.createElement(Form$FlowsUserApp.Input.make, {
-                  label: "name",
-                  title: "User name: ",
-                  value: form.input.name,
-                  blur: form.blurName,
-                  updateCurried: Curry._1(form.updateName, (function (input, value) {
-                          return {
-                                  address: input.address,
-                                  name: value,
-                                  description: input.description
-                                };
-                        })),
-                  result: form.nameResult,
-                  disabled: form.submitting
-                }), React.createElement("br", undefined), React.createElement(Form$FlowsUserApp.Input.make, {
-                  label: "name",
-                  title: "Description: ",
-                  value: form.input.description,
-                  blur: form.blurDescription,
-                  updateCurried: Curry._1(form.updateDescription, (function (input, value) {
-                          return {
-                                  address: input.address,
-                                  name: input.name,
-                                  description: value
-                                };
-                        })),
-                  result: form.descriptionResult,
-                  disabled: form.submitting
-                }), React.createElement("button", undefined, "Sign Up"));
+  return React.createElement("div", {
+              "aria-modal": true,
+              "aria-labelledby": "modal-title",
+              className: "fixed z-10 inset-0 overflow-y-auto",
+              role: "dialog"
+            }, React.createElement("div", {
+                  className: "flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
+                }, React.createElement("div", {
+                      "aria-hidden": true,
+                      className: "fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+                    }), React.createElement("span", {
+                      "aria-hidden": true,
+                      className: "hidden sm:inline-block sm:align-middle sm:h-screen"
+                    }, ""), React.createElement("div", {
+                      className: "inline-block align-bottom bg-white rounded-sm text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+                    }, React.createElement("div", {
+                          className: "bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4"
+                        }, React.createElement("button", {
+                              className: "flex justify-end mt-3 w-full inline-flex justify-right shadow-sm px-4 py-2 bg-white text-base hover:bg-gray-50 focus:outline-none sm:mt-0",
+                              onClick: (function (param) {
+                                  return Curry._1(openModal, (function (param) {
+                                                return false;
+                                              }));
+                                })
+                            }, React.createElement("img", {
+                                  className: "h-4",
+                                  src: "/img/icons/cancel.svg"
+                                })), React.createElement("div", {
+                              className: "sm:flex flex-col sm:items-center"
+                            }, React.createElement("div", {
+                                  className: "mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10"
+                                }, React.createElement("img", {
+                                      className: "h-3",
+                                      src: "/img/icons/contacts.svg"
+                                    })), React.createElement("div", {
+                                  className: "mt-3 text-center sm:mt-0 sm:text-left w-full"
+                                }, React.createElement("h3", {
+                                      className: "text-lg leading-6 font-medium text-gray-900",
+                                      id: "modal-title"
+                                    }, "Add contact"), React.createElement("div", {
+                                      className: "mt-2"
+                                    }, React.createElement("p", {
+                                          className: "text-sm text-gray-500"
+                                        }, React.createElement(Form$FlowsUserApp.make, {
+                                              className: "",
+                                              onSubmit: (function (param) {
+                                                  return Curry._1(form.submit, undefined);
+                                                }),
+                                              children: null
+                                            }, React.createElement(Form$FlowsUserApp.Input.make, {
+                                                  label: "address",
+                                                  title: "Raiden Address: ",
+                                                  value: form.input.address,
+                                                  blur: form.blurAddress,
+                                                  updateCurried: Curry._1(form.updateAddress, (function (input, value) {
+                                                          return {
+                                                                  address: value,
+                                                                  name: input.name,
+                                                                  description: input.description
+                                                                };
+                                                        })),
+                                                  result: form.addressResult,
+                                                  disabled: form.submitting
+                                                }), React.createElement(Form$FlowsUserApp.Input.make, {
+                                                  label: "name",
+                                                  title: "Name: ",
+                                                  value: form.input.name,
+                                                  blur: form.blurName,
+                                                  updateCurried: Curry._1(form.updateName, (function (input, value) {
+                                                          return {
+                                                                  address: input.address,
+                                                                  name: value,
+                                                                  description: input.description
+                                                                };
+                                                        })),
+                                                  result: form.nameResult,
+                                                  disabled: form.submitting
+                                                }), React.createElement(Form$FlowsUserApp.Input.make, {
+                                                  label: "description",
+                                                  title: "Description: ",
+                                                  value: form.input.description,
+                                                  blur: form.blurDescription,
+                                                  updateCurried: Curry._1(form.updateDescription, (function (input, value) {
+                                                          return {
+                                                                  address: input.address,
+                                                                  name: input.name,
+                                                                  description: value
+                                                                };
+                                                        })),
+                                                  result: form.descriptionResult,
+                                                  disabled: form.submitting
+                                                }), React.createElement("div", {
+                                                  className: "bg-gray-50 py-3 sm:flex sm:flex-row-reverse"
+                                                }, React.createElement("button", {
+                                                      className: "w-full inline-flex justify-center border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500  sm:w-auto sm:text-sm",
+                                                      onClick: (function (param) {
+                                                          return Curry._1(openModal, (function (param) {
+                                                                        return false;
+                                                                      }));
+                                                        })
+                                                    }, "Add contact")))))))))));
 }
 
-var make = SignUp;
+var make = AddContact$1;
 
 export {
-  SignUpForm ,
+  AddContact ,
   initialInput ,
   make ,
   

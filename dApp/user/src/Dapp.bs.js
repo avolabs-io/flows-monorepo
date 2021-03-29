@@ -3,11 +3,10 @@
 import * as React from "react";
 import * as RaidenTs from "raiden-ts";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
-import * as SignUp$FlowsUserApp from "./components/Auth/SignUp.bs.js";
 import * as ViewStreams$FlowsUserApp from "./ViewStreams.bs.js";
 import * as AuthProvider$FlowsUserApp from "./lib/Auth/AuthProvider.bs.js";
+import * as CreateStream$FlowsUserApp from "./pages/CreateStream.bs.js";
 import * as RootProvider$FlowsUserApp from "./lib/Old/RootProvider.bs.js";
-import * as CreatePayment$FlowsUserApp from "./CreatePayment.bs.js";
 import * as AuthenticateButton$FlowsUserApp from "./components/Auth/AuthenticateButton.bs.js";
 
 function Dapp(Props) {
@@ -43,7 +42,7 @@ function Dapp(Props) {
     exit = 1;
   }
   if (exit === 1) {
-    tmp = React.createElement(React.Fragment, undefined, React.createElement(SignUp$FlowsUserApp.make, {}), React.createElement(ViewStreams$FlowsUserApp.make, {}), React.createElement(CreatePayment$FlowsUserApp.make, {}));
+    tmp = React.createElement(React.Fragment, undefined, React.createElement(ViewStreams$FlowsUserApp.make, {}), React.createElement(CreateStream$FlowsUserApp.make, {}));
   }
   return React.createElement("div", undefined, tmp);
 }

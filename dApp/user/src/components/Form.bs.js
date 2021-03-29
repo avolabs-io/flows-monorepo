@@ -28,9 +28,12 @@ function Form$Input(Props) {
   var disabled = Props.disabled;
   var tmp;
   tmp = result !== undefined && result.TAG !== /* Ok */0 ? React.createElement("div", undefined, result._0) : null;
-  return React.createElement(React.Fragment, undefined, React.createElement("label", {
+  return React.createElement("div", {
+              className: "flex flex-col w-full"
+            }, React.createElement("label", {
                   htmlFor: label
                 }, title), React.createElement("input", {
+                  className: "border py-2 px-3 text-grey-darkest w-full",
                   id: label,
                   disabled: disabled,
                   type: "text",

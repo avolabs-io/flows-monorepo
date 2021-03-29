@@ -9,8 +9,11 @@ import * as Dapp$FlowsUserApp from "./Dapp.bs.js";
 import * as Login$FlowsUserApp from "./Login/Login.bs.js";
 import * as Apollo$FlowsUserApp from "./Apollo.bs.js";
 import * as Router$FlowsUserApp from "./Router.bs.js";
+import * as Contacts$FlowsUserApp from "./pages/Contacts.bs.js";
+import * as Dashboard$FlowsUserApp from "./pages/Dashboard.bs.js";
 import * as ViewStreams$FlowsUserApp from "./ViewStreams.bs.js";
 import * as AuthProvider$FlowsUserApp from "./lib/Auth/AuthProvider.bs.js";
+import * as CreateStream$FlowsUserApp from "./pages/CreateStream.bs.js";
 import * as RootProvider$FlowsUserApp from "./lib/Old/RootProvider.bs.js";
 
 function App$OnlyLoggedIn(Props) {
@@ -66,13 +69,15 @@ function App$Router(Props) {
   switch (route) {
     case /* Dashboard */0 :
         return React.createElement(App$OnlyLoggedIn, {
-                    children: React.createElement(Dapp$FlowsUserApp.make, {})
+                    children: React.createElement(Dashboard$FlowsUserApp.make, {})
                   });
     case /* Stream */1 :
-        return React.createElement(App$Streams, {});
-    case /* Login */2 :
+        return React.createElement(CreateStream$FlowsUserApp.make, {});
+    case /* Contacts */2 :
+        return React.createElement(Contacts$FlowsUserApp.make, {});
+    case /* Login */3 :
         return React.createElement(Login$FlowsUserApp.make, {});
-    case /* Dev */3 :
+    case /* Dev */4 :
         return React.createElement(App$Main, {});
     
   }
@@ -109,7 +114,9 @@ function App(Props) {
               children: React.createElement(AuthProvider$FlowsUserApp.make, {
                     children: React.createElement(App$GraphQl, {
                           children: null
-                        }, React.createElement(Nav$FlowsUserApp.make, {}), React.createElement(App$Router, {}))
+                        }, React.createElement(Nav$FlowsUserApp.make, {}), React.createElement("div", {
+                              className: "container mx-auto"
+                            }, React.createElement(App$Router, {})))
                   })
             });
 }

@@ -27,7 +27,7 @@ function Nav(Props) {
                         }, "Flows Finance")), user !== undefined ? React.createElement("ul", {
                         className: "flex items-center"
                       }, React.createElement("li", {
-                            className: "pl-4 uppercase flex  items-center",
+                            className: "pl-4 uppercase flex items-center cursor-pointer",
                             onClick: (function (_e) {
                                 return ReasonReactRouter.push("/");
                               })
@@ -35,7 +35,7 @@ function Nav(Props) {
                                 className: "h-3 pr-1",
                                 src: "/img/icons/dashboard.svg"
                               }), "Dashboard"), React.createElement("li", {
-                            className: "pl-4 uppercase flex items-center",
+                            className: "pl-4 uppercase flex items-center cursor-pointer",
                             onClick: (function (_e) {
                                 return ReasonReactRouter.push("stream");
                               })
@@ -43,11 +43,19 @@ function Nav(Props) {
                                 className: "h-3 pr-1",
                                 src: "/img/icons/stream.svg"
                               }), "Create Stream"), React.createElement("li", {
+                            className: "pl-4 uppercase flex items-center cursor-pointer",
+                            onClick: (function (_e) {
+                                return ReasonReactRouter.push("contacts");
+                              })
+                          }, React.createElement("img", {
+                                className: "h-3 pr-1",
+                                src: "/img/icons/contacts.svg"
+                              }), "Contacts"), React.createElement("li", {
                             className: "pl-4 flex  items-center"
                           }, React.createElement(DisplayAddress$FlowsUserApp.make, {
                                 address: Ethers$FlowsUserApp.Utils.ethAdrToStr(Caml_option.valFromOption(user))
                               }), React.createElement("img", {
-                                className: "h-3 pl-1",
+                                className: "h-3 pl-1  cursor-pointer",
                                 src: "/img/icons/logout.svg",
                                 onClick: (function (_e) {
                                     return Curry._1(logout, undefined);

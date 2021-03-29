@@ -18,7 +18,7 @@ let make = () => {
     {switch loggedInStatus {
     | Web3Only => <AuthenticateButton />
     | NotLoggedIn => React.null
-    | _ => <> <SignUp /> <ViewStreams /> <CreatePayment /> </>
+    | _ => <> <ViewStreams /> <CreateStream /> </>
     }}
   </div>
 }

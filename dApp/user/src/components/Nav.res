@@ -14,18 +14,27 @@ let make = () => {
       | Some(userAddress) =>
         <ul className="flex items-center">
           <li
-            className="pl-4 uppercase flex  items-center"
+            className="pl-4 uppercase flex items-center cursor-pointer"
             onClick={_e => ReasonReactRouter.push("/")}>
             <img src="/img/icons/dashboard.svg" className="h-3 pr-1" /> {"Dashboard"->React.string}
           </li>
           <li
-            className="pl-4 uppercase flex items-center"
+            className="pl-4 uppercase flex items-center cursor-pointer"
             onClick={_e => ReasonReactRouter.push("stream")}>
             <img src="/img/icons/stream.svg" className="h-3 pr-1" /> {"Create Stream"->React.string}
           </li>
+          <li
+            className="pl-4 uppercase flex items-center cursor-pointer"
+            onClick={_e => ReasonReactRouter.push("contacts")}>
+            <img src="/img/icons/contacts.svg" className="h-3 pr-1" /> {"Contacts"->React.string}
+          </li>
           <li className="pl-4 flex  items-center">
             <DisplayAddress address={userAddress->Ethers.Utils.ethAdrToStr} />
-            <img src="/img/icons/logout.svg" className="h-3 pl-1" onClick={_e => {logout()}} />
+            <img
+              src="/img/icons/logout.svg"
+              className="h-3 pl-1  cursor-pointer"
+              onClick={_e => {logout()}}
+            />
           </li>
           <li className="pl-4">
             <div className="rounded-md py-1 px-3 bg-indigo-600 bg-opacity-25 uppercase">

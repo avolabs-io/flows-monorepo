@@ -8,17 +8,23 @@ function fromUrl(url) {
     return /* Dashboard */0;
   }
   switch (match.hd) {
+    case "contacts" :
+        if (match.tl) {
+          return ;
+        } else {
+          return /* Contacts */2;
+        }
     case "dev" :
         if (match.tl) {
           return ;
         } else {
-          return /* Dev */3;
+          return /* Dev */4;
         }
     case "login" :
         if (match.tl) {
           return ;
         } else {
-          return /* Login */2;
+          return /* Login */3;
         }
     case "stream" :
         if (match.tl) {
