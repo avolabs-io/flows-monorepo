@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[11],{82:function(e){e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"Go with the Flow","permalink":"/blog/go-with-the-flow"},{"title":"Flows Finance receives a grant from the Raiden Trust","permalink":"/blog/flows-finance-receives-a-raiden-grant"}]}')}}]);

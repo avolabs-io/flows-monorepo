@@ -4,14 +4,21 @@
         <title>Flows Finance Blog</title>
         <link>https://dev.flows.finance/blog</link>
         <description>Flows Finance Blog</description>
-        <lastBuildDate>Mon, 20 Jan 2020 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Sat, 27 Mar 2021 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
+        <item>
+            <title><![CDATA[Go with the Flow]]></title>
+            <link>https://dev.flows.finance/blog/go-with-the-flow</link>
+            <guid>go-with-the-flow</guid>
+            <pubDate>Sat, 27 Mar 2021 00:00:00 GMT</pubDate>
+            <description><![CDATA[Continuous payment streams]]></description>
+        </item>
         <item>
             <title><![CDATA[Flows Finance receives a grant from the Raiden Trust]]></title>
             <link>https://dev.flows.finance/blog/flows-finance-receives-a-raiden-grant</link>
             <guid>flows-finance-receives-a-raiden-grant</guid>
-            <pubDate>Mon, 20 Jan 2020 00:00:00 GMT</pubDate>
+            <pubDate>Wed, 20 Jan 2021 00:00:00 GMT</pubDate>
             <description><![CDATA[Exciting Things! Flows Finance receives a grant from the Raiden Trust]]></description>
         </item>
     </channel>

@@ -2,16 +2,23 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://dev.flows.finance/blog</id>
     <title>Flows Finance Blog</title>
-    <updated>2020-01-20T00:00:00.000Z</updated>
+    <updated>2021-03-27T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://dev.flows.finance/blog"/>
     <subtitle>Flows Finance Blog</subtitle>
     <icon>https://dev.flows.finance/img/favicon/favicon.ico</icon>
     <entry>
+        <title type="html"><![CDATA[Go with the Flow]]></title>
+        <id>go-with-the-flow</id>
+        <link href="https://dev.flows.finance/blog/go-with-the-flow"/>
+        <updated>2021-03-27T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Continuous payment streams]]></summary>
+    </entry>
+    <entry>
         <title type="html"><![CDATA[Flows Finance receives a grant from the Raiden Trust]]></title>
         <id>flows-finance-receives-a-raiden-grant</id>
         <link href="https://dev.flows.finance/blog/flows-finance-receives-a-raiden-grant"/>
-        <updated>2020-01-20T00:00:00.000Z</updated>
+        <updated>2021-01-20T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[Exciting Things! Flows Finance receives a grant from the Raiden Trust]]></summary>
     </entry>
 </feed>
