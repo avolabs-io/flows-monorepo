@@ -1,0 +1,4 @@
+- args:
+    action: createStream
+    role: user
+  type: drop_action_permission

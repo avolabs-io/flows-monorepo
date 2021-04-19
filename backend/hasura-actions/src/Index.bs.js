@@ -4,6 +4,7 @@
 var Serbet = require("serbet/src/Serbet.bs.js");
 var Dotenv = require("dotenv");
 var AuthHook = require("./AuthHook.bs.js");
+var Scheduler = require("./Scheduler.bs.js");
 var Pervasives = require("bs-platform/lib/js/pervasives.js");
 var Belt_Option = require("bs-platform/lib/js/belt_Option.js");
 var PaymentStreamManager = require("./PaymentStreamManager.bs.js");
@@ -17,6 +18,8 @@ var app = Serbet.application(Belt_Option.getWithDefault(Belt_Option.flatMap(proc
         tl: /* [] */0
       }
     });
+
+Scheduler.startProcess(undefined);
 
 exports.app = app;
 /*  Not a pure module */

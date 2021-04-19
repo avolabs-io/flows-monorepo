@@ -1,0 +1,10 @@
+- args:
+    cascade: false
+    read_only: false
+    sql: CREATE TABLE "public"."payment_states"("state" text NOT NULL, "description"
+      text NOT NULL, PRIMARY KEY ("state") , UNIQUE ("state"));
+  type: run_sql
+- args:
+    name: payment_states
+    schema: public
+  type: add_existing_table_or_view

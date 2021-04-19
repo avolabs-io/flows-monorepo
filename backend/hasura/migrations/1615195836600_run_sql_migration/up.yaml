@@ -1,0 +1,9 @@
+- args:
+    cascade: false
+    read_only: false
+    sql: |-
+      INSERT INTO payment_states (state, description) VALUES
+        ('PENDING', 'Payment is pending. Further payments are suspended.'),
+        ('COMPLETE', 'Payment is complete. Free to make next payment.'),
+        ('ERROR', 'Payment is in error. Error must be handled.');
+  type: run_sql

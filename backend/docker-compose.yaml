@@ -1,7 +1,68 @@
 version: "3.6"
+
+x-defaults: &defaults
+  restart: always
+  env_file: .env
+  # image: raidennetwork/raiden-services:stable
+  image: raidennetwork/raiden-services:v0.13.2
+  volumes:
+    - ../raiden-pfs/:/raiden
+    - raidenPfsData:/root/.raiden
+  #logging:
+  #driver: "journald"
+
 services:
+  #setup-pfs:
+  #  <<: *defaults
+  #  container_name: setup-pfs
+  #  command: ["sleep", "1000000"]
+  #  environment:
+  #    - PFS_ETH_RPC=https://rpc.goerli.mudit.blog/
+  #    - PFS_STATE_DB=/state/pfs-goerli.db
+  #     - PFS_ACCEPT_DISCLAIMER=TRUE
+
+  # pfs-goerli:
+  #   <<: *defaults
+  #   container_name: pfs-goerli
+  #   command:
+  #     [
+  #       "python3",
+  #       "-m",
+  #       "pathfinding_service.cli",
+  #       "--enable-debug",
+  #       "--log-json",
+  #     ]
+  #   # command: ["sleep", "1000000"]
+  #   environment:
+  #     - PFS_ETH_RPC=https://rpc.goerli.mudit.blog/
+  #     - PFS_STATE_DB=/state/pfs-goerli.db
+  #     - PFS_ACCEPT_DISCLAIMER=TRUE
+  #   ports:
+  #     - 6000:6000
+
+  # ms-goerli:
+  #   <<: *defaults
+  #   command: ["python3", "-m", "monitoring_service.cli", "--log-json"]
+  #   environment:
+  #     - MS_ETH_RPC=https://rpc.goerli.mudit.blog/
+  #     - MS_STATE_DB=/state/ms-goerli.db
+  #     - MS_ACCEPT_DISCLAIMER=TRUE
+  #   depends_on:
+  #     - pfs-goerli
+
+  # msrc-goerli:
+  #   <<: *defaults
+  #   command: ["python3", "-m", "request_collector.cli", "--log-json"]
+  #   environment:
+  #     - MSRC_CHAIN_ID=goerli
+  #     - MSRC_STATE_DB=/state/ms-goerli.db
+  #     - MSRC_ACCEPT_DISCLAIMER=TRUE
+  #   depends_on:
+  #     - ms-goerli
+
   hasura-actions:
     build: ./hasura-actions
+    container_name: hactions
     volumes:
       [
         "./hasura-actions/src:/app/src",
@@ -12,8 +73,10 @@ services:
     environment:
       PORT: ${ACTIONS_PORT}
       GRAPHQL_ENDPOINT: graphql-engine:8080/v1/graphql
+      HUB_ADDRESS: ${HUB_ADDRESS}
     command: ${ACTIONS_START_COMMAND}
     restart: always
+
   postgres:
     # container_name: hasura-postgres
     image: postgres:12
@@ -24,6 +87,7 @@ services:
       - db_data:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
   graphql-engine:
     # name: graphql-engine
     container_name: graphql-engine
@@ -46,6 +110,50 @@ services:
       HASURA_GRAPHQL_AUTH_HOOK_MODE: POST
       # HASURA_GRAPHQL_UNAUTHORIZED_ROLE: public
       # HASURA_GRAPHQL_JWT_SECRET: ${HASURA_GRAPHQL_JWT_SECRET}
+
+  raiden1:
+    image: ${RAIDEN_NODE_VERSION:-raidennetwork/raiden:v1.2.0}
+    container_name: raiden1
+    restart: unless-stopped
+    command: --address "${NODE1_ETH_ADDRESS}" --keystore-path /raiden/keystore --password-file /raiden/password.txt --eth-rpc-endpoint "${ETH_RPC_ENDPIONT}" --network-id goerli --environment-type development --api-address "0.0.0.0:5001" --pathfinding-service-address "https://pfs.demo001.env.raiden.network" --matrix-server "https://transport.transport01.raiden.network" --accept-disclaimer
+    ports:
+      - "5001:5001"
+    volumes:
+      - ../raiden-node/:/raiden
+      - raiden1Data:/root/.raiden
+    networks:
+      - default
+
+  raiden2:
+    image: ${RAIDEN_NODE_VERSION:-raidennetwork/raiden:v1.2.0}
+    container_name: raiden2
+    restart: unless-stopped
+    command: --address "${NODE2_ETH_ADDRESS}" --keystore-path /raiden/keystore --password-file /raiden/password.txt --eth-rpc-endpoint "${ETH_RPC_ENDPIONT}" --network-id goerli --environment-type development --api-address "0.0.0.0:5001" --pathfinding-service-address "https://pfs.demo001.env.raiden.network" --matrix-server "https://transport.transport01.raiden.network" --accept-disclaimer
+    ports:
+      - "5002:5001"
+    volumes:
+      - ../raiden-node/:/raiden
+      - raiden2Data:/root/.raiden
+    networks:
+      - default
+
+  raiden3:
+    image: ${RAIDEN_NODE_VERSION:-raidennetwork/raiden:v1.2.0}
+    container_name: raiden3
+    restart: unless-stopped
+    command: --address "${NODE3_ETH_ADDRESS}" --keystore-path /raiden/keystore --password-file /raiden/password.txt --eth-rpc-endpoint "${ETH_RPC_ENDPIONT}" --network-id goerli --environment-type development --api-address "0.0.0.0:5001" --pathfinding-service-address "https://pfs.demo001.env.raiden.network" --matrix-server "https://transport.transport01.raiden.network" --accept-disclaimer
+    ports:
+      - "5003:5001"
+    volumes:
+      - ../raiden-node/:/raiden
+      - raiden3Data:/root/.raiden
+    networks:
+      - default
+
 volumes:
   db_data:
   data_dir:
+  raiden1Data:
+  raiden2Data:
+  raiden3Data:
+  raidenPfsData:

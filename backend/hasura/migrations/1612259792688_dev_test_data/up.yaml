@@ -1,0 +1,18 @@
+- args:
+    cascade: true
+    read_only: false
+    sql: |-
+      INSERT INTO "paymentTokens" (name, "tokenAddress", description) VALUES
+      (
+      'TestToken (TTT)',
+      '0xC563388e2e2fdD422166eD5E76971D11eD37A466',
+      'anything here'
+      );
+
+      INSERT INTO "user" (name, "ethAddress", description) VALUES
+      (
+      'Light1',
+      '0x91c0c7b5D42e9B65C8071FbDeC7b1EC54D92AD92',
+      'light client test'
+      );
+  type: run_sql

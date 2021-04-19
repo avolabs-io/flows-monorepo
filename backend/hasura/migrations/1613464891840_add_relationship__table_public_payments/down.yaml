@@ -1,0 +1,6 @@
+- args:
+    relationship: stream
+    table:
+      name: payments
+      schema: public
+  type: drop_relationship

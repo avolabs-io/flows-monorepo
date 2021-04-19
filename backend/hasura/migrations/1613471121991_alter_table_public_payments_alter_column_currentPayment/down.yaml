@@ -1,0 +1,5 @@
+- args:
+    cascade: false
+    read_only: false
+    sql: alter table "public"."payments" rename column "paymentTimestamp" to "currentPayment";
+  type: run_sql

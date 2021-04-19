@@ -1,0 +1,10 @@
+- args:
+    cascade: false
+    read_only: false
+    sql: |-
+      alter table "public"."payments"
+                 add constraint "payments_paymentState_fkey"
+                 foreign key ("paymentState")
+                 references "public"."payment_states"
+                 ("state") on update restrict on delete restrict;
+  type: run_sql
