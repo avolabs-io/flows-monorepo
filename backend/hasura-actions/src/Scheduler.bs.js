@@ -135,13 +135,12 @@ function startProcess(param) {
                                             if (paymentState === "COMPLETE") {
                                               console.log("last payment is COMPLETE");
                                               makePayment(recipient, paymentData);
-                                            }
-                                            if (paymentState === "PENDING") {
-                                              console.log("last payment is PENDING");
-                                            }
-                                            if (paymentState === "ERROR") {
+                                            } else if (paymentState === "ERROR") {
                                               console.log("last payment is ERROR");
-                                              return ;
+                                            } else if (paymentState === "PENDING") {
+                                              console.log("last payment is PENDING");
+                                            } else {
+                                              console.log("future value added");
                                             }
                                             
                                           }));

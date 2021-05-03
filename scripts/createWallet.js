@@ -14,7 +14,7 @@ const updateEnvFile = (key, value) => {
     // env file doesn't exist so create it.
     fs.writeFileSync(
       envfilePath,
-      `ETH_RPC_ENDPIONT="https://rpc.goerli.mudit.blog/"`
+      `ETH_RPC_ENDPIONT="https://rpc.goerli.mudit.blog"`
     );
   }
 

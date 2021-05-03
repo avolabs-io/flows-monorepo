@@ -115,7 +115,7 @@ services:
     image: ${RAIDEN_NODE_VERSION:-raidennetwork/raiden:v1.2.0}
     container_name: raiden1
     restart: unless-stopped
-    command: --address "${NODE1_ETH_ADDRESS}" --keystore-path /raiden/keystore --password-file /raiden/password.txt --eth-rpc-endpoint "${ETH_RPC_ENDPIONT}" --network-id goerli --environment-type development --api-address "0.0.0.0:5001" --pathfinding-service-address "https://pfs.demo001.env.raiden.network" --matrix-server "https://transport.transport01.raiden.network" --accept-disclaimer
+    command: --address "${NODE1_ETH_ADDRESS}" --keystore-path /raiden/keystore --password-file /raiden/password.txt --eth-rpc-endpoint "${ETH_RPC_ENDPIONT}" --network-id goerli --environment-type development --api-address "0.0.0.0:5001" --pathfinding-service-address "https://pfs.demo001.env.raiden.network" --matrix-server "https://transport.demo001.env.raiden.network" --accept-disclaimer
     ports:
       - "5001:5001"
     volumes:
@@ -128,7 +128,7 @@ services:
     image: ${RAIDEN_NODE_VERSION:-raidennetwork/raiden:v1.2.0}
     container_name: raiden2
     restart: unless-stopped
-    command: --address "${NODE2_ETH_ADDRESS}" --keystore-path /raiden/keystore --password-file /raiden/password.txt --eth-rpc-endpoint "${ETH_RPC_ENDPIONT}" --network-id goerli --environment-type development --api-address "0.0.0.0:5001" --pathfinding-service-address "https://pfs.demo001.env.raiden.network" --matrix-server "https://transport.transport01.raiden.network" --accept-disclaimer
+    command: --address "${NODE2_ETH_ADDRESS}" --keystore-path /raiden/keystore --password-file /raiden/password.txt --eth-rpc-endpoint "${ETH_RPC_ENDPIONT}" --network-id goerli --environment-type development --api-address "0.0.0.0:5001" --pathfinding-service-address "https://pfs.demo001.env.raiden.network" --matrix-server "https://transport.demo001.env.raiden.network" --accept-disclaimer
     ports:
       - "5002:5001"
     volumes:
